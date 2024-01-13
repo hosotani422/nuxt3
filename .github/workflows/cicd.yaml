@@ -17,7 +17,9 @@ jobs:
         with:
           node-version-file: ".nvmrc"
       - name: Setup Pnpm
-        run: npm install -g pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8.11.0
       - name: Setup Playwright
         run: npx playwright install
       - name: Install Dependency
