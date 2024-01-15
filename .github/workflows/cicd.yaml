@@ -24,12 +24,10 @@ jobs:
         uses: pnpm/action-setup@v2
         with:
           version: 8.11.0
-      - name: Setup Playwright
-        run: npx playwright install
       - name: Install Dependency
         run: pnpm install
       - name: Build Storybook
-        run: pnpm run build:uiux
+        run: pnpm run build:ui
       - name: Upload Storybook
         uses: actions/upload-pages-artifact@v2
         with:
@@ -43,8 +41,8 @@ jobs:
       - name: Lint Eslint
         run: pnpm run lint:script
       - name: Test Storybook
-        run: pnpm run test:uiux.ci
+        run: pnpm run test:ui.ci
       - name: Test Vitest
-        run: pnpm run test:unit
+        run: pnpm run test:ut
       - name: Test Playwright
-        run: pnpm run test:e2e
+        run: pnpm run test:it
