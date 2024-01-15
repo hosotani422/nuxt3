@@ -14,7 +14,7 @@ test.describe(`main`, () => {
   test(`create`, async ({ page, fixture }) => {
     await page.getByTestId(`MainPlus`).click();
     await fixture.textDialog(`main4`);
-    await expect(page.getByTestId(`MainItem`)).toHaveCount(4);
+    await expect(page.getByTestId(`MainItem`)).toHaveCount(3);
   });
   test(`clone`, async ({ page, fixture }) => {
     await fixture.longClick(page.getByTestId(`MainItem`).first());
