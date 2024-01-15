@@ -15,7 +15,7 @@ export default defineConfig({
   // Glob patterns or regular expressions that match test files.
   testMatch: `*.ts`,
   // Folder for test artifacts such as screenshots, videos, traces, etc.
-  outputDir: `./result`,
+  outputDir: `./report`,
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
