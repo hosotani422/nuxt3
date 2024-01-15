@@ -28,7 +28,7 @@ afterEach(() => {
 });
 
 describe(`getter`, () => {
-  it(`isApp`, () => {
+  it(`isApp2`, () => {
     expect(app.getter.isApp()).toBe(true);
   });
   it(`listId`, () => {
