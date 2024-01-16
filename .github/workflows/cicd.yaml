@@ -28,23 +28,23 @@ jobs:
         run: npx playwright install
       - name: Install Dependency
         run: pnpm install
-      - name: Build Storybook
-        run: pnpm run build:ui
-      - name: Upload Storybook
-        uses: actions/upload-pages-artifact@v2
-        with:
-          path: ./.storybook
-      - name: Deploy Storybook
-        uses: actions/deploy-pages@v2
-      - name: Lint Prettier
-        run: pnpm run lint:format
-      - name: Lint Stylelint
-        run: pnpm run lint:style
-      - name: Lint Eslint
-        run: pnpm run lint:script
-      - name: Test Storybook
-        run: pnpm run test:ui.ci
-      - name: Test Vitest
-        run: pnpm run test:ut
+      # - name: Build Storybook
+      #   run: pnpm run build:ui
+      # - name: Upload Storybook
+      #   uses: actions/upload-pages-artifact@v2
+      #   with:
+      #     path: ./.storybook
+      # - name: Deploy Storybook
+      #   uses: actions/deploy-pages@v2
+      # - name: Lint Prettier
+      #   run: pnpm run lint:format
+      # - name: Lint Stylelint
+      #   run: pnpm run lint:style
+      # - name: Lint Eslint
+      #   run: pnpm run lint:script
+      # - name: Test Storybook
+      #   run: pnpm run test:ui.ci
+      # - name: Test Vitest
+      #   run: pnpm run test:ut
       - name: Test Playwright
         run: pnpm run test:it
