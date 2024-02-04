@@ -2,9 +2,12 @@
   "recommendations": [
     "ms-ceintl.vscode-language-pack-ja",
     "editorconfig.editorconfig",
+    "esbenp.prettier-vscode",
     "stylelint.vscode-stylelint",
-    "vue.vscode-typescript-vue-plugin",
     "dbaeumer.vscode-eslint",
-    "vue.volar"
+    "csstools.postcss",
+    "bradlc.vscode-tailwindcss",
+    "vue.volar",
+    "vue.vscode-typescript-vue-plugin"
   ]
 }
