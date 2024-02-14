@@ -39,6 +39,16 @@ commands:
       - run:
           name: Lint Prettier
           command: pnpm run lint:format
+  lint_style:
+    steps:
+      - run:
+          name: Lint Stylelint
+          command: pnpm run lint:style
+  lint_script:
+    steps:
+      - run:
+          name: Lint Eslint
+          command: pnpm run lint:script
 
 jobs:
   setup:
@@ -52,7 +62,9 @@ jobs:
       - install_pnpm
       - install_package
       - lint_format
-      - save_package
+      - lint_style
+      - lint_format
+      - lint_script
 
 workflows:
   pull-request:
