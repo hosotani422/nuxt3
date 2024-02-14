@@ -49,6 +49,11 @@ commands:
       - run:
           name: Lint Eslint
           command: pnpm run lint:script
+  test_ui:
+    steps:
+      - run:
+          name: Test Storybook
+          command: pnpm run test:ui.ci
 
 jobs:
   setup:
