@@ -48,11 +48,9 @@ jobs:
     parallelism: 10
     steps:
       - checkout
-      - load_package
       - install_pnpm
       - install_package
       - lint_format
-      - save_package
 
 workflows:
   pull-request:
