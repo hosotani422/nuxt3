@@ -52,3 +52,13 @@ workflows:
   pull-request:
     jobs:
       - setup
+      lint:
+        executor:
+          name: default
+        steps:
+          - checkout
+          - load_package
+          - run:
+              name: Lint Prettier
+              command: pnpm run lint:format
+          - save_package
