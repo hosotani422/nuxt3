@@ -62,8 +62,8 @@ jobs:
       - install_pnpm
       - install_package
       - lint_format
-      - lint_style
       - lint_format
+      - lint_style
       - lint_script
 
 workflows:
