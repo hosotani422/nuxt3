@@ -20,7 +20,7 @@
     "test:ui": "test-storybook --config-dir test/storybook",
     "test:ui.ci": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"pnpm run ui\" \"wait-on tcp:6006 && pnpm run test:ui\"",
     "test:ut": "vitest --config test/vitest/vitest.config.ts",
-    "test:it": "lint:script",
+    "test:it": "playwright test --config test/playwright/playwright.config.ts",
     "test:it.testcafe": "testcafe --config-file test/testcafe/.testcaferc.cjs",
     "test:it.cypress": "cypress run --browser firefox --config-file test/cypress/cypress.config.ts",
     "prepare": "husky install && playwright install --with-deps"
