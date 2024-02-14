@@ -7,6 +7,20 @@ executors:
       - image: node:20
 
 commands:
+  install_pnpm:
+    steps:
+      - run:
+          name: Install pnpm package manager
+          command: |
+            corepack enable
+            corepack prepare pnpm@latest-8 --activate
+            pnpm config set store-dir .pnpm-store
+  install_package:
+    steps:
+      - run:
+          name: Install Dependencies
+          command: |
+            pnpm install
   load_package:
     steps:
       - restore_cache:
@@ -20,14 +34,6 @@ commands:
           key: pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
           paths:
             - .pnpm-store
-  install_pnpm:
-    steps:
-      - run:
-          name: Install pnpm package manager
-          command: |
-            corepack enable
-            corepack prepare pnpm@latest-8 --activate
-            pnpm config set store-dir .pnpm-store
 
 jobs:
   setup:
@@ -39,10 +45,7 @@ jobs:
       - checkout
       - load_package
       - install_pnpm
-      - run:
-          name: Install Dependencies
-          command: |
-            pnpm install
+      - install_package
       - save_package
 
 workflows:
