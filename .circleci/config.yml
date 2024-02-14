@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  build:
+  setup:
     docker:
       - image: node:20
     resource_class: large
@@ -28,3 +28,8 @@ jobs:
           key: pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
           paths:
             - .pnpm-store
+
+workflows:
+  pull-request:
+    jobs:
+      - setup
