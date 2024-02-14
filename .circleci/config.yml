@@ -27,7 +27,7 @@ jobs:
       name: default
     steps:
       - checkout
-      - run: echo "hello world"
+      - run: echo "hello world 2"
 
 workflows:
   pull-request:
