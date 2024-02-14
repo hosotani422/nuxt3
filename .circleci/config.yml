@@ -7,14 +7,14 @@ executors:
       - image: node:20
 
 commands:
-  restore_npm:
+  load_package:
     steps:
-      - restore_cache:
+      - load_cache:
           name: Restore pnpm Package Cache
           keys:
             - pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
 
-  save_npm:
+  save_package:
     steps:
       - save_cache:
           name: Save pnpm Package Cache
@@ -31,7 +31,7 @@ jobs:
 
     steps:
       - checkout
-      - restore_npm
+      - load_package
       - run:
           name: Install pnpm package manager
           command: |
@@ -42,7 +42,7 @@ jobs:
           name: Install Dependencies
           command: |
             pnpm install
-      - save_npm
+      - save_package
 
 workflows:
   pull-request:
