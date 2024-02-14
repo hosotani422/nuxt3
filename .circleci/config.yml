@@ -53,6 +53,7 @@ jobs:
     steps:
       - checkout
       - load_package
+      - install_pnpm
       - run:
           name: Lint Prettier
           command: pnpm run lint:format
