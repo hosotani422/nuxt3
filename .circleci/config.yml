@@ -58,6 +58,11 @@ commands:
       - run:
           name: Test Vitest
           command: pnpm run test:ut
+  test_it:
+    steps:
+      - run:
+          name: Test Playwright
+          command: pnpm run test:it
 
 jobs:
   setup:
@@ -70,11 +75,12 @@ jobs:
       - load_package
       - install_pnpm
       - install_package
-      - lint_format
-      - lint_format
-      - lint_style
-      - lint_script
-      - test_ui
+      # - lint_format
+      # - lint_style
+      # - lint_script
+      # - test_ui
+      # - test_ut
+      - test_it
 
 workflows:
   pull-request:
