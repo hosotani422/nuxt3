@@ -7,19 +7,18 @@ executors:
       - image: node:12
 
 commands:
-  restore_npm:
+  load_package:
     steps:
       - restore_cache:
-          name: Restore npm dependencies
-          key: npm-{{ checksum "package.json" }}
+          name: Restore pnpm Package Cache
+          keys: pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
 
-  save_npm:
+  save_package:
     steps:
       - save_cache:
-          name: Cache npm dependencies
-          key: npm-{{ checksum "package.json" }}
-          paths:
-            - ~/workspace/node_modules
+          name: Save pnpm Package Cache
+          key: pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
+          paths: .pnpm-store
 
 jobs:
   setup:
@@ -27,9 +26,33 @@ jobs:
       name: default
     steps:
       - checkout
-      - run: echo "hello world 2"
+      - run:
+          name: Install pnpm package manager
+          command: |
+            corepack enable
+            corepack prepare pnpm@latest-8 --activate
+            pnpm config set store-dir .pnpm-store
+      - run:
+          name: Install Dependencies
+          command: |
+            pnpm install
+      - save_package
+
+  lint:
+    executor:
+      name: default
+    steps:
+      - checkout
+      - load_package
+      - run:
+          name: Lint Prettier
+          command: pnpm run lint:format
+      - save_package
 
 workflows:
   pull-request:
     jobs:
       - setup
+      - lint:
+        requires:
+          - setup
