@@ -60,6 +60,7 @@
     "testcafe": "^3.4.0",
     "unplugin-auto-import": "^0.17.2",
     "unplugin-vue-components": "^0.26.0",
-    "vitest": "^1.0.1"
+    "vitest": "^1.0.1",
+    "wait-on": "^7.2.0"
   }
 }
