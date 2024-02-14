@@ -1,3 +1,0 @@
-pnpm run lint:format
-pnpm run lint:style
-pnpm run lint:script
