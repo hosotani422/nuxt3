@@ -2,10 +2,8 @@ version: 2.1
 
 executors:
   default:
-    runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        node-version: [20.11.0]
+    docker:
+      - image: node:20.11.0
 
 commands:
   install_pnpm:
