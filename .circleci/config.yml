@@ -13,7 +13,6 @@ commands:
           name: Restore pnpm Package Cache
           keys:
             - pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
-
   save_package:
     steps:
       - save_cache:
@@ -21,6 +20,14 @@ commands:
           key: pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
           paths:
             - .pnpm-store
+  install_pnpm:
+    steps:
+      - run:
+          name: Install pnpm package manager
+          command: |
+            corepack enable
+            corepack prepare pnpm@latest-8 --activate
+            pnpm config set store-dir .pnpm-store
 
 jobs:
   setup:
@@ -28,16 +35,10 @@ jobs:
       name: default
     resource_class: large
     parallelism: 10
-
     steps:
       - checkout
       - load_package
-      - run:
-          name: Install pnpm package manager
-          command: |
-            corepack enable
-            corepack prepare pnpm@latest-8 --activate
-            pnpm config set store-dir .pnpm-store
+      - install_pnpm
       - run:
           name: Install Dependencies
           command: |
