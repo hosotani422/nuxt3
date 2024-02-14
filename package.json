@@ -22,7 +22,7 @@
     "test:it": "lint:script",
     "test:it.testcafe": "testcafe --config-file test/testcafe/.testcaferc.cjs",
     "test:it.cypress": "cypress run --browser firefox --config-file test/cypress/cypress.config.ts",
-    "prepare": "husky install && playwright install"
+    "prepare": "husky install && playwright install-deps"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
