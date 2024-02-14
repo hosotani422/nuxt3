@@ -2,8 +2,10 @@ version: 2.1
 
 executors:
   default:
-    docker:
-      - image: cimg/node:20.11.0-browsers
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node-version: [20.11.0]
 
 commands:
   install_pnpm:
