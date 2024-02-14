@@ -9,7 +9,7 @@ executors:
 commands:
   load_package:
     steps:
-      - load_cache:
+      - restore_cache:
           name: Restore pnpm Package Cache
           keys:
             - pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
