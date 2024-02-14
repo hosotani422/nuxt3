@@ -1,4 +1,4 @@
-import { defineConfig } from "@playwright/test";
+import { defineConfig, devices } from "@playwright/test";
 
 /**
  * Read environment variables from file.
@@ -126,7 +126,7 @@ export default defineConfig({
     // },
     {
       name: `Google Chrome`,
-      use: { channel: `chrome` },
+      use: { ...devices[`Desktop Chrome`], channel: `chrome` },
     },
   ],
   /* Run your local dev server before starting the tests */
