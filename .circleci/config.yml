@@ -47,18 +47,21 @@ jobs:
       - install_pnpm
       - install_package
       - save_package
+  lint:
+    executor:
+      name: default
+    steps:
+      - checkout
+      - load_package
+      - run:
+          name: Lint Prettier
+          command: pnpm run lint:format
+      - save_package
 
 workflows:
   pull-request:
     jobs:
       - setup
-      lint:
-        executor:
-          name: default
-        steps:
-          - checkout
-          - load_package
-          - run:
-              name: Lint Prettier
-              command: pnpm run lint:format
-          - save_package
+      - lint:
+          requires:
+            - setup
