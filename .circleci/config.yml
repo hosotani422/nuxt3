@@ -46,6 +46,9 @@ jobs:
       - load_package
       - install_pnpm
       - install_package
+      - run:
+          name: Lint Prettier
+          command: pnpm run lint:format
       - save_package
   lint:
     executor:
@@ -63,6 +66,3 @@ workflows:
   pull-request:
     jobs:
       - setup
-      - lint:
-          requires:
-            - setup
