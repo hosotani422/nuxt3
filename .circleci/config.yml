@@ -34,6 +34,11 @@ commands:
           key: pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
           paths:
             - .pnpm-store
+  lint_format:
+    steps:
+      - run:
+          name: Lint Prettier
+          command: pnpm run lint:format
 
 jobs:
   setup:
@@ -57,9 +62,7 @@ jobs:
       - checkout
       - load_package
       - install_pnpm
-      - run:
-          name: Lint Prettier
-          command: pnpm run lint:format
+      - lint_format
       - save_package
 
 workflows:
