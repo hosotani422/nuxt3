@@ -18,11 +18,11 @@
     "fix:script": "eslint --fix --config .eslintrc.cjs **/*.{js,jsx,ts,tsx,vue}",
     "test:ui": "test-storybook --config-dir test/storybook",
     "test:ui.ci": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"pnpm run ui\" \"wait-on tcp:6006 && pnpm run test:ui\"",
-    "test:ut": "lint:script",
+    "test:ut": "vitest --config test/vitest/vitest.config.ts",
     "test:it": "lint:script",
     "test:it.testcafe": "testcafe --config-file test/testcafe/.testcaferc.cjs",
     "test:it.cypress": "cypress run --browser firefox --config-file test/cypress/cypress.config.ts",
-    "prepare": "husky install && pnpm exec playwright install-deps"
+    "prepare": "husky install && playwright install"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
