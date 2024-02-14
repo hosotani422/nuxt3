@@ -1,12 +1,17 @@
 version: 2.1
 
-jobs:
-  setup:
+executors:
+  default:
     docker:
       - image: node:20
+    working_directory: ~/workspace
     resource_class: large
     parallelism: 10
 
+jobs:
+  setup:
+    executor:
+      name: default
     steps:
       - checkout
       - restore_cache:
