@@ -23,7 +23,7 @@
     "test:it": "playwright test --config test/playwright/playwright.config.ts",
     "test:it.testcafe": "testcafe --config-file test/testcafe/.testcaferc.cjs",
     "test:it.cypress": "cypress run --browser firefox --config-file test/cypress/cypress.config.ts",
-    "prepare": "husky install && playwright install chrome"
+    "prepare": "husky install && playwright install --with-deps chrome"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
