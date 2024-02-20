@@ -76,7 +76,7 @@ jobs:
       # - lint_script
       - test_ui
       # - test_ut
-      # - test_it
+      - test_it
 
 workflows:
   pull-request:
