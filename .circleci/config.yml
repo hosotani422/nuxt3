@@ -74,8 +74,14 @@ jobs:
       # - lint_format
       # - lint_style
       # - lint_script
+      - run:
+          name: Test Vitest
+          command: playwright install --with-deps
       - test_ui
       # - test_ut
+      - run:
+          name: Test Vitest
+          command: playwright install chrome
       - test_it
 
 workflows:
