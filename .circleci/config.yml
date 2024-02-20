@@ -3,7 +3,7 @@ version: 2.1
 executors:
   default:
     docker:
-      - image: node:20.11.0-browsers
+      - image: cimg/node:20.11.0-browsers
 
 commands:
   install_pnpm:
