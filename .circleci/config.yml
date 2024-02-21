@@ -7,9 +7,6 @@ executors:
     working_directory: ~/project
 
 commands:
-  install_package:
-    steps:
-      - run: pnpm install
   load_workspace:
     steps:
       - attach_workspace:
@@ -19,6 +16,9 @@ commands:
       - persist_to_workspace:
           root: ~/project
           paths: .
+  install_package:
+    steps:
+      - run: pnpm install
   lint_format:
     steps:
       - run: pnpm run lint:format
