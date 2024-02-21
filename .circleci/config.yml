@@ -87,13 +87,21 @@ jobs:
       - lint_format
       - lint_style
       - lint_script
-  test:
+  test_ui:
     executor: default
     steps:
       - load_workspace
       - install_browser_v1
       - test_ui
+  test_ut:
+    executor: default
+    steps:
+      - load_workspace
       - test_ut
+  test_it:
+    executor: default
+    steps:
+      - load_workspace
       - install_browser_v2
       - test_it
 
@@ -104,6 +112,12 @@ workflows:
       - lint:
           requires:
             - setup
-      # - test:
-      #     requires:
-      #       - setup
+      - test_ui:
+          requires:
+            - setup
+      - test_ut:
+          requires:
+            - setup
+      - test_it:
+          requires:
+            - setup
