@@ -9,9 +9,7 @@ executors:
 commands:
   install_package:
     steps:
-      - run:
-          name: Install Dependencies
-          command: pnpm install
+      - run: pnpm install
   load_workspace:
     steps:
       - attach_workspace:
@@ -23,44 +21,28 @@ commands:
           paths: .
   lint_format:
     steps:
-      - run:
-          name: Lint Prettier
-          command: pnpm run lint:format
+      - run: pnpm run lint:format
   lint_style:
     steps:
-      - run:
-          name: Lint Stylelint
-          command: pnpm run lint:style
+      - run: pnpm run lint:style
   lint_script:
     steps:
-      - run:
-          name: Lint Eslint
-          command: pnpm run lint:script
+      - run: pnpm run lint:script
   install_browser_ui:
     steps:
-      - run:
-          name: Install Browser for Storybook
-          command: npx playwright install --with-deps
+      - run: npx playwright install --with-deps
   test_ui:
     steps:
-      - run:
-          name: Test Storybook
-          command: pnpm run test:ui.ci
+      - run: pnpm run test:ui.ci
   test_ut:
     steps:
-      - run:
-          name: Test Vitest
-          command: pnpm run test:ut
+      - run: pnpm run test:ut
   install_browser_it:
     steps:
-      - run:
-          name: Install Browser for Playwright
-          command: npx playwright install chrome
+      - run: npx playwright install chrome
   test_it:
     steps:
-      - run:
-          name: Test Playwright
-          command: pnpm run test:it
+      - run: pnpm run test:it
 
 jobs:
   setup:
