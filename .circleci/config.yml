@@ -32,13 +32,13 @@ commands:
           command: npx playwright install chrome
   load_workspace:
     steps:
+      - attach_workspace:
+          at: .
+  save_workspace:
+    steps:
       - persist_to_workspace:
           root: ~/project
           paths: node_modules
-  save_workspace:
-    steps:
-      - attach_workspace:
-          at: .
   load_cache:
     steps:
       - restore_cache:
