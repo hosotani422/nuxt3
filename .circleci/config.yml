@@ -36,7 +36,7 @@ commands:
       - restore_cache:
           name: Restore pnpm Package Cache
           keys: v1-packages-{{ checksum "pnpm-lock.yaml" }}
-  save_cache:
+  save_caches:
     steps:
       - save_cache:
           name: Save pnpm Package Cache
@@ -80,7 +80,7 @@ jobs:
       - checkout
       - install_package
       - save_workspace
-      - save_cache
+      - save_caches
   lint:
     executor: default
     steps:
