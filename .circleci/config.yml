@@ -108,3 +108,6 @@ workflows:
   pull-request:
     jobs:
       - setup
+      - test
+        requires:
+          -setup
