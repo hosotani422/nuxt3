@@ -78,7 +78,6 @@ jobs:
     executor: default
     steps:
       - checkout
-      - load_cache
       - install_package
       - save_cache
   lint:
