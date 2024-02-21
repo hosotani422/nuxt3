@@ -92,7 +92,6 @@ jobs:
     executor: default
     steps:
       - checkout
-      - load_workspace
       - lint_format
       - lint_style
       - lint_script
