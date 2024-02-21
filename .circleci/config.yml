@@ -4,6 +4,7 @@ executors:
   default:
     docker:
       - image: cimg/node:20.11.0-browsers
+    working_directory: ~/project
 
 commands:
   install_pnpm:
@@ -29,19 +30,26 @@ commands:
       - run:
           name: Install Playwright v2
           command: npx playwright install chrome
+  load_workspace:
+    steps:
+      - persist_to_workspace:
+          root: ~/project
+          paths: node_modules
+  save_workspace:
+    steps:
+      - attach_workspace:
+          at: .
   load_cache:
     steps:
       - restore_cache:
           name: Restore pnpm Package Cache
-          keys:
-            - v1-packages-{{ checksum "pnpm-lock.yaml" }}
+          keys: v1-packages-{{ checksum "pnpm-lock.yaml" }}
   save_cache:
     steps:
       - save_cache:
           name: Save pnpm Package Cache
           key: v1-packages-{{ checksum "pnpm-lock.yaml" }}
-          paths:
-            - node_modules
+          paths: node_modules
   lint_format:
     steps:
       - run:
@@ -80,6 +88,13 @@ jobs:
       - checkout
       - install_pnpm
       - install_package
+      - save_workspace
+  test:
+    executor: default
+    steps:
+      - checkout
+      - install_pnpm
+      - load_workspace
       - lint_format
       - lint_style
       - lint_script
