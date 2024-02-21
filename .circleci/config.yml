@@ -79,12 +79,12 @@ jobs:
     steps:
       - checkout
       - install_package
-      - save_cache
+      - save_workspace
   lint:
     executor: default
     steps:
       - checkout
-      - load_cache
+      - load_workspace
       - lint_format
       - lint_style
       - lint_script
@@ -92,7 +92,7 @@ jobs:
     executor: default
     steps:
       - checkout
-      - load_cache
+      - load_workspace
       - install_browser_v1
       - test_ui
       - test_ut
