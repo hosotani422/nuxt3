@@ -19,23 +19,23 @@ commands:
       - run:
           name: Install Dependencies
           command: pnpm install
-  install_playwright_v1:
+  install_browser_v1:
     steps:
       - run:
           name: Install Playwright v1
           command: npx playwright install --with-deps
-  install_playwright_v2:
+  install_browser_v2:
     steps:
       - run:
           name: Install Playwright v2
           command: npx playwright install chrome
-  load_package:
+  load_cache:
     steps:
       - restore_cache:
           name: Restore pnpm Package Cache
           keys:
             - v1-packages-{{ checksum "pnpm-lock.yaml" }}
-  save_package:
+  save_cache:
     steps:
       - save_cache:
           name: Save pnpm Package Cache
@@ -83,10 +83,10 @@ jobs:
       - lint_format
       - lint_style
       - lint_script
-      - install_playwright_v1
+      - install_browser_v1
       - test_ui
       - test_ut
-      - install_playwright_v2
+      - install_browser_v2
       - test_it
 
 workflows:
