@@ -3,7 +3,7 @@ version: 2.1
 executors:
   default:
     docker:
-      - image: cimg/node:20.11.0-browsers
+      - image: cimg/node:20.11.0
     working_directory: ~/project
 
 commands:
@@ -91,6 +91,7 @@ jobs:
   lint:
     executor: default
     steps:
+      - checkout
       - load_workspace
       - lint_format
       - lint_style
@@ -111,5 +112,8 @@ workflows:
     jobs:
       - setup
       - lint:
+          requires:
+            - setup
+      - test:
           requires:
             - setup
