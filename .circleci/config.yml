@@ -28,21 +28,19 @@ commands:
   lint_script:
     steps:
       - run: pnpm run lint:script
-  install_browser_ui:
-    steps:
-      - run: npx playwright install --with-deps
   test_ui:
     steps:
-      - run: pnpm run test:ui.ci
+      - run: |
+          npx playwright install --with-deps
+          pnpm run test:ui.ci
   test_ut:
     steps:
       - run: pnpm run test:ut
-  install_browser_it:
-    steps:
-      - run: npx playwright install chrome
   test_it:
     steps:
-      - run: pnpm run test:it
+      - run: |
+          npx playwright install chrome
+          pnpm run test:it
 
 jobs:
   setup:
@@ -62,7 +60,6 @@ jobs:
     executor: node_executor
     steps:
       - load_workspace
-      - install_browser_ui
       - test_ui
   test_ut:
     executor: node_executor
@@ -73,7 +70,6 @@ jobs:
     executor: node_executor
     steps:
       - load_workspace
-      - install_browser_it
       - test_it
 
 workflows:
