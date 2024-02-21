@@ -1,7 +1,7 @@
 version: 2.1
 
 executors:
-  default:
+  node_executor:
     docker:
       - image: cimg/node:20.11.0
     working_directory: ~/project
@@ -31,17 +31,6 @@ commands:
       - persist_to_workspace:
           root: ~/project
           paths: .
-  load_caches:
-    steps:
-      - restore_cache:
-          name: Restore pnpm Package Cache
-          keys: v1-packages-{{ checksum "pnpm-lock.yaml" }}
-  save_caches:
-    steps:
-      - save_cache:
-          name: Save pnpm Package Cache
-          key: v1-packages-{{ checksum "pnpm-lock.yaml" }}
-          paths: node_modules
   lint_format:
     steps:
       - run:
@@ -75,38 +64,38 @@ commands:
 
 jobs:
   setup:
-    executor: default
+    executor: node_executor
     steps:
       - checkout
       - install_package
       - save_workspace
   lint:
-    executor: default
+    executor: node_executor
     steps:
       - load_workspace
       - lint_format
       - lint_style
       - lint_script
   test_ui:
-    executor: default
+    executor: node_executor
     steps:
       - load_workspace
       - install_browser_v1
       - test_ui
   test_ut:
-    executor: default
+    executor: node_executor
     steps:
       - load_workspace
       - test_ut
   test_it:
-    executor: default
+    executor: node_executor
     steps:
       - load_workspace
       - install_browser_v2
       - test_it
 
 workflows:
-  pull-request:
+  ci:
     jobs:
       - setup
       - lint:
