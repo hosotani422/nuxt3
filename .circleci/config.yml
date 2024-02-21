@@ -30,7 +30,7 @@ commands:
     steps:
       - persist_to_workspace:
           root: ~/project
-          paths: node_modules
+          paths: .
   load_caches:
     steps:
       - restore_cache:
@@ -83,7 +83,6 @@ jobs:
   lint:
     executor: default
     steps:
-      - checkout
       - load_workspace
       - lint_format
       - lint_style
@@ -91,7 +90,6 @@ jobs:
   test:
     executor: default
     steps:
-      - checkout
       - load_workspace
       - install_browser_v1
       - test_ui
