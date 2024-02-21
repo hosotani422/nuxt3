@@ -31,7 +31,7 @@ commands:
       - persist_to_workspace:
           root: ~/project
           paths: node_modules
-  load_cache:
+  load_caches:
     steps:
       - restore_cache:
           name: Restore pnpm Package Cache
@@ -78,14 +78,14 @@ jobs:
     executor: default
     steps:
       - checkout
+      - load_caches
       - install_package
-      - save_workspace
       - save_caches
   lint:
     executor: default
     steps:
       - checkout
-      - load_workspace
+      - load_caches
       - lint_format
       - lint_style
       - lint_script
@@ -93,7 +93,7 @@ jobs:
     executor: default
     steps:
       - checkout
-      - load_workspace
+      - load_caches
       - install_browser_v1
       - test_ui
       - test_ut
