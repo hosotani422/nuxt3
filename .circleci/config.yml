@@ -89,15 +89,20 @@ jobs:
       - install_pnpm
       - install_package
       - save_workspace
+  lint:
+    executor: default
+    steps:
+      - checkout
+      - load_workspace
+      - lint_format
+      - lint_style
+      - lint_script
   test:
     executor: default
     steps:
       - checkout
       - install_pnpm
       - load_workspace
-      - lint_format
-      - lint_style
-      - lint_script
       - install_browser_v1
       - test_ui
       - test_ut
@@ -108,6 +113,6 @@ workflows:
   pull-request:
     jobs:
       - setup
-      - test:
+      - lint:
           requires:
             - setup
