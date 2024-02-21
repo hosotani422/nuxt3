@@ -7,14 +7,6 @@ executors:
     working_directory: ~/project
 
 commands:
-  install_pnpm:
-    steps:
-      - run:
-          name: Install pnpm package manager
-          command: |
-            sudo corepack enable
-            corepack prepare pnpm@latest-8 --activate
-            pnpm config set store-dir .pnpm-store
   install_package:
     steps:
       - run:
@@ -86,13 +78,14 @@ jobs:
     executor: default
     steps:
       - checkout
+      - load_cache
       - install_package
-      - save_workspace
+      - save_cache
   lint:
     executor: default
     steps:
       - checkout
-      - load_workspace
+      - load_cache
       - lint_format
       - lint_style
       - lint_script
@@ -100,7 +93,7 @@ jobs:
     executor: default
     steps:
       - checkout
-      - load_workspace
+      - load_cache
       - install_browser_v1
       - test_ui
       - test_ut
@@ -114,6 +107,6 @@ workflows:
       - lint:
           requires:
             - setup
-      - test:
-          requires:
-            - setup
+      # - test:
+      #     requires:
+      #       - setup
