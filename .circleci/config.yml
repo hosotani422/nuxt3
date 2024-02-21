@@ -12,16 +12,6 @@ commands:
       - run:
           name: Install Dependencies
           command: pnpm install
-  install_browser_v1:
-    steps:
-      - run:
-          name: Install Playwright v1
-          command: npx playwright install --with-deps
-  install_browser_v2:
-    steps:
-      - run:
-          name: Install Playwright v2
-          command: npx playwright install chrome
   load_workspace:
     steps:
       - attach_workspace:
@@ -46,6 +36,11 @@ commands:
       - run:
           name: Lint Eslint
           command: pnpm run lint:script
+  install_browser_ui:
+    steps:
+      - run:
+          name: Install Browser for Storybook
+          command: npx playwright install --with-deps
   test_ui:
     steps:
       - run:
@@ -56,6 +51,11 @@ commands:
       - run:
           name: Test Vitest
           command: pnpm run test:ut
+  install_browser_it:
+    steps:
+      - run:
+          name: Install Browser for Playwright
+          command: npx playwright install chrome
   test_it:
     steps:
       - run:
@@ -80,7 +80,7 @@ jobs:
     executor: node_executor
     steps:
       - load_workspace
-      - install_browser_v1
+      - install_browser_ui
       - test_ui
   test_ut:
     executor: node_executor
@@ -91,7 +91,7 @@ jobs:
     executor: node_executor
     steps:
       - load_workspace
-      - install_browser_v2
+      - install_browser_it
       - test_it
 
 workflows:
