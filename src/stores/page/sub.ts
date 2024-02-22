@@ -64,7 +64,7 @@ const useStore = defineStore(`sub`, () => {
     status: {},
   });
 
-  const getter = {
+  const getter = reactive({
     stateFull: computed(
       () =>
         (listId?: string, mainId?: string): (typeof state)[`data`][string][`data`][string] =>
@@ -80,15 +80,15 @@ const useStore = defineStore(`sub`, () => {
           state.data[listId || app.getter.listId()]!.data[mainId || app.getter.mainId()]!.data[subId || ``]!,
     ),
     classItem: computed(() => (subId: string): { [K in `check` | `edit` | `drag` | `hide`]: boolean } => ({
-      check: getter.stateUnit.value(``, ``, subId).check,
+      check: getter.stateUnit(``, ``, subId).check,
       edit: state.status[subId] === `edit`,
       drag: state.status[subId] === `drag`,
       hide: state.status[subId] === `hide`,
     })),
     textMemo: computed(() => (): string => {
       const memo: string[] = [];
-      for (const subId of getter.stateFull.value().sort) {
-        memo.push(getter.stateUnit.value(``, ``, subId).title);
+      for (const subId of getter.stateFull().sort) {
+        memo.push(getter.stateUnit(``, ``, subId).title);
       }
       return memo.join(`\n`);
     }),
@@ -107,7 +107,7 @@ const useStore = defineStore(`sub`, () => {
       }
       return alarm.join(`,`);
     }),
-  };
+  });
 
   const action = {
     initPage: async (): Promise<void> => {
@@ -134,13 +134,13 @@ const useStore = defineStore(`sub`, () => {
     enterItem: async (payload: { subId: string; selectionStart: number }) => {
       const subId = `sub${app.lib.dayjs().valueOf()}`;
       const caret = payload.selectionStart;
-      const title = getter.stateFull.value().data[payload.subId]!.title;
-      getter.stateFull.value().sort.splice(getter.stateFull.value().sort.indexOf(payload.subId) + 1, 0, subId);
-      getter.stateFull.value().data[payload.subId]!.title = title.slice(0, caret!);
-      getter.stateFull.value().data[subId] = { check: false, title: title.slice(caret!) };
+      const title = getter.stateFull().data[payload.subId]!.title;
+      getter.stateFull().sort.splice(getter.stateFull().sort.indexOf(payload.subId) + 1, 0, subId);
+      getter.stateFull().data[payload.subId]!.title = title.slice(0, caret!);
+      getter.stateFull().data[subId] = { check: false, title: title.slice(caret!) };
       await nextTick();
       // 要素が正しく描画されないので強制描画
-      refer.titles!.value[payload.subId]!.$el.value = getter.stateFull.value().data[payload.subId]!.title;
+      refer.titles!.value[payload.subId]!.$el.value = getter.stateFull().data[payload.subId]!.title;
       refer.titles!.value[subId]?.$el.focus();
       Dom.resize(refer.titles!.value[payload.subId]!.$el);
       refer.items!.value[payload.subId]!.addEventListener(`transitionend`, function listener() {
@@ -149,14 +149,14 @@ const useStore = defineStore(`sub`, () => {
       });
     },
     backItem: async (payload: { subId: string }) => {
-      const subId = getter.stateFull.value().sort[getter.stateFull.value().sort.indexOf(payload.subId) - 1]!;
-      const caret = getter.stateUnit.value(``, ``, subId).title.length;
-      getter.stateFull.value().sort.splice(getter.stateFull.value().sort.indexOf(payload.subId), 1);
-      getter.stateFull.value().data[subId]!.title += getter.stateFull.value().data[payload.subId]!.title;
-      delete getter.stateFull.value().data[payload.subId];
+      const subId = getter.stateFull().sort[getter.stateFull().sort.indexOf(payload.subId) - 1]!;
+      const caret = getter.stateUnit(``, ``, subId).title.length;
+      getter.stateFull().sort.splice(getter.stateFull().sort.indexOf(payload.subId), 1);
+      getter.stateFull().data[subId]!.title += getter.stateFull().data[payload.subId]!.title;
+      delete getter.stateFull().data[payload.subId];
       await nextTick();
       // 要素が正しく描画されないので強制描画
-      refer.titles!.value[subId]!.$el.value = getter.stateFull.value().data[subId]!.title;
+      refer.titles!.value[subId]!.$el.value = getter.stateFull().data[subId]!.title;
       Dom.resize(refer.titles!.value[subId]!.$el);
       refer.titles!.value[subId]!.$el.focus();
       refer.titles!.value[subId]!.$el.selectionStart = caret;
@@ -165,8 +165,8 @@ const useStore = defineStore(`sub`, () => {
     deleteItem: (payload: { subId: string }) => {
       const height = Dom.resize(refer.items!.value[payload.subId]!);
       const backup = app.lib.lodash.cloneDeep(state.data);
-      getter.stateFull.value().sort.splice(getter.stateFull.value().sort.indexOf(payload.subId), 1);
-      delete getter.stateFull.value().data[payload.subId];
+      getter.stateFull().sort.splice(getter.stateFull().sort.indexOf(payload.subId), 1);
+      delete getter.stateFull().data[payload.subId];
       delete state.status[payload.subId];
       constant.sound.play(`warn`);
       notice.action.open({
@@ -185,26 +185,26 @@ const useStore = defineStore(`sub`, () => {
       });
     },
     checkItem: (payload: { subId: string; checked: boolean }): void => {
-      getter.stateFull.value().sort.splice(getter.stateFull.value().sort.indexOf(payload.subId), 1);
-      getter.stateFull.value().sort[payload.checked ? `push` : `unshift`](payload.subId);
-      getter.stateUnit.value(``, ``, payload.subId).check = payload.checked;
+      getter.stateFull().sort.splice(getter.stateFull().sort.indexOf(payload.subId), 1);
+      getter.stateFull().sort[payload.checked ? `push` : `unshift`](payload.subId);
+      getter.stateUnit(``, ``, payload.subId).check = payload.checked;
       constant.sound.play(payload.checked ? `ok` : `cancel`);
     },
     switchItem: (): void => {
       main.getter.stateUnit().task = !main.getter.stateUnit().task;
     },
     switchEdit: (payload?: { subId: string }): void => {
-      for (const subId of getter.stateFull.value().sort) {
+      for (const subId of getter.stateFull().sort) {
         state.status[subId] = subId === payload?.subId ? `edit` : ``;
       }
     },
     inputMemo: (payload: { value: string }): void => {
-      getter.stateFull.value().sort = [];
-      getter.stateFull.value().data = {};
+      getter.stateFull().sort = [];
+      getter.stateFull().data = {};
       for (const [i, title] of payload.value.split(`\n`).entries()) {
         const subId = `sub${app.lib.dayjs().valueOf()}${i}`;
-        getter.stateFull.value().sort.push(subId);
-        getter.stateFull.value().data[subId] = { check: false, title };
+        getter.stateFull().sort.push(subId);
+        getter.stateFull().data[subId] = { check: false, title };
       }
     },
     openCalendar: (payload: { date: string }): void => {
@@ -300,22 +300,22 @@ const useStore = defineStore(`sub`, () => {
     dragMove: (payload: { clientY: number }): void => {
       if (prop.drag.status === `move`) {
         prop.drag.clone!.style.top = `${prop.drag.top! + payload.clientY - prop.drag.y!}px`;
-        const index = getter.stateFull.value().sort.indexOf(prop.drag.id!);
+        const index = getter.stateFull().sort.indexOf(prop.drag.id!);
         const clone = prop.drag.clone!.getBoundingClientRect();
         const wrap = refer.wrap!.value!.getBoundingClientRect();
-        const prev = refer.items!.value[getter.stateFull.value().sort[index - 1]!]?.getBoundingClientRect();
-        const current = refer.items!.value[getter.stateFull.value().sort[index]!]!.getBoundingClientRect();
-        const next = refer.items!.value[getter.stateFull.value().sort[index + 1]!]?.getBoundingClientRect();
+        const prev = refer.items!.value[getter.stateFull().sort[index - 1]!]?.getBoundingClientRect();
+        const current = refer.items!.value[getter.stateFull().sort[index]!]!.getBoundingClientRect();
+        const next = refer.items!.value[getter.stateFull().sort[index + 1]!]?.getBoundingClientRect();
         if (
           prev &&
           clone.top + clone.height / 2 < (next ? next.top : wrap.top + wrap.height) - (prev.height + current.height) / 2
         ) {
-          getter.stateFull.value().sort.splice(index - 1, 0, ...getter.stateFull.value().sort.splice(index, 1));
+          getter.stateFull().sort.splice(index - 1, 0, ...getter.stateFull().sort.splice(index, 1));
         } else if (
           next &&
           clone.top + clone.height / 2 > (prev ? prev.top + prev.height : wrap.top) + (current.height + next.height) / 2
         ) {
-          getter.stateFull.value().sort.splice(index + 1, 0, ...getter.stateFull.value().sort.splice(index, 1));
+          getter.stateFull().sort.splice(index + 1, 0, ...getter.stateFull().sort.splice(index, 1));
         }
       }
     },

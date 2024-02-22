@@ -38,7 +38,7 @@ const useStore = defineStore(`dialog`, () => {
     };
   } = reactive(constant.init.dialog);
 
-  const getter = {
+  const getter = reactive({
     stateCheckAll: computed(() => (): boolean => {
       for (const id of state.check.sort) {
         if (!state.check.data[id]!.check) {
@@ -47,7 +47,7 @@ const useStore = defineStore(`dialog`, () => {
       }
       return true;
     }),
-  };
+  });
 
   const action = {
     open: (payload: {

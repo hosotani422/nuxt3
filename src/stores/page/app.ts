@@ -1,4 +1,4 @@
-import * as lodash from "lodash";
+import lodash from "lodash";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
 import lang from "@/utils/lang/lang";
@@ -29,7 +29,7 @@ const useStore = defineStore(`app`, () => {
     backId: ``,
   });
 
-  const getter = {
+  const getter = reactive({
     isApp: computed(() => (): boolean => false),
     listId: computed(() => (): string => {
       const listId = useRoute()?.params?.listId;
@@ -72,7 +72,7 @@ const useStore = defineStore(`app`, () => {
       }
       return `flex-[0_0_50px]`;
     }),
-  };
+  });
 
   const action = {
     initPage: async (): Promise<void> => {
@@ -90,16 +90,16 @@ const useStore = defineStore(`app`, () => {
       Api.writeRoute(payload.listId);
     },
     routerList: (): void => {
-      useRouter().push(`/${getter.listId.value()}/list`);
+      useRouter().push(`/${getter.listId()}/list`);
     },
     routerMain: (payload: { listId: string }): void => {
       useRouter().push(`/${payload.listId}`);
     },
     routerSub: (payload: { mainId: string }): void => {
-      useRouter().push(`/${getter.listId.value()}/sub/${payload.mainId}`);
+      useRouter().push(`/${getter.listId()}/sub/${payload.mainId}`);
     },
     routerConf: (): void => {
-      useRouter().push(`/${getter.listId.value()}/conf`);
+      useRouter().push(`/${getter.listId()}/conf`);
     },
     routerBack: (payload?: { listId: string }): void => {
       state.backId = payload?.listId || ``;

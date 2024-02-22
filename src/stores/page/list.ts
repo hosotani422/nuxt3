@@ -53,7 +53,7 @@ const useStore = defineStore(`list`, () => {
     status: {},
   });
 
-  const getter = {
+  const getter = reactive({
     stateFull: computed(() => (): (typeof state)[`data`] => state.data),
     stateUnit: computed(
       () =>
@@ -90,7 +90,7 @@ const useStore = defineStore(`list`, () => {
       }
       return `${count}/${main.getter.stateFull(listId).sort.length}`;
     }),
-  };
+  });
 
   const action = {
     initPage: async (): Promise<void> => {
@@ -125,8 +125,8 @@ const useStore = defineStore(`list`, () => {
         callback: {
           ok: () => {
             const listId = `list${app.lib.dayjs().valueOf()}`;
-            getter.stateFull.value().sort.unshift(listId);
-            getter.stateFull.value().data[listId] = {
+            getter.stateFull().sort.unshift(listId);
+            getter.stateFull().data[listId] = {
               title: dialog.state.text.value,
             };
             main.state.data[listId] = { sort: [], data: {} };
@@ -141,8 +141,8 @@ const useStore = defineStore(`list`, () => {
     },
     copyItem: (payload: { listId: string }): void => {
       const listId = `list${app.lib.dayjs().valueOf()}`;
-      getter.stateFull.value().sort.splice(getter.stateFull.value().sort.indexOf(payload.listId) + 1, 0, listId);
-      getter.stateFull.value().data[listId] = app.lib.lodash.cloneDeep(getter.stateUnit.value(payload.listId));
+      getter.stateFull().sort.splice(getter.stateFull().sort.indexOf(payload.listId) + 1, 0, listId);
+      getter.stateFull().data[listId] = app.lib.lodash.cloneDeep(getter.stateUnit(payload.listId));
       main.state.data[listId] = app.lib.lodash.cloneDeep(main.getter.stateFull(payload.listId));
       sub.state.data[listId] = app.lib.lodash.cloneDeep(sub.state.data[payload.listId]!);
       delete state.status[payload.listId];
@@ -169,8 +169,8 @@ const useStore = defineStore(`list`, () => {
               );
               sub.state.data[constant.base.id.trash]!.data[mainId] = sub.getter.stateFull(payload.listId, mainId);
             }
-            getter.stateFull.value().sort.splice(getter.stateFull.value().sort.indexOf(payload.listId), 1);
-            delete getter.stateFull.value().data[payload.listId];
+            getter.stateFull().sort.splice(getter.stateFull().sort.indexOf(payload.listId), 1);
+            delete getter.stateFull().data[payload.listId];
             delete main.state.data[payload.listId];
             delete sub.state.data[payload.listId];
             delete state.status[payload.listId];
@@ -195,7 +195,7 @@ const useStore = defineStore(`list`, () => {
       });
     },
     switchEdit: (payload?: { listId: string }): void => {
-      for (const listId of getter.stateFull.value().sort) {
+      for (const listId of getter.stateFull().sort) {
         state.status[listId] = listId === payload?.listId ? `edit` : ``;
       }
     },
@@ -227,23 +227,23 @@ const useStore = defineStore(`list`, () => {
     dragMove: (payload: { clientY: number }): void => {
       if (prop.drag.status === `move`) {
         prop.drag.clone!.style.top = `${prop.drag.top! + payload.clientY - prop.drag.y!}px`;
-        const index = getter.stateFull.value().sort.indexOf(prop.drag.id!);
+        const index = getter.stateFull().sort.indexOf(prop.drag.id!);
         const clone = prop.drag.clone!.getBoundingClientRect();
-        const prev = refer.items!.value[getter.stateFull.value().sort[index - 1]!]?.getBoundingClientRect();
-        const current = refer.items!.value[getter.stateFull.value().sort[index]!]!.getBoundingClientRect();
-        const next = refer.items!.value[getter.stateFull.value().sort[index + 1]!]?.getBoundingClientRect();
+        const prev = refer.items!.value[getter.stateFull().sort[index - 1]!]?.getBoundingClientRect();
+        const current = refer.items!.value[getter.stateFull().sort[index]!]!.getBoundingClientRect();
+        const next = refer.items!.value[getter.stateFull().sort[index + 1]!]?.getBoundingClientRect();
         if (
           prev &&
           clone.top + clone.height / 2 <
             (next ? next.top : current.top + current.height) - (prev.height + current.height) / 2
         ) {
-          getter.stateFull.value().sort.splice(index - 1, 0, ...getter.stateFull.value().sort.splice(index, 1));
+          getter.stateFull().sort.splice(index - 1, 0, ...getter.stateFull().sort.splice(index, 1));
         } else if (
           next &&
           clone.top + clone.height / 2 >
             (prev ? prev.top + prev.height : current.top) + (current.height + next.height) / 2
         ) {
-          getter.stateFull.value().sort.splice(index + 1, 0, ...getter.stateFull.value().sort.splice(index, 1));
+          getter.stateFull().sort.splice(index + 1, 0, ...getter.stateFull().sort.splice(index, 1));
         }
       }
     },

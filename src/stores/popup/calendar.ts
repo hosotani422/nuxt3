@@ -30,10 +30,10 @@ const useStore = defineStore(`calendar`, () => {
     callback: (date?: string) => void;
   } = reactive(constant.init.calendar);
 
-  const getter = {
+  const getter = reactive({
     textWeek: computed(() => (): string[] => app.getter.lang().calendar.week),
     textDay: computed(() => (): { id: string; day: { month: string; day: string; text: string }[] }[] => {
-      const month: ReturnType<typeof getter.textDay.value> = [];
+      const month: ReturnType<typeof getter.textDay> = [];
       for (
         let curMonth = app.lib.dayjs(state.current).subtract(1, `month`),
           limMonth = app.lib.dayjs(state.current).add(2, `month`);
@@ -62,7 +62,7 @@ const useStore = defineStore(`calendar`, () => {
       today: day === app.lib.dayjs().format(`YYYY/MM/DD`),
       hide: month !== app.lib.dayjs(day).format(`YYYY/MM`),
     })),
-  };
+  });
 
   const action = {
     open: (payload: {
