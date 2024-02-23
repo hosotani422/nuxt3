@@ -67,7 +67,7 @@ describe(`event`, () => {
     expect(wrapper.emitted(`routerBack`)).toHaveLength(1);
   });
   it(`contents`, ({ wrapper }) => {
-    wrapper.findByTestId(`ListItem`).trigger(`touchlong`);
+    wrapper.findByTestId(`ListItem`).trigger(`longtouch`);
     expect(wrapper.emitted(`switchEdit`)).toHaveLength(1);
     expect(wrapper.emitted(`switchEdit`)![0]).toEqual([{ listId: `list1111111111111` }]);
     expect(wrapper.emitted(`dragInit`)).toHaveLength(1);

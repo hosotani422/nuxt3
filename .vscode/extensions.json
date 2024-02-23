@@ -7,7 +7,6 @@
     "dbaeumer.vscode-eslint",
     "csstools.postcss",
     "bradlc.vscode-tailwindcss",
-    "vue.volar",
-    "vue.vscode-typescript-vue-plugin"
+    "vue.volar"
   ]
 }

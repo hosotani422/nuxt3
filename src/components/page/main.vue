@@ -44,13 +44,21 @@ props.refer.items = items;
     data-testid="MainRoot"
     class="theme-grad-color absolute inset-0 z-[1] flex flex-col"
     @click="emit(`switchEdit`)"
-    @touchend="emit(`dragEnd`)"
+    @mousemove.prevent="
+      emit(`dragStart`);
+      emit(`dragMove`, { clientY: $event.clientY });
+    "
+    @mouseup="emit(`dragEnd`)"
     @touchmove.prevent="
       emit(`dragStart`);
       emit(`dragMove`, { clientY: $event.changedTouches[0]!.clientY });
     "
+    @touchend="emit(`dragEnd`)"
   >
-    <div class="theme-grad-color theme-shadow-normal relative z-[9] flex flex-auto items-center gap-3 p-3">
+    <div
+      data-testid="MainHead"
+      class="theme-grad-color theme-shadow-normal relative z-[9] flex flex-auto items-center gap-3 p-3"
+    >
       <IconList data-testid="MainList" class="flex-auto" @click="emit(`routerList`)" />
       <ClientOnly class="flex-even">
         <InputTextbox
@@ -63,7 +71,7 @@ props.refer.items = items;
       <IconConf data-testid="MainConf" class="flex-auto" @click="emit(`routerConf`)" />
       <IconPlus data-testid="MainPlus" class="flex-auto" @click="emit(`insertItem`)" />
     </div>
-    <ul ref="wrap" class="flex-even select-none overflow-auto p-3">
+    <ul ref="wrap" data-testid="MainBody" class="flex-even select-none overflow-auto p-3">
       <ClientOnly>
         <transition-group appear>
           <li
@@ -81,7 +89,11 @@ props.refer.items = items;
             :class="classItem(mainId)"
             @contextmenu.prevent
             @click="status[mainId] !== `edit` && emit(`routerSub`, { mainId })"
-            @touchlong="
+            @longclick="
+              emit(`switchEdit`, { mainId });
+              emit(`dragInit`, { mainId, clientY: $event.detail.clientY });
+            "
+            @longtouch="
               emit(`switchEdit`, { mainId });
               emit(`dragInit`, { mainId, clientY: $event.detail.changedTouches[0]!.clientY });
             "

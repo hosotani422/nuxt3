@@ -26,13 +26,14 @@ const emit = defineEmits([
   <div
     data-testid="ConfRoot"
     class="theme-mask-color absolute inset-x-0 bottom-0 z-[10] h-[200%] select-none active:transition speed1:active:duration-1000 speed2:active:duration-500 speed3:active:duration-200 fromto:!translate-y-[50%] fromto:!bg-transparent"
-    @touchstart.self="
-      emit(`swipeInit`, {
-        target: $event.currentTarget,
-        clientX: $event.changedTouches ? $event.changedTouches[0]!.clientX : 0,
-        clientY: $event.changedTouches ? $event.changedTouches[0]!.clientY : 0,
-      })
+    @mousemove="
+      emit(`swipeStart`, {
+        clientX: $event.clientX,
+        clientY: $event.clientY,
+      });
+      emit(`swipeMove`, { clientY: $event.clientY });
     "
+    @mouseup="emit(`swipeEnd`, { clientY: $event.clientY })"
     @touchmove="
       emit(`swipeStart`, {
         clientX: $event.changedTouches ? $event.changedTouches[0]!.clientX : 0,
@@ -42,21 +43,51 @@ const emit = defineEmits([
     "
     @touchend="emit(`swipeEnd`, { clientY: $event.changedTouches ? $event.changedTouches[0]!.clientY : 0 })"
   >
-    <div class="theme-grad-color theme-shadow-normal absolute inset-x-0 bottom-0 z-[1] flex h-[45%] flex-col">
-      <div class="theme-grad-color theme-shadow-normal relative z-[9] flex flex-auto items-center gap-3 p-3">
+    <div
+      data-testid="ConfBack"
+      class="absolute left-0 top-0 z-[1] h-[55%] w-[100%]"
+      @mousedown="
+        emit(`swipeInit`, {
+          target: ($event.currentTarget as HTMLElement).parentElement,
+          clientX: $event.clientX,
+          clientY: $event.clientY,
+        })
+      "
+      @touchstart="
+        emit(`swipeInit`, {
+          target: ($event.currentTarget as HTMLElement).parentElement,
+          clientX: $event.changedTouches ? $event.changedTouches[0]!.clientX : 0,
+          clientY: $event.changedTouches ? $event.changedTouches[0]!.clientY : 0,
+        })
+      "
+    />
+    <div
+      data-testid="ConfHome"
+      class="theme-grad-color theme-shadow-normal absolute inset-x-0 bottom-0 z-[1] flex h-[45%] flex-col"
+    >
+      <div
+        data-testid="ConfHead"
+        class="theme-grad-color theme-shadow-normal relative z-[9] flex flex-auto items-center gap-3 p-3"
+      >
         <IconDown data-testid="ConfDown" class="flex-auto" @click="emit(`routerBack`)" />
         <p data-testid="ConfTitle" class="flex-even text-xl">{{ lang().conf.title }}</p>
         <p data-testid="ConfName" class="flex-auto">{{ title }}</p>
       </div>
-      <ul class="flex-even overflow-auto p-3">
-        <li class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3">
+      <ul data-testid="ConfBody" class="flex-even overflow-auto p-3">
+        <li
+          data-testid="ConfItem"
+          class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3"
+        >
           <p data-testid="ConfSizeTitle" class="flex-even">{{ lang().conf.size.title }}</p>
           <InputRange v-model="state.size" data-testid="ConfSizeValue" class="flex-even" :min="1" :max="3" :step="1" />
           <p data-testid="ConfSizeName" class="flex-auto">
             {{ lang().conf.size.value[state.size] }}
           </p>
         </li>
-        <li class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3">
+        <li
+          data-testid="ConfItem"
+          class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3"
+        >
           <p data-testid="ConfSpeedTitle" class="flex-even">{{ lang().conf.speed.title }}</p>
           <InputRange
             v-model="state.speed"
@@ -68,7 +99,10 @@ const emit = defineEmits([
           />
           <p data-testid="ConfSpeedName" class="flex-auto">{{ lang().conf.speed.value[state.speed] }}</p>
         </li>
-        <li class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3">
+        <li
+          data-testid="ConfItem"
+          class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3"
+        >
           <p data-testid="ConfVolumeTitle" class="flex-even">{{ lang().conf.volume.title }}</p>
           <InputRange
             v-model="state.volume"
@@ -80,7 +114,10 @@ const emit = defineEmits([
           />
           <p data-testid="ConfVolumeName" class="flex-auto">{{ lang().conf.volume.value[state.volume] }}</p>
         </li>
-        <li class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3">
+        <li
+          data-testid="ConfItem"
+          class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3"
+        >
           <p data-testid="ConfVibrateTitle" class="flex-even">{{ lang().conf.vibrate.title }}</p>
           <InputRadio v-model="state.vibrate" data-testid="ConfVibrateOff" class="flex-auto" value="off">{{
             lang().conf.vibrate.value.off
@@ -89,7 +126,10 @@ const emit = defineEmits([
             lang().conf.vibrate.value.on
           }}</InputRadio>
         </li>
-        <li class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3">
+        <li
+          data-testid="ConfItem"
+          class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3"
+        >
           <p data-testid="ConfThemeTitle" class="flex-even">{{ lang().conf.theme.title }}</p>
           <InputRadio v-model="state.theme" data-testid="ConfThemeLight" class="flex-auto" value="light">{{
             lang().conf.theme.value.light
@@ -98,7 +138,10 @@ const emit = defineEmits([
             lang().conf.theme.value.dark
           }}</InputRadio>
         </li>
-        <li class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3">
+        <li
+          data-testid="ConfItem"
+          class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3"
+        >
           <p data-testid="ConfLangTitle" class="flex-even">{{ lang().conf.lang.title }}</p>
           <InputRadio v-model="state.lang" data-testid="ConfLangEn" class="flex-auto" value="en">{{
             lang().conf.lang.value.en
@@ -107,7 +150,10 @@ const emit = defineEmits([
             lang().conf.lang.value.jp
           }}</InputRadio>
         </li>
-        <li class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3">
+        <li
+          data-testid="ConfItem"
+          class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3"
+        >
           <p data-testid="ConfSaveTitle" class="flex-even">{{ lang().conf.save.title }}</p>
           <InputRadio v-model="state.save" data-testid="ConfSaveLocal" class="flex-auto" value="local">{{
             lang().conf.save.value.local
@@ -119,7 +165,10 @@ const emit = defineEmits([
             lang().conf.save.value.gql
           }}</InputRadio>
         </li>
-        <li class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3">
+        <li
+          data-testid="ConfItem"
+          class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3"
+        >
           <p data-testid="ConfBackupTitle" class="flex-even">{{ lang().conf.backup.title }}</p>
           <a class="flex-auto" data-testid="ConfBackupDownload" @click="emit(`downloadBackup`, { event: $event })">
             <InputButton class="flex-auto text-theme-fine">{{ lang().conf.backup.download }}</InputButton>
@@ -131,7 +180,10 @@ const emit = defineEmits([
             >{{ lang().conf.backup.upload }}</InputFile
           >
         </li>
-        <li class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3">
+        <li
+          data-testid="ConfItem"
+          class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3"
+        >
           <p data-testid="ConfResetTitle" class="flex-even">{{ lang().conf.reset.title }}</p>
           <InputButton data-testid="ConfResetConf" class="flex-auto text-theme-fine" @click="emit(`resetConf`)">{{
             lang().conf.reset.conf

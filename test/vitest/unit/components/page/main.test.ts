@@ -63,7 +63,7 @@ describe(`event`, () => {
     wrapper.findByTestId(`MainItem`).trigger(`click`);
     expect(wrapper.emitted(`routerSub`)).toHaveLength(1);
     expect(wrapper.emitted(`routerSub`)![0]).toEqual([{ mainId: `main1111111111111` }]);
-    wrapper.findByTestId(`MainItem`).trigger(`touchlong`, { detail: { changedTouches: [{ clientY: 0 }] } });
+    wrapper.findByTestId(`MainItem`).trigger(`longtouch`, { detail: { changedTouches: [{ clientY: 0 }] } });
     expect(wrapper.emitted(`switchEdit`)).toHaveLength(6);
     expect(wrapper.emitted(`switchEdit`)![5]).toEqual([{ mainId: `main1111111111111` }]);
     wrapper.findByTestId(`MainCheck`).trigger(`change`);
@@ -85,7 +85,7 @@ describe(`event`, () => {
     await (main.state.status[`main1111111111111`] = ``);
   });
   it(`drag`, ({ wrapper }) => {
-    wrapper.findByTestId(`MainItem`).trigger(`touchlong`, { detail: { changedTouches: [{ clientY: 0 }] } });
+    wrapper.findByTestId(`MainItem`).trigger(`longtouch`, { detail: { changedTouches: [{ clientY: 0 }] } });
     expect(wrapper.emitted(`dragInit`)).toHaveLength(1);
     expect(wrapper.emitted(`dragInit`)![0]).toEqual([{ mainId: `main1111111111111`, clientY: 0 }]);
     wrapper.findByTestId(`MainRoot`).trigger(`touchmove.prevent`, { changedTouches: [{ clientY: 0 }] });

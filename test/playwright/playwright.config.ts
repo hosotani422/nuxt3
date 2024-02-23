@@ -11,9 +11,9 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export default defineConfig({
   // Look for test files in the "tests" directory, relative to this configuration file.
-  testDir: `./e2e`,
+  testDir: `./test`,
   // Glob patterns or regular expressions that match test files.
-  testMatch: `*.ts`,
+  testMatch: `*.test.ts`,
   // Folder for test artifacts such as screenshots, videos, traces, etc.
   outputDir: `./report`,
   /* Run tests in files in parallel */

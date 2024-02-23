@@ -56,12 +56,20 @@ props.refer.titles = titles;
     data-testid="SubRoot"
     class="theme-mask-color absolute inset-y-0 right-0 z-[10] w-[200%] active:transition speed1:active:duration-1000 speed2:active:duration-500 speed3:active:duration-200 fromto:!translate-x-[50%] fromto:!bg-transparent"
     @touchstart.capture="emit(`switchEdit`)"
-    @touchstart.self="
-      emit(`swipeInit`, {
-        target: $event.currentTarget,
-        clientX: $event.changedTouches ? $event.changedTouches[0]!.clientX : 0,
-        clientY: $event.changedTouches ? $event.changedTouches[0]!.clientY : 0,
-      })
+    @mousemove.prevent="
+      emit(`dragStart`);
+      emit(`dragMove`, { clientY: $event.clientY });
+    "
+    @mousemove="
+      emit(`swipeStart`, {
+        clientX: $event.clientX,
+        clientY: $event.clientY,
+      });
+      emit(`swipeMove`, { clientX: $event.clientX });
+    "
+    @mouseup="
+      emit(`dragEnd`);
+      emit(`swipeEnd`, { clientX: $event.clientX });
     "
     @touchmove.prevent="
       emit(`dragStart`);
@@ -80,10 +88,32 @@ props.refer.titles = titles;
     "
   >
     <div
+      data-testid="SubBack"
+      class="absolute left-0 top-0 z-[1] h-[100%] w-[57%]"
+      @mousedown="
+        emit(`swipeInit`, {
+          target: ($event.currentTarget as HTMLElement).parentElement,
+          clientX: $event.clientX,
+          clientY: $event.clientY,
+        })
+      "
+      @touchstart="
+        emit(`swipeInit`, {
+          target: ($event.currentTarget as HTMLElement).parentElement,
+          clientX: $event.changedTouches ? $event.changedTouches[0]!.clientX : 0,
+          clientY: $event.changedTouches ? $event.changedTouches[0]!.clientY : 0,
+        })
+      "
+    />
+    <div
       ref="home"
+      data-testid="SubHome"
       class="theme-grad-color theme-shadow-reverse absolute inset-y-0 left-[57%] z-[1] flex w-[43%] flex-col"
     >
-      <div class="theme-grad-color theme-shadow-normal relative z-[9] flex flex-auto items-center gap-3 p-3">
+      <div
+        data-testid="SubHead"
+        class="theme-grad-color theme-shadow-normal relative z-[9] flex flex-auto items-center gap-3 p-3"
+      >
         <IconRight data-testid="SubRight" class="flex-auto" @click="emit(`routerBack`)" />
         <InputTextbox
           v-model="mainUnit().title"
@@ -93,12 +123,12 @@ props.refer.titles = titles;
         />
         <IconMode data-testid="SubMode" class="flex-auto" @click="emit(`switchItem`)" />
       </div>
-      <div class="flex-even overflow-auto p-3">
+      <div data-testid="SubBody" class="flex-even overflow-auto p-3">
         <transition mode="out-in">
           <InputTextarea
             v-if="!mainUnit().task"
             data-testid="SubMemo"
-            class="theme-back-color fade-normal h-full w-full"
+            class="theme-back-color fade-normal size-full"
             :placeholder="lang().placeholder.memo"
             :model-value="textMemo()"
             @input="emit(`inputMemo`, { value: ($event.target as HTMLInputElement).value })"
@@ -159,6 +189,12 @@ props.refer.titles = titles;
                 />
                 <IconDrag
                   data-testid="SubDrag"
+                  @mousedown="
+                    emit(`dragInit`, {
+                      subId,
+                      clientY: $event.clientY,
+                    })
+                  "
                   @touchstart="
                     emit(`dragInit`, {
                       subId,

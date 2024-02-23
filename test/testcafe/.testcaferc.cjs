@@ -1,9 +1,9 @@
 module.exports = {
-  src: [`./test/testcafe/e2e`],
+  src: [`./test/testcafe/test/*.test.ts`],
   browsers: [`chrome:headless`],
-  baseUrl: `http://localhost:3000/list0000000000000`,
+  baseUrl: `http://localhost:3000/`,
   skipJsErrors: true,
-  concurrency: 3,
+  concurrency: 1,
   screenshots: {
     path: `./test/testcafe/screenshots`,
     takeOnFails: false,

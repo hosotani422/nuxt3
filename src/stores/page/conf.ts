@@ -194,12 +194,13 @@ const useStore = defineStore(`conf`, () => {
         ok: app.getter.lang().button.ok,
         cancel: app.getter.lang().button.cancel,
         callback: {
-          ok: () => {
+          ok: async () => {
+            app.action.routerBack({ listId: constant.init.listId });
+            dialog.action.close();
+            await new Promise((resolve) => setTimeout(resolve, 1000));
             list.state.data = constant.init.list;
             main.state.data = constant.init.main;
             sub.state.data = constant.init.sub;
-            app.action.routerBack({ listId: constant.init.listId });
-            dialog.action.close();
           },
           cancel: () => {
             dialog.action.close();
