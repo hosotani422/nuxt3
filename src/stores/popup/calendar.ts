@@ -31,7 +31,13 @@ const useStore = defineStore(`calendar`, () => {
   } = reactive(constant.init.calendar);
 
   const getter = reactive({
-    textWeek: computed(() => (): string[] => app.getter.lang().calendar.week),
+    textWeek: computed(() => (): string[] => {
+      const week = [];
+      for (let i = 1; i <= Number(useNuxtApp().$i18n.t(`calendar.sort`)); i++) {
+        week.push(useNuxtApp().$i18n.t(`calendar.week${i}`));
+      }
+      return week;
+    }),
     textDay: computed(() => (): { id: string; day: { month: string; day: string; text: string }[] }[] => {
       const month: ReturnType<typeof getter.textDay> = [];
       for (

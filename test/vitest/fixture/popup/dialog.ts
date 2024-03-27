@@ -1,6 +1,5 @@
 import { mount, VueWrapper } from "@vue/test-utils";
 import Base from "../base";
-import app from "@/stores/page/app";
 import dialog from "@/stores/popup/dialog";
 import PopupDialog from "@/components/popup/dialog.vue";
 
@@ -33,13 +32,13 @@ export default class Dialog extends Base {
     const wrapper = mount(PopupDialog, {
       props: {
         state: dialog.state,
-        lang: app.getter.lang,
         stateCheckAll: dialog.getter.stateCheckAll,
       },
       global: {
         directives: {
           focus: () => ``,
         },
+        mocks: Base.mockI18n(),
       },
     });
     return wrapper;

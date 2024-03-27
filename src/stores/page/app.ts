@@ -1,7 +1,6 @@
 import lodash from "lodash";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
-import lang from "@/utils/lang/lang";
 import constant from "@/utils/const/index";
 import * as Api from "@/api/api";
 import list from "@/stores/page/list";
@@ -39,7 +38,6 @@ const useStore = defineStore(`app`, () => {
       const mainId = useRoute()?.params?.mainId;
       return mainId && !Array.isArray(mainId) ? mainId : ``;
     }),
-    lang: computed(() => (): (typeof lang)[(typeof conf)[`state`][`data`][`lang`]] => lang[conf.state.data.lang]),
     classTop: computed(() => (): string => {
       const classList: string[] = [conf.state.data.theme];
       classList.push(

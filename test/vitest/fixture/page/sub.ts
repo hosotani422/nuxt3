@@ -10,7 +10,6 @@ export default class Sub extends Base {
     const wrapper = mount(PageSub, {
       props: {
         refer: sub.refer,
-        lang: app.getter.lang,
         listId: app.getter.listId,
         mainId: app.getter.mainId,
         mainUnit: main.getter.stateUnit,
@@ -27,6 +26,7 @@ export default class Sub extends Base {
         directives: {
           height: () => ``,
         },
+        mocks: Base.mockI18n(),
       },
     });
     return wrapper;

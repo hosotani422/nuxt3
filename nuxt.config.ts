@@ -1,9 +1,9 @@
-import * as path from "pathe";
+import * as path from "path";
 
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   ssr: true,
-  rootDir: `src`,
+  // 通常時は`src`、storybook起動時は``を指定（storybookを起動するのに必要）
+  rootDir: process.env.npm_lifecycle_script?.includes(`nuxt`) ? `src` : ``,
   buildDir: `../.nuxt`,
   css: [`@/assets/style/tailwind.css`],
   components: {
@@ -20,7 +20,8 @@ export default defineNuxtConfig({
   typescript: {
     shim: false,
   },
-  modules: [`@pinia/nuxt`],
+  modules: [`@pinia/nuxt`, `@nuxtjs/i18n`],
+  i18n: { vueI18n: `./i18n.config.ts` },
   imports: {
     presets: [
       {

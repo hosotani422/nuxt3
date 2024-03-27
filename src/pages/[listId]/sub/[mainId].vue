@@ -7,7 +7,6 @@ import sub from "@/stores/page/sub";
 <template>
   <PageSub
     :refer="sub.refer"
-    :lang="app.getter.lang"
     :list-id="app.getter.listId"
     :main-id="app.getter.mainId"
     :main-unit="main.getter.stateUnit"
