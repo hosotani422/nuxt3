@@ -5,6 +5,7 @@ fixture(`conf`).beforeEach(async () => {
   await Page.initConf();
 });
 test(`page - init`, async (t) => {
+  await t.wait(1000);
   await t.expect(await Page.getUrl()).eql(`/list1111111111111/conf`);
   await t.expect(Page.getByTestId(`ConfDown`).count).eql(1);
   await t.expect(Page.getByTestId(`ConfTitle`).textContent).eql(`設定`);
@@ -31,7 +32,7 @@ test(`page - init`, async (t) => {
   await t.expect(Page.getByTestId(`InputRadioLabel`).nth(3).textContent).eql(`暗`);
   await t.expect(Page.getByTestId(`ConfLangTitle`).textContent).eql(`言語`);
   await t.expect(Page.getByTestId(`ConfLangEn`).checked).eql(false);
-  await t.expect(Page.getByTestId(`ConfLangJp`).checked).eql(true);
+  await t.expect(Page.getByTestId(`ConfLangJa`).checked).eql(true);
   await t.expect(Page.getByTestId(`InputRadioLabel`).nth(4).textContent).eql(`英語`);
   await t.expect(Page.getByTestId(`InputRadioLabel`).nth(5).textContent).eql(`日本語`);
   await t.expect(Page.getByTestId(`ConfSaveTitle`).textContent).eql(`自動保存`);
@@ -81,7 +82,7 @@ test(`item - theme`, async (t) => {
 test(`item - lang`, async (t) => {
   await t.click(Page.getByTestId(`ConfLangEn`));
   await t.expect(Page.getByTestId(`ConfLangEn`).checked).eql(true);
-  await t.expect(Page.getByTestId(`ConfLangJp`).checked).eql(false);
+  await t.expect(Page.getByTestId(`ConfLangJa`).checked).eql(false);
 });
 test(`item - save`, async (t) => {
   await t.click(Page.getByTestId(`ConfSaveGql`));

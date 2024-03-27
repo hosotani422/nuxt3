@@ -1,5 +1,4 @@
 import { vi, beforeEach, afterEach, describe, it, expect, MockInstance } from "vitest";
-import fs from "fs";
 import * as Api from "@/api/api";
 import * as Cordova from "@/utils/cordova/cordova";
 import constant from "@/utils/const";
@@ -9,20 +8,13 @@ import main from "@/stores/page/main";
 import sub from "@/stores/page/sub";
 import conf from "@/stores/page/conf";
 import dialog from "@/stores/popup/dialog";
+import fixture from "../../../fixture/base";
 
 beforeEach(async () => {
   process.client = true;
-  const backup = fs.readFileSync(`./test/memotea.bak`, `utf-8`).split(`\n`);
-  app.state.backId = backup[0]!;
-  list.state.data = JSON.parse(backup[1]!);
-  main.state.data = JSON.parse(backup[2]!);
-  sub.state.data = JSON.parse(backup[3]!);
-  conf.state.data = JSON.parse(backup[4]!);
-  vi.mock(`vue-router`, () => ({
-    useRoute: () => ({
-      params: { listId: `list1111111111111`, mainId: `main1111111111111` },
-    }),
-  }));
+  fixture.setI18n();
+  fixture.loadData();
+  fixture.setRouter();
 });
 
 afterEach(() => {
@@ -53,7 +45,7 @@ describe(`action`, () => {
       volume: 1,
       vibrate: `on`,
       theme: `dark`,
-      lang: `jp`,
+      lang: `ja`,
       save: `local`,
     };
     vi.spyOn(Api, `readConf`).mockResolvedValue(readConfData);
@@ -71,7 +63,7 @@ describe(`action`, () => {
       volume: 1,
       vibrate: `on`,
       theme: `dark`,
-      lang: `jp`,
+      lang: `ja`,
       save: `local`,
     });
   });
@@ -137,7 +129,7 @@ describe(`action`, () => {
       volume: 1,
       vibrate: `on`,
       theme: `light`,
-      lang: `jp`,
+      lang: `ja`,
       save: `local`,
     });
     expect(dialog.action.close).toBeCalledTimes(1);

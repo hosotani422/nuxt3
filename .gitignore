@@ -1,7 +1,6 @@
 node_modules
 *.log*
 .nuxt
-.storybook
 .nitro
 .cache
 .output
@@ -14,3 +13,4 @@ test/testcafe/screenshots/
 coverage
 auto-imports.d.ts
 components.d.ts
+storybook-static

@@ -79,7 +79,7 @@
     /* Specify multiple folders that act like './node_modules/@types'. */
     // "typeRoots": [],
     /* Specify type package names to be included without being referenced in a source file. */
-    "types": ["node", "vitest/globals"],
+    "types": ["node", "vitest/globals", "@nuxtjs/i18n"],
     /* Allow accessing UMD globals from modules. */
     // "allowUmdGlobalAccess": true,
     /* List of file name suffixes to search when resolving a module. */

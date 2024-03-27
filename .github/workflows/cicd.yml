@@ -27,7 +27,7 @@ jobs:
       - name: Install Dependency
         run: pnpm install
       - name: Build Storybook
-        run: pnpm run build:ui
+        run: pnpm build:ui
       - name: Upload Storybook
         uses: actions/upload-pages-artifact@v2
         with:
@@ -35,14 +35,14 @@ jobs:
       - name: Deploy Storybook
         uses: actions/deploy-pages@v2
       - name: Lint Prettier
-        run: pnpm run lint:format
+        run: pnpm lint:format
       - name: Lint Stylelint
-        run: pnpm run lint:style
+        run: pnpm lint:style
       - name: Lint Eslint
-        run: pnpm run lint:script
+        run: pnpm lint:script
       - name: Test Storybook
-        run: pnpm run test:ui.ci
+        run: pnpm test:ui.ci
       - name: Test Vitest
-        run: pnpm run test:ut
+        run: pnpm test:ut
       - name: Test Playwright
-        run: pnpm run test:it
+        run: pnpm test:it

@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import app from "@/stores/page/app";
 import dialog from "@/stores/popup/dialog";
 defineOptions({
   inheritAttrs: false,
 });
 defineProps<{
   state: typeof dialog.state;
-  lang: typeof app.getter.lang;
   stateCheckAll: typeof dialog.getter.stateCheckAll;
 }>();
 const emit = defineEmits([`clickCheckAll`]);
@@ -34,7 +32,7 @@ const emit = defineEmits([`clickCheckAll`]);
           :model-value="stateCheckAll()"
           data-testid="DialogCheckAll"
           @change="emit(`clickCheckAll`, { checked: ($event.target as HTMLInputElement).checked })"
-          >{{ lang().dialog.select.all }}</InputCheck
+          >{{ $t(`dialog.select.all`) }}</InputCheck
         >
         <InputCheck
           v-for="checkId of state.check.sort"
@@ -50,7 +48,7 @@ const emit = defineEmits([`clickCheckAll`]);
           data-testid="DialogRadioNone"
           value=""
           :checked="state.radio.select === ``"
-          >{{ lang().dialog.select.none }}</InputRadio
+          >{{ $t(`dialog.select.none`) }}</InputRadio
         >
         <InputRadio
           v-for="radioId of state.radio.sort"

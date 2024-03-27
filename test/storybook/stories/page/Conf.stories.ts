@@ -14,7 +14,6 @@ const meta: Meta<typeof PageConf> = {
       return {
         title: `${constant.base.title} ${constant.base.version}`,
         state: conf.state.data,
-        lang: app.getter.lang,
         routerBack: app.action.routerBack,
         downloadBackup: conf.action.downloadBackup,
         uploadBackup: conf.action.uploadBackup,
@@ -29,7 +28,6 @@ const meta: Meta<typeof PageConf> = {
     template: `<PageConf
         :title="title"
         :state="state"
-        :lang="lang"
         @routerBack="routerBack"
         @downloadBackup="downloadBackup"
         @uploadBackup="uploadBackup"

@@ -8,7 +8,6 @@ defineOptions({
 });
 const props = defineProps<{
   refer: typeof sub.refer;
-  lang: typeof app.getter.lang;
   listId: typeof app.getter.listId;
   mainId: typeof app.getter.mainId;
   mainUnit: typeof main.getter.stateUnit;
@@ -116,7 +115,7 @@ props.refer.titles = titles;
           v-model="mainUnit().title"
           data-testid="SubTitle"
           class="flex-even text-xl"
-          :placeholder="lang().placeholder.main"
+          :placeholder="$t(`placeholder.main`)"
         />
         <IconMode data-testid="SubMode" class="flex-auto" @click="emit(`switchItem`)" />
       </div>
@@ -126,7 +125,7 @@ props.refer.titles = titles;
             v-if="!mainUnit().task"
             data-testid="SubMemo"
             class="theme-back-color fade-normal size-full"
-            :placeholder="lang().placeholder.memo"
+            :placeholder="$t(`placeholder.memo`)"
             :model-value="textMemo()"
             @input="emit(`inputMemo`, { value: ($event.target as HTMLInputElement).value })"
           />
@@ -169,7 +168,7 @@ props.refer.titles = titles;
                   v-height
                   data-testid="SubTask"
                   class="flex-even !p-0"
-                  :placeholder="lang().placeholder.sub"
+                  :placeholder="$t(`placeholder.sub`)"
                   @click="emit(`switchEdit`, { subId })"
                   @keydown.enter.prevent="
                     emit(`enterItem`, {
@@ -208,7 +207,7 @@ props.refer.titles = titles;
           data-testid="SubCalendar"
           class="w-full flex-even"
           :class="classLimit()"
-          :placeholder="lang().placeholder.date"
+          :placeholder="$t(`placeholder.date`)"
           :model-value="mainUnit().date"
           readonly
           @focus="emit(`openCalendar`, { date: mainUnit().date })"
@@ -217,7 +216,7 @@ props.refer.titles = titles;
           data-testid="SubClock"
           class="w-full flex-even"
           :class="classLimit()"
-          :placeholder="lang().placeholder.time"
+          :placeholder="$t(`placeholder.time`)"
           :model-value="mainUnit().time"
           readonly
           @focus="emit(`openClock`, { time: mainUnit().time })"
@@ -226,7 +225,7 @@ props.refer.titles = titles;
           data-testid="SubDialog"
           class="w-full flex-even"
           :class="classLimit()"
-          :placeholder="lang().placeholder.alarm"
+          :placeholder="$t(`placeholder.alarm`)"
           :model-value="textAlarm()"
           readonly
           @focus="emit(`openAlarm`)"

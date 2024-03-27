@@ -52,11 +52,11 @@
 - 以下のコマンドで開発環境実行
 
   ```
-  pnpm run dev
+  pnpm dev
   ```
 
 - 以下のコマンドで本番資材生成
 
   ```
-  pnpm run build
+  pnpm build
   ```

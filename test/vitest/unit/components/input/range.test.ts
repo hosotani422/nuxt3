@@ -5,14 +5,14 @@ import InputRange from "@/components/input/range.vue";
 describe(`dom`, () => {
   it(`default`, () => {
     const wrapper = mount(InputRange);
-    expect(wrapper.findByTestId<HTMLInputElement>(`InputRange`).element.value).toBe(0);
+    expect(wrapper.findByTestId<HTMLInputElement>(`InputRange`).element.value).toBe(`0`);
     expect(wrapper.findByTestId(`InputRange`).attributes(`min`)).toBe(`0`);
     expect(wrapper.findByTestId(`InputRange`).attributes(`max`)).toBe(`100`);
     expect(wrapper.findByTestId(`InputRange`).attributes(`step`)).toBe(`1`);
   });
   it(`prop`, () => {
     const wrapper = mount(InputRange, { props: { min: 1, max: 10, step: 3, modelValue: 5 } });
-    expect(wrapper.findByTestId<HTMLInputElement>(`InputRange`).element.value).toBe(5);
+    expect(wrapper.findByTestId<HTMLInputElement>(`InputRange`).element.value).toBe(`5`);
     expect(wrapper.findByTestId(`InputRange`).attributes(`min`)).toBe(`1`);
     expect(wrapper.findByTestId(`InputRange`).attributes(`max`)).toBe(`10`);
     expect(wrapper.findByTestId(`InputRange`).attributes(`step`)).toBe(`3`);

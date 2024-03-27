@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3";
 import PopupDialog from "@/components/popup/dialog.vue";
-import app from "@/stores/page/app";
 import dialog from "@/stores/popup/dialog";
 
 const meta: Meta<typeof PopupDialog> = {
@@ -44,14 +43,12 @@ const meta: Meta<typeof PopupDialog> = {
       });
       return {
         state: dialog.state,
-        lang: app.getter.lang,
         stateCheckAll: dialog.getter.stateCheckAll,
         clickCheckAll: dialog.action.clickCheckAll,
       };
     },
     template: `<PopupDialog
         :state="state"
-        :lang="lang"
         :stateCheckAll="stateCheckAll"
         @clickCheckAll="clickCheckAll"
       />`,
