@@ -2,18 +2,6 @@ import "@/assets/style/tailwind.css";
 
 export default {
   parameters: {
-    viewport: {
-      defaultViewport: `mobile`,
-      viewports: {
-        mobile: {
-          name: `Mobile`,
-          styles: {
-            width: `400px`,
-            height: `600px`,
-          },
-        },
-      },
-    },
     backgrounds: {
       default: `memotea`,
       values: [

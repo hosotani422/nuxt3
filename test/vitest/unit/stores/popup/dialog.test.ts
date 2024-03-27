@@ -1,24 +1,10 @@
 import { vi, beforeEach, afterEach, describe, it, expect } from "vitest";
-import fs from "fs";
-import app from "@/stores/page/app";
-import list from "@/stores/page/list";
-import main from "@/stores/page/main";
-import sub from "@/stores/page/sub";
-import conf from "@/stores/page/conf";
 import dialog from "@/stores/popup/dialog";
+import fixture from "../../../fixture/base";
 
 beforeEach(async () => {
-  const backup = fs.readFileSync(`./test/memotea.bak`, `utf-8`).split(`\n`);
-  app.state.backId = backup[0]!;
-  list.state.data = JSON.parse(backup[1]!);
-  main.state.data = JSON.parse(backup[2]!);
-  sub.state.data = JSON.parse(backup[3]!);
-  conf.state.data = JSON.parse(backup[4]!);
-  vi.mock(`vue-router`, () => ({
-    useRoute: () => ({
-      params: { listId: `list1111111111111`, mainId: `main1111111111111` },
-    }),
-  }));
+  fixture.loadData();
+  fixture.setRouter();
 });
 
 afterEach(() => {

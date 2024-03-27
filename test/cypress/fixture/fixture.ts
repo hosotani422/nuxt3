@@ -18,6 +18,7 @@ export default class Fixture {
     this.loadData();
     this.openPage();
     this.getByTestId(`MainList`).click();
+    this.cy.wait(1000);
   }
   public initMain(): void {
     this.loadData();
@@ -27,6 +28,7 @@ export default class Fixture {
     this.loadData();
     this.openPage();
     this.getByTestId(`MainItem`).eq(0).click();
+    this.cy.wait(1000);
   }
   public initConf(): void {
     this.loadData();

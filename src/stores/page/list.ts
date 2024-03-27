@@ -114,14 +114,14 @@ const useStore = defineStore(`list`, () => {
     insertItem: (): void => {
       dialog.action.open({
         mode: `text`,
-        title: app.getter.lang().dialog.title.insert,
+        title: useNuxtApp().$i18n.t(`dialog.title.insert`),
         message: ``,
         text: {
           value: ``,
-          placeholder: app.getter.lang().placeholder.list,
+          placeholder: useNuxtApp().$i18n.t(`placeholder.list`),
         },
-        ok: app.getter.lang().button.ok,
-        cancel: app.getter.lang().button.cancel,
+        ok: useNuxtApp().$i18n.t(`button.ok`),
+        cancel: useNuxtApp().$i18n.t(`button.cancel`),
         callback: {
           ok: () => {
             const listId = `list${app.lib.dayjs().valueOf()}`;
@@ -150,10 +150,10 @@ const useStore = defineStore(`list`, () => {
     deleteItem: (payload: { listId: string }): void => {
       dialog.action.open({
         mode: `confirm`,
-        title: app.getter.lang().dialog.title.delete,
+        title: useNuxtApp().$i18n.t(`dialog.title.delete`),
         message: ``,
-        ok: app.getter.lang().button.ok,
-        cancel: app.getter.lang().button.cancel,
+        ok: useNuxtApp().$i18n.t(`button.ok`),
+        cancel: useNuxtApp().$i18n.t(`button.cancel`),
         callback: {
           ok: () => {
             const backup = {
@@ -177,8 +177,8 @@ const useStore = defineStore(`list`, () => {
             dialog.action.close();
             constant.sound.play(`warn`);
             notice.action.open({
-              message: app.getter.lang().notice.message,
-              button: app.getter.lang().notice.button,
+              message: useNuxtApp().$i18n.t(`notice.message`),
+              button: useNuxtApp().$i18n.t(`notice.button`),
               callback: () => {
                 state.data = backup.list;
                 main.state.data = backup.main;

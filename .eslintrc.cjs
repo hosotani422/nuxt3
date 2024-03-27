@@ -20,7 +20,7 @@ module.exports = {
     `prettier`,
   ],
   noInlineConfig: true,
-  ignorePatterns: [`src/utils/cordova/*.d.ts`],
+  ignorePatterns: [`src/utils/cordova`, `.nuxt`, `.output`, `storybook-static`],
   rules: {
     "no-console": [`error`],
     "no-undef": [`off`],

@@ -50,7 +50,6 @@ onMounted(() => {
           />
           <PopupDialog
             :state="dialog.state"
-            :lang="app.getter.lang"
             :state-check-all="dialog.getter.stateCheckAll"
             @click-check-all="dialog.action.clickCheckAll"
           />

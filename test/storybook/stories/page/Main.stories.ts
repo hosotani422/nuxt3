@@ -14,7 +14,6 @@ const meta: Meta<typeof PageMain> = {
       return {
         refer: main.refer,
         status: main.state.status,
-        lang: app.getter.lang,
         listId: app.getter.listId,
         listUnit: list.getter.stateUnit,
         stateFull: main.getter.stateFull,
@@ -40,7 +39,6 @@ const meta: Meta<typeof PageMain> = {
     template: `<PageMain
         :refer="refer"
         :status="status"
-        :lang="lang"
         :listId="listId"
         :listUnit="listUnit"
         :stateFull="stateFull"

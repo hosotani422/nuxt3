@@ -13,7 +13,6 @@ const meta: Meta<typeof PageSub> = {
       mock();
       return {
         refer: sub.refer,
-        lang: app.getter.lang,
         listId: app.getter.listId,
         mainId: app.getter.mainId,
         mainUnit: main.getter.stateUnit,
@@ -47,8 +46,7 @@ const meta: Meta<typeof PageSub> = {
     },
     template: `<PageSub
         :refer="refer"
-        :lang="lang"
-        :listId="lang"
+        :listId="listId"
         :mainId="mainId"
         :mainUnit="mainUnit"
         :stateFull="stateFull"

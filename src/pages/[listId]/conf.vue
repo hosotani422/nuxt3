@@ -8,7 +8,6 @@ import conf from "@/stores/page/conf";
   <PageConf
     :title="`${constant.base.title} ${constant.base.version}`"
     :state="conf.state.data"
-    :lang="app.getter.lang"
     @router-back="app.action.routerBack"
     @download-backup="conf.action.downloadBackup"
     @upload-backup="conf.action.uploadBackup"
