@@ -5,6 +5,7 @@ fixture(`list`).beforeEach(async () => {
   await Page.initList();
 });
 test(`page - init`, async (t) => {
+  await t.wait(1000);
   await t.expect(await Page.getUrl()).eql(`/list1111111111111/list`);
   await t.expect(Page.getByTestId(`ListPlus`).count).eql(1);
   await t.expect(Page.getByTestId(`ListTitle`).textContent).eql(`Memotea`);

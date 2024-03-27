@@ -1,6 +1,5 @@
 import { vi, beforeEach, afterEach, describe, it, expect, MockInstance } from "vitest";
 import * as Vue from "vue";
-import fs from "fs";
 import lodash from "lodash";
 import * as Api from "@/api/api";
 import constant from "@/utils/const";
@@ -8,18 +7,14 @@ import app from "@/stores/page/app";
 import list from "@/stores/page/list";
 import main from "@/stores/page/main";
 import sub from "@/stores/page/sub";
-import conf from "@/stores/page/conf";
 import dialog from "@/stores/popup/dialog";
 import notice from "@/stores/popup/notice";
+import fixture from "../../../fixture/base";
 
 beforeEach(async () => {
   vi.useFakeTimers();
-  const backup = fs.readFileSync(`./test/memotea.bak`, `utf-8`).split(`\n`);
-  app.state.backId = backup[0]!;
-  list.state.data = JSON.parse(backup[1]!);
-  main.state.data = JSON.parse(backup[2]!);
-  sub.state.data = JSON.parse(backup[3]!);
-  conf.state.data = JSON.parse(backup[4]!);
+  fixture.setI18n();
+  fixture.loadData();
   vi.mock(`vue-router`, () => ({
     useRoute: () => ({
       params: { listId: `list1111111111111`, mainId: `main1111111111111` },

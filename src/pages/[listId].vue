@@ -8,7 +8,6 @@ import main from "@/stores/page/main";
   <PageMain
     :refer="main.refer"
     :status="main.state.status"
-    :lang="app.getter.lang"
     :list-id="app.getter.listId"
     :list-unit="list.getter.stateUnit"
     :state-full="main.getter.stateFull"

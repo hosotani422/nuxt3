@@ -11,7 +11,6 @@ export default class Main extends Base {
       props: {
         refer: main.refer,
         status: main.state.status,
-        lang: app.getter.lang,
         listId: app.getter.listId,
         listUnit: list.getter.stateUnit,
         stateFull: main.getter.stateFull,
@@ -27,6 +26,7 @@ export default class Main extends Base {
           ClientOnly: { template: `<div><slot /></div>` },
           RouterView: true,
         },
+        mocks: Base.mockI18n(),
       },
     });
     return wrapper;

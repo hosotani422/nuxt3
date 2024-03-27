@@ -1,7 +1,6 @@
 import { vi, beforeEach, afterEach, describe, it, expect } from "vitest";
 import fs from "fs";
 import * as Api from "@/api/api";
-import lang from "@/utils/lang/lang";
 import app from "@/stores/page/app";
 import list from "@/stores/page/list";
 import main from "@/stores/page/main";
@@ -37,9 +36,6 @@ describe(`getter`, () => {
   });
   it(`mainId`, () => {
     expect(app.getter.mainId()).toBe(`main1111111111111`);
-  });
-  it(`lang`, () => {
-    expect(app.getter.lang()).toBe(lang[`jp`]);
   });
   it(`classTop`, () => {
     expect(app.getter.classTop()).toBe(`dark speed2 text-base`);

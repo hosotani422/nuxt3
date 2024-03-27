@@ -34,7 +34,7 @@ describe(`conf`, () => {
     fixture.getByTestId(`InputRadioLabel`).eq(3).should(`have.text`, `暗`);
     fixture.getByTestId(`ConfLangTitle`).should(`have.text`, `言語`);
     fixture.getByTestId(`ConfLangEn`).should(`not.be.checked`);
-    fixture.getByTestId(`ConfLangJp`).should(`be.checked`);
+    fixture.getByTestId(`ConfLangJa`).should(`be.checked`);
     fixture.getByTestId(`InputRadioLabel`).eq(4).should(`have.text`, `英語`);
     fixture.getByTestId(`InputRadioLabel`).eq(5).should(`have.text`, `日本語`);
     fixture.getByTestId(`ConfSaveTitle`).should(`have.text`, `自動保存`);
@@ -84,7 +84,7 @@ describe(`conf`, () => {
   it(`item - lang`, () => {
     fixture.getByTestId(`ConfLangEn`).check();
     fixture.getByTestId(`ConfLangEn`).should(`be.checked`);
-    fixture.getByTestId(`ConfLangJp`).should(`not.be.checked`);
+    fixture.getByTestId(`ConfLangJa`).should(`not.be.checked`);
   });
   it(`item - save`, () => {
     fixture.getByTestId(`ConfSaveGql`).check();

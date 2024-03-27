@@ -103,7 +103,7 @@ const useStore = defineStore(`sub`, () => {
     textAlarm: computed(() => (): string => {
       const alarm: string[] = [];
       for (const alarmId of main.getter.stateUnit().alarm) {
-        alarm.push(app.getter.lang().dialog.alarm.data[alarmId]!.label);
+        alarm.push(useNuxtApp().$i18n.t(`dialog.alarm.data${alarmId}.label`));
       }
       return alarm.join(`,`);
     }),
@@ -170,8 +170,8 @@ const useStore = defineStore(`sub`, () => {
       delete state.status[payload.subId];
       constant.sound.play(`warn`);
       notice.action.open({
-        message: app.getter.lang().notice.message,
-        button: app.getter.lang().notice.button,
+        message: useNuxtApp().$i18n.t(`notice.message`),
+        button: useNuxtApp().$i18n.t(`notice.button`),
         callback: async () => {
           notice.action.close();
           state.data = backup;
@@ -211,8 +211,8 @@ const useStore = defineStore(`sub`, () => {
       calendar.action.open({
         select: payload.date,
         current: app.lib.dayjs(payload.date || new Date()).format(`YYYY/MM`),
-        cancel: app.getter.lang().button.cancel,
-        clear: app.getter.lang().button.clear,
+        cancel: useNuxtApp().$i18n.t(`button.cancel`),
+        clear: useNuxtApp().$i18n.t(`button.clear`),
         callback: (date) => {
           calendar.action.close();
           main.getter.stateUnit().date = date || ``;
@@ -223,9 +223,9 @@ const useStore = defineStore(`sub`, () => {
       clock.action.open({
         hour: payload.time ? app.lib.dayjs(`2000/1/1 ${payload.time}`).hour() : 0,
         minute: payload.time ? app.lib.dayjs(`2000/1/1 ${payload.time}`).minute() : 0,
-        cancel: app.getter.lang().button.cancel,
-        clear: app.getter.lang().button.clear,
-        ok: app.getter.lang().button.ok,
+        cancel: useNuxtApp().$i18n.t(`button.cancel`),
+        clear: useNuxtApp().$i18n.t(`button.clear`),
+        ok: useNuxtApp().$i18n.t(`button.ok`),
         callback: (hour, minute) => {
           clock.action.close();
           main.getter.stateUnit().time =
@@ -234,26 +234,30 @@ const useStore = defineStore(`sub`, () => {
       });
     },
     openAlarm: (): void => {
+      const sort = [];
+      for (let i = 1; i <= Number(useNuxtApp().$i18n.t(`dialog.alarm.sort`)); i++) {
+        sort.push(String(i));
+      }
       dialog.action.open({
         mode: `check`,
-        title: app.getter.lang().dialog.alarm.title,
+        title: useNuxtApp().$i18n.t(`dialog.alarm.title`),
         message: ``,
         check: {
           all: true,
-          sort: app.getter.lang().dialog.alarm.sort,
+          sort,
           data: (() => {
             const data: (typeof dialog)[`state`][`check`][`data`] = {};
-            for (const id of app.getter.lang().dialog.alarm.sort) {
+            for (const id of sort) {
               data[id] = {
                 check: main.getter.stateUnit().alarm.includes(id),
-                title: app.getter.lang().dialog.alarm.data[id]!.label,
+                title: useNuxtApp().$i18n.t(`dialog.alarm.data${id}.label`),
               };
             }
             return data;
           })(),
         },
-        ok: app.getter.lang().button.ok,
-        cancel: app.getter.lang().button.cancel,
+        ok: useNuxtApp().$i18n.t(`button.ok`),
+        cancel: useNuxtApp().$i18n.t(`button.cancel`),
         callback: {
           ok: () => {
             dialog.action.close();
