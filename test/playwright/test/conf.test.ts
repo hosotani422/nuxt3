@@ -39,7 +39,7 @@ test.describe(`conf`, () => {
     await expect(page.getByTestId(`InputRadioLabel`).nth(3)).toHaveText(`暗`);
     await expect(page.getByTestId(`ConfLangTitle`)).toHaveText(`言語`);
     await expect(page.getByTestId(`ConfLangEn`)).not.toBeChecked();
-    await expect(page.getByTestId(`ConfLangJp`)).toBeChecked();
+    await expect(page.getByTestId(`ConfLangJa`)).toBeChecked();
     await expect(page.getByTestId(`InputRadioLabel`).nth(4)).toHaveText(`英語`);
     await expect(page.getByTestId(`InputRadioLabel`).nth(5)).toHaveText(`日本語`);
     await expect(page.getByTestId(`ConfSaveTitle`)).toHaveText(`自動保存`);
@@ -89,7 +89,7 @@ test.describe(`conf`, () => {
   test(`item - lang`, async ({ page }) => {
     await page.getByTestId(`ConfLangEn`).check();
     await expect(page.getByTestId(`ConfLangEn`)).toBeChecked();
-    await expect(page.getByTestId(`ConfLangJp`)).not.toBeChecked();
+    await expect(page.getByTestId(`ConfLangJa`)).not.toBeChecked();
   });
   test(`item - save`, async ({ page }) => {
     await page.getByTestId(`ConfSaveGql`).check();

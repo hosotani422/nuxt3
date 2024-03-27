@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import app from "@/stores/page/app";
 import conf from "@/stores/page/conf";
 defineOptions({
   inheritAttrs: false,
@@ -7,7 +6,6 @@ defineOptions({
 defineProps<{
   title: string;
   state: (typeof conf)[`state`][`data`];
-  lang: typeof app.getter.lang;
 }>();
 const emit = defineEmits([
   `routerBack`,
@@ -67,7 +65,7 @@ const emit = defineEmits([
         class="theme-grad-color theme-shadow-normal relative z-[9] flex flex-auto items-center gap-3 p-3"
       >
         <IconDown data-testid="ConfDown" class="flex-auto" @click="emit(`routerBack`)" />
-        <p data-testid="ConfTitle" class="flex-even text-xl">{{ lang().conf.title }}</p>
+        <p data-testid="ConfTitle" class="flex-even text-xl">{{ $t(`conf.title`) }}</p>
         <p data-testid="ConfName" class="flex-auto">{{ title }}</p>
       </div>
       <ul data-testid="ConfBody" class="flex-even overflow-auto p-3">
@@ -75,17 +73,17 @@ const emit = defineEmits([
           data-testid="ConfItem"
           class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3"
         >
-          <p data-testid="ConfSizeTitle" class="flex-even">{{ lang().conf.size.title }}</p>
+          <p data-testid="ConfSizeTitle" class="flex-even">{{ $t(`conf.size.title`) }}</p>
           <InputRange v-model="state.size" data-testid="ConfSizeValue" class="flex-even" :min="1" :max="3" :step="1" />
           <p data-testid="ConfSizeName" class="flex-auto">
-            {{ lang().conf.size.value[state.size] }}
+            {{ $t(`conf.size.value[${state.size}]`) }}
           </p>
         </li>
         <li
           data-testid="ConfItem"
           class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3"
         >
-          <p data-testid="ConfSpeedTitle" class="flex-even">{{ lang().conf.speed.title }}</p>
+          <p data-testid="ConfSpeedTitle" class="flex-even">{{ $t(`conf.speed.title`) }}</p>
           <InputRange
             v-model="state.speed"
             data-testid="ConfSpeedValue"
@@ -94,13 +92,13 @@ const emit = defineEmits([
             :max="3"
             :step="1"
           />
-          <p data-testid="ConfSpeedName" class="flex-auto">{{ lang().conf.speed.value[state.speed] }}</p>
+          <p data-testid="ConfSpeedName" class="flex-auto">{{ $t(`conf.speed.value[${state.speed}]`) }}</p>
         </li>
         <li
           data-testid="ConfItem"
           class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3"
         >
-          <p data-testid="ConfVolumeTitle" class="flex-even">{{ lang().conf.volume.title }}</p>
+          <p data-testid="ConfVolumeTitle" class="flex-even">{{ $t(`conf.volume.title`) }}</p>
           <InputRange
             v-model="state.volume"
             data-testid="ConfVolumeValue"
@@ -109,84 +107,84 @@ const emit = defineEmits([
             :max="3"
             :step="1"
           />
-          <p data-testid="ConfVolumeName" class="flex-auto">{{ lang().conf.volume.value[state.volume] }}</p>
+          <p data-testid="ConfVolumeName" class="flex-auto">{{ $t(`conf.volume.value[${state.volume}]`) }}</p>
         </li>
         <li
           data-testid="ConfItem"
           class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3"
         >
-          <p data-testid="ConfVibrateTitle" class="flex-even">{{ lang().conf.vibrate.title }}</p>
+          <p data-testid="ConfVibrateTitle" class="flex-even">{{ $t(`conf.vibrate.title`) }}</p>
           <InputRadio v-model="state.vibrate" data-testid="ConfVibrateOff" class="flex-auto" value="off">{{
-            lang().conf.vibrate.value.off
+            $t(`conf.vibrate.value.off`)
           }}</InputRadio>
           <InputRadio v-model="state.vibrate" data-testid="ConfVibrateOn" class="flex-auto" value="on">{{
-            lang().conf.vibrate.value.on
+            $t(`conf.vibrate.value.on`)
           }}</InputRadio>
         </li>
         <li
           data-testid="ConfItem"
           class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3"
         >
-          <p data-testid="ConfThemeTitle" class="flex-even">{{ lang().conf.theme.title }}</p>
+          <p data-testid="ConfThemeTitle" class="flex-even">{{ $t(`conf.theme.title`) }}</p>
           <InputRadio v-model="state.theme" data-testid="ConfThemeLight" class="flex-auto" value="light">{{
-            lang().conf.theme.value.light
+            $t(`conf.theme.value.light`)
           }}</InputRadio>
           <InputRadio v-model="state.theme" data-testid="ConfThemeDark" class="flex-auto" value="dark">{{
-            lang().conf.theme.value.dark
+            $t(`conf.theme.value.dark`)
           }}</InputRadio>
         </li>
         <li
           data-testid="ConfItem"
           class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3"
         >
-          <p data-testid="ConfLangTitle" class="flex-even">{{ lang().conf.lang.title }}</p>
+          <p data-testid="ConfLangTitle" class="flex-even">{{ $t(`conf.lang.title`) }}</p>
           <InputRadio v-model="state.lang" data-testid="ConfLangEn" class="flex-auto" value="en">{{
-            lang().conf.lang.value.en
+            $t(`conf.lang.value.en`)
           }}</InputRadio>
-          <InputRadio v-model="state.lang" data-testid="ConfLangJp" class="flex-auto" value="jp">{{
-            lang().conf.lang.value.jp
+          <InputRadio v-model="state.lang" data-testid="ConfLangJa" class="flex-auto" value="ja">{{
+            $t(`conf.lang.value.ja`)
           }}</InputRadio>
         </li>
         <li
           data-testid="ConfItem"
           class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3"
         >
-          <p data-testid="ConfSaveTitle" class="flex-even">{{ lang().conf.save.title }}</p>
+          <p data-testid="ConfSaveTitle" class="flex-even">{{ $t(`conf.save.title`) }}</p>
           <InputRadio v-model="state.save" data-testid="ConfSaveLocal" class="flex-auto" value="local">{{
-            lang().conf.save.value.local
+            $t(`conf.save.value.local`)
           }}</InputRadio>
           <InputRadio v-model="state.save" data-testid="ConfSaveRest" class="flex-auto" value="rest">{{
-            lang().conf.save.value.rest
+            $t(`conf.save.value.rest`)
           }}</InputRadio>
           <InputRadio v-model="state.save" data-testid="ConfSaveGql" class="flex-auto" value="gql">{{
-            lang().conf.save.value.gql
+            $t(`conf.save.value.gql`)
           }}</InputRadio>
         </li>
         <li
           data-testid="ConfItem"
           class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3"
         >
-          <p data-testid="ConfBackupTitle" class="flex-even">{{ lang().conf.backup.title }}</p>
+          <p data-testid="ConfBackupTitle" class="flex-even">{{ $t(`conf.backup.title`) }}</p>
           <a class="flex-auto" data-testid="ConfBackupDownload" @click="emit(`downloadBackup`, { event: $event })">
-            <InputButton class="flex-auto text-theme-fine">{{ lang().conf.backup.download }}</InputButton>
+            <InputButton class="flex-auto text-theme-fine">{{ $t(`conf.backup.download`) }}</InputButton>
           </a>
           <InputFile
             data-testid="ConfBackupUpload"
             class="flex-auto text-theme-warn"
             @change="emit(`uploadBackup`, { event: $event })"
-            >{{ lang().conf.backup.upload }}</InputFile
+            >{{ $t(`conf.backup.upload`) }}</InputFile
           >
         </li>
         <li
           data-testid="ConfItem"
           class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3"
         >
-          <p data-testid="ConfResetTitle" class="flex-even">{{ lang().conf.reset.title }}</p>
+          <p data-testid="ConfResetTitle" class="flex-even">{{ $t(`conf.reset.title`) }}</p>
           <InputButton data-testid="ConfResetConf" class="flex-auto text-theme-fine" @click="emit(`resetConf`)">{{
-            lang().conf.reset.conf
+            $t(`conf.reset.conf`)
           }}</InputButton>
           <InputButton data-testid="ConfResetList" class="flex-auto text-theme-warn" @click="emit(`resetList`)">{{
-            lang().conf.reset.list
+            $t(`conf.reset.list`)
           }}</InputButton>
         </li>
       </ul>

@@ -29,7 +29,7 @@ const useStore = defineStore(`conf`, () => {
       volume: 0 | 1 | 2 | 3;
       vibrate: `on` | `off`;
       theme: `light` | `dark`;
-      lang: `jp` | `en`;
+      lang: `ja` | `en`;
       save: `local` | `rest` | `gql`;
     };
   } = reactive({
@@ -54,6 +54,12 @@ const useStore = defineStore(`conf`, () => {
           action.reactSound();
         },
       );
+      watch(
+        () => app.lib.lodash.cloneDeep(state.data.lang),
+        () => {
+          action.reactLang();
+        },
+      );
     },
     loadItem: async (): Promise<void> => {
       state.data = await Api.readConf();
@@ -64,6 +70,9 @@ const useStore = defineStore(`conf`, () => {
     reactSound: (): void => {
       constant.sound.volume(state.data.volume / 3);
     },
+    reactLang: (): void => {
+      useNuxtApp().$i18n.setLocale(state.data.lang);
+    },
     reactAlarm: (): void => {
       if (process.client) {
         Cordova.Notice.removeAll();
@@ -73,13 +82,13 @@ const useStore = defineStore(`conf`, () => {
             if (mainUnit.date) {
               for (const alarmId of mainUnit.alarm) {
                 Cordova.Notice.insert({
-                  title: app.getter.lang().dialog.title.alarm,
+                  title: useNuxtApp().$i18n.t(`dialog.title.alarm`),
                   message: `${list.getter.stateUnit(listId).title} ⇒ ${mainUnit.title}`,
                   date: app.lib
                     .dayjs(`${mainUnit.date} ${mainUnit.time || `00:00`}`)
                     .minute(
                       app.lib.dayjs(`${mainUnit.date} ${mainUnit.time || `00:00`}`).minute() -
-                        app.getter.lang().dialog.alarm.data[alarmId]!.value,
+                        Number(useNuxtApp().$i18n.t(`dialog.alarm.data${alarmId}.value`)),
                     )
                     .toDate(),
                 });
@@ -107,9 +116,9 @@ const useStore = defineStore(`conf`, () => {
           (filePath) => {
             dialog.action.open({
               mode: `alert`,
-              title: app.getter.lang().dialog.title.backup,
+              title: useNuxtApp().$i18n.t(`dialog.title.backup`),
               message: filePath,
-              cancel: app.getter.lang().button.ok,
+              cancel: useNuxtApp().$i18n.t(`button.ok`),
               callback: {
                 cancel: () => {
                   dialog.action.close();
@@ -120,9 +129,9 @@ const useStore = defineStore(`conf`, () => {
           (errorCode) => {
             dialog.action.open({
               mode: `alert`,
-              title: app.getter.lang().dialog.title.backupError,
+              title: useNuxtApp().$i18n.t(`dialog.title.backupError`),
               message: String(errorCode),
-              cancel: app.getter.lang().button.ok,
+              cancel: useNuxtApp().$i18n.t(`button.ok`),
               callback: {
                 cancel: () => {
                   dialog.action.close();
@@ -157,9 +166,9 @@ const useStore = defineStore(`conf`, () => {
         } else {
           dialog.action.open({
             mode: `alert`,
-            title: app.getter.lang().dialog.title.fileError,
+            title: useNuxtApp().$i18n.t(`dialog.title.fileError`),
             message: ``,
-            cancel: app.getter.lang().button.ok,
+            cancel: useNuxtApp().$i18n.t(`button.ok`),
             callback: {
               cancel: () => {
                 dialog.action.close();
@@ -173,10 +182,10 @@ const useStore = defineStore(`conf`, () => {
     resetConf: (): void => {
       dialog.action.open({
         mode: `confirm`,
-        title: app.getter.lang().dialog.title.reset,
+        title: useNuxtApp().$i18n.t(`dialog.title.reset`),
         message: ``,
-        ok: app.getter.lang().button.ok,
-        cancel: app.getter.lang().button.cancel,
+        ok: useNuxtApp().$i18n.t(`button.ok`),
+        cancel: useNuxtApp().$i18n.t(`button.cancel`),
         callback: {
           ok: () => {
             state.data = constant.init.conf;
@@ -191,10 +200,10 @@ const useStore = defineStore(`conf`, () => {
     resetList: (): void => {
       dialog.action.open({
         mode: `confirm`,
-        title: app.getter.lang().dialog.title.reset,
+        title: useNuxtApp().$i18n.t(`dialog.title.reset`),
         message: ``,
-        ok: app.getter.lang().button.ok,
-        cancel: app.getter.lang().button.cancel,
+        ok: useNuxtApp().$i18n.t(`button.ok`),
+        cancel: useNuxtApp().$i18n.t(`button.cancel`),
         callback: {
           ok: async () => {
             app.action.routerBack({ listId: constant.init.listId });

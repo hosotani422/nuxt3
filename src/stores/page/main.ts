@@ -107,14 +107,14 @@ const useStore = defineStore(`main`, () => {
     insertItem: (): void => {
       dialog.action.open({
         mode: `text`,
-        title: app.getter.lang().dialog.title.insert,
+        title: useNuxtApp().$i18n.t(`dialog.title.insert`),
         message: ``,
         text: {
           value: ``,
-          placeholder: app.getter.lang().placeholder.main,
+          placeholder: useNuxtApp().$i18n.t(`placeholder.main`),
         },
-        ok: app.getter.lang().button.ok,
-        cancel: app.getter.lang().button.cancel,
+        ok: useNuxtApp().$i18n.t(`button.ok`),
+        cancel: useNuxtApp().$i18n.t(`button.cancel`),
         callback: {
           ok: () => {
             const mainId = `main${app.lib.dayjs().valueOf()}`;
@@ -152,7 +152,7 @@ const useStore = defineStore(`main`, () => {
     moveItem: (payload: { mainId: string }): void => {
       dialog.action.open({
         mode: `radio`,
-        title: app.getter.lang().dialog.title.move,
+        title: useNuxtApp().$i18n.t(`dialog.title.move`),
         message: ``,
         radio: {
           none: false,
@@ -160,8 +160,8 @@ const useStore = defineStore(`main`, () => {
           sort: list.state.data.sort,
           data: list.state.data.data,
         },
-        ok: app.getter.lang().button.ok,
-        cancel: app.getter.lang().button.cancel,
+        ok: useNuxtApp().$i18n.t(`button.ok`),
+        cancel: useNuxtApp().$i18n.t(`button.cancel`),
         callback: {
           ok: () => {
             if (dialog.state.radio.select !== app.getter.listId()) {
@@ -201,8 +201,8 @@ const useStore = defineStore(`main`, () => {
       delete state.status[payload.mainId];
       constant.sound.play(`warn`);
       notice.action.open({
-        message: app.getter.lang().notice.message,
-        button: app.getter.lang().notice.button,
+        message: useNuxtApp().$i18n.t(`notice.message`),
+        button: useNuxtApp().$i18n.t(`notice.button`),
         callback: () => {
           state.data = backup.main;
           sub.state.data = backup.sub;

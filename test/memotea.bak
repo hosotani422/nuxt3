@@ -2,4 +2,4 @@ list1111111111111
 {"sort":["list1111111111111","list0000000000000","list9999999999999"],"data":{"list0000000000000":{"title":"Inbox"},"list9999999999999":{"title":"Trash"},"list1111111111111":{"title":"list1"}}}
 {"list0000000000000":{"sort":[],"data":{}},"list9999999999999":{"sort":[],"data":{}},"list1111111111111":{"sort":["main1111111111111","main2222222222222"],"data":{"main1111111111111":{"check":false,"title":"main1","date":"2000/01/01","time":"00:00","alarm":["2","6"],"task":true},"main2222222222222":{"check":true,"title":"main2","date":"","time":"","alarm":[],"task":true}}}}
 {"list0000000000000":{"data":{}},"list9999999999999":{"data":{}},"list1111111111111":{"data":{"main1111111111111":{"sort":["sub1111111111111","sub2222222222222"],"data":{"sub1111111111111":{"check":false,"title":"sub1"},"sub2222222222222":{"check":true,"title":"sub2"}}},"main2222222222222":{"sort":["sub121"],"data":{"sub121":{"check":false,"title":""}}}}}}
-{"size":2,"speed":2,"volume":1,"vibrate":"on","theme":"dark","lang":"jp","save":"local"}
+{"size":2,"speed":2,"volume":1,"vibrate":"on","theme":"dark","lang":"ja","save":"local"}

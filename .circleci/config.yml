@@ -21,26 +21,26 @@ commands:
       - run: pnpm install
   lint_format:
     steps:
-      - run: pnpm run lint:format
+      - run: pnpm lint:format
   lint_style:
     steps:
-      - run: pnpm run lint:style
+      - run: pnpm lint:style
   lint_script:
     steps:
-      - run: pnpm run lint:script
+      - run: pnpm lint:script
   test_ui:
     steps:
       - run: |
           npx playwright install --with-deps
-          pnpm run test:ui.ci
+          pnpm test:ui.ci
   test_ut:
     steps:
-      - run: pnpm run test:ut
+      - run: pnpm test:ut
   test_it:
     steps:
       - run: |
           npx playwright install chrome
-          pnpm run test:it
+          pnpm test:it
 
 jobs:
   setup:

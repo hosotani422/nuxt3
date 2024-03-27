@@ -1,11 +1,12 @@
-import { StorybookConfig } from "@storybook/vue3-vite";
+import { StorybookConfig } from "@storybook-vue/nuxt";
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
 import { mergeConfig } from "vite";
 import path from "path";
 
 const config: StorybookConfig = {
-  framework: `@storybook/vue3-vite`,
+  stories: [`../test/storybook/stories/**/*.stories.ts`],
+  framework: `@storybook-vue/nuxt`,
   addons: [
     `@storybook/addon-essentials`,
     {
@@ -17,7 +18,6 @@ const config: StorybookConfig = {
       },
     },
   ],
-  stories: [`./stories/**/*.stories.ts`],
   viteFinal: (config) => ({
     ...mergeConfig(config, {
       plugins: [
@@ -26,15 +26,15 @@ const config: StorybookConfig = {
           dts: false,
         }),
         Components({
-          dirs: [`../src/components`],
+          dirs: [`./src/components`],
           directoryAsNamespace: true,
           dts: false,
         }),
       ],
       resolve: {
         alias: {
-          "@": path.resolve(__dirname, `../../src`),
-          "~": path.resolve(__dirname, `../../src`),
+          "@": path.resolve(__dirname, `../src`),
+          "~": path.resolve(__dirname, `../src`),
         },
       },
     }),

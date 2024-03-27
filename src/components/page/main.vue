@@ -9,7 +9,6 @@ defineOptions({
 const props = defineProps<{
   refer: typeof main.refer;
   status: typeof main.state.status;
-  lang: typeof app.getter.lang;
   listId: typeof app.getter.listId;
   listUnit: typeof list.getter.stateUnit;
   stateFull: typeof main.getter.stateFull;
@@ -65,7 +64,7 @@ props.refer.items = items;
           v-model="listUnit().title"
           data-testid="MainTitle"
           class="flex-even text-xl"
-          :placeholder="lang().placeholder.list"
+          :placeholder="$t(`placeholder.list`)"
         />
       </ClientOnly>
       <IconConf data-testid="MainConf" class="flex-auto" @click="emit(`routerConf`)" />

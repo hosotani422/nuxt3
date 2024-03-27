@@ -50,7 +50,7 @@ export const conf: (typeof confs)[`state`][`data`] = {
   volume: 1,
   vibrate: `on`,
   theme: `light`,
-  lang: `jp`,
+  lang: `ja`,
   save: `local`,
 };
 
