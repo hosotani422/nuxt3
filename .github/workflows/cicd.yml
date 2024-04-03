@@ -31,7 +31,7 @@ jobs:
       - name: Upload Storybook
         uses: actions/upload-pages-artifact@v2
         with:
-          path: ./.storybook
+          path: ./storybook-static
       - name: Deploy Storybook
         uses: actions/deploy-pages@v2
       - name: Lint Prettier
