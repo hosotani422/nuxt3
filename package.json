@@ -17,7 +17,7 @@
     "fix:format": "prettier --write --config prettier.config.js .",
     "fix:style": "stylelint --fix --config stylelint.config.mjs **/*.css",
     "fix:script": "eslint --fix --config .eslintrc.cjs **/*.{js,jsx,ts,tsx,vue}",
-    "test:ui": "test-storybook --ci --maxWorkers=1 --no-cache",
+    "test:ui": "test-storybook --ci --maxWorkers=1 --no-cache --url http://localhost:6006/",
     "test:ui.ci": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"pnpm ui\" \"wait-on tcp:6006 && pnpm test:ui\"",
     "test:ut": "vitest --config test/vitest/vitest.config.ts",
     "test:ut.c": "vitest --run --coverage --config test/vitest/vitest.config.ts",
