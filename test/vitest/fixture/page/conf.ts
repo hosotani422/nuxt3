@@ -11,9 +11,6 @@ export default class Conf extends Base {
         title: `${constant.base.title} ${constant.base.version}`,
         state: conf.state.data,
       },
-      global: {
-        mocks: Base.mockI18n(),
-      },
     });
     return wrapper;
   }

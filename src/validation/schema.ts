@@ -1,13 +1,15 @@
 import Zod from "zod";
+import i18next from "i18next";
 
 export default {
-  noEmptySchema: Zod.string().refine(
-    (value) => {
-      return value.trim().length > 0;
-    },
-    {
-      // message: useNuxtApp().$i18n.t(`validation.noempty`),
-      message: `空白以外の文字列を１つ以上入力してください。`,
-    },
-  ),
+  noEmptySchema: () => {
+    return Zod.string().refine(
+      (value) => {
+        return value.trim().length > 0;
+      },
+      {
+        message: i18next.t(`validation.noempty`),
+      },
+    );
+  },
 };

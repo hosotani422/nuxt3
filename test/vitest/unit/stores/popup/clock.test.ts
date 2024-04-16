@@ -1,9 +1,10 @@
 import { vi, beforeEach, afterEach, describe, it, expect } from "vitest";
-import * as Vue from "vue";
+import Vue from "vue";
 import clock from "@/stores/popup/clock";
 import fixture from "../../../fixture/base";
 
 beforeEach(async () => {
+  fixture.loadLang();
   fixture.loadData();
   fixture.setRouter();
 });

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import * as Vue from "vue";
+import Vue from "vue";
+import i18next from "i18next";
 import app from "@/stores/page/app";
 import list from "@/stores/page/list";
 import main from "@/stores/page/main";
@@ -64,7 +65,7 @@ props.refer.items = items;
           v-model="listUnit().title"
           data-testid="MainTitle"
           class="flex-even text-xl"
-          :placeholder="$t(`placeholder.list`)"
+          :placeholder="i18next.t(`placeholder.list`)"
         />
       </ClientOnly>
       <IconConf data-testid="MainConf" class="flex-auto" @click="emit(`routerConf`)" />

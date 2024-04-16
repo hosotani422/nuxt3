@@ -13,4 +13,4 @@ test/testcafe/screenshots/
 coverage
 auto-imports.d.ts
 components.d.ts
-storybook-static
+.storybook

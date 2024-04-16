@@ -7,6 +7,7 @@ const it = test.extend<{ wrapper: VueWrapper }>({
   wrapper: async ({}, use) => {
     fixture.setAction();
     fixture.setRouter();
+    await fixture.loadLang();
     await fixture.loadData();
     await use(fixture.getWrapper());
   },

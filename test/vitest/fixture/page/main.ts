@@ -26,7 +26,6 @@ export default class Main extends Base {
           ClientOnly: { template: `<div><slot /></div>` },
           RouterView: true,
         },
-        mocks: Base.mockI18n(),
       },
     });
     return wrapper;

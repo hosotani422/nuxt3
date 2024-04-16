@@ -3,6 +3,7 @@ import notice from "@/stores/popup/notice";
 import fixture from "../../../fixture/base";
 
 beforeEach(async () => {
+  fixture.loadLang();
   fixture.loadData();
   fixture.setRouter();
 });

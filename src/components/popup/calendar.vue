@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import * as Vue from "vue";
+import Vue from "vue";
 import calendar from "@/stores/popup/calendar";
 defineOptions({
   inheritAttrs: false,

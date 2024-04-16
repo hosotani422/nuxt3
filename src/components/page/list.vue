@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import * as Vue from "vue";
+import Vue from "vue";
 import app from "@/stores/page/app";
 import list from "@/stores/page/list";
 defineOptions({

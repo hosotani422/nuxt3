@@ -79,7 +79,7 @@ const useStore = defineStore(`dialog`, () => {
       state.open = false;
     },
     validateTitle: (payload: { text: string }): void => {
-      const result = Validation.noEmptySchema.safeParse(payload.text);
+      const result = Validation.noEmptySchema().safeParse(payload.text);
       state.text.error = result.success ? `` : result.error.errors[0]!.message;
     },
     clickCheckAll: (payload: { checked: boolean }): void => {

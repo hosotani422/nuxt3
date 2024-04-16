@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import * as Vue from "vue";
+import Vue from "vue";
+import i18next from "i18next";
 import app from "@/stores/page/app";
 import main from "@/stores/page/main";
 import sub from "@/stores/page/sub";
@@ -114,7 +115,7 @@ props.refer.titles = titles;
           v-model="mainUnit().title"
           data-testid="SubTitle"
           class="flex-even text-xl"
-          :placeholder="$t(`placeholder.main`)"
+          :placeholder="i18next.t(`placeholder.main`)"
         />
         <IconMode data-testid="SubMode" class="flex-auto" @click="emit(`switchItem`)" />
       </div>
@@ -124,7 +125,7 @@ props.refer.titles = titles;
             v-if="!mainUnit().task"
             data-testid="SubMemo"
             class="theme-back-color fade-normal size-full"
-            :placeholder="$t(`placeholder.memo`)"
+            :placeholder="i18next.t(`placeholder.memo`)"
             :model-value="textMemo()"
             @input="emit(`inputMemo`, { value: ($event.target as HTMLInputElement).value })"
           />
@@ -166,7 +167,7 @@ props.refer.titles = titles;
                   v-model="stateUnit(``, ``, subId).title"
                   data-testid="SubTask"
                   class="flex-even !p-0"
-                  :placeholder="$t(`placeholder.sub`)"
+                  :placeholder="i18next.t(`placeholder.sub`)"
                   sizing="content"
                   @click="emit(`switchEdit`, { subId })"
                   @keydown.enter.prevent="
@@ -205,7 +206,7 @@ props.refer.titles = titles;
           data-testid="SubCalendar"
           class="w-full flex-even"
           :class="classLimit()"
-          :placeholder="$t(`placeholder.date`)"
+          :placeholder="i18next.t(`placeholder.date`)"
           :model-value="mainUnit().date"
           readonly
           @focus="emit(`openCalendar`, { date: mainUnit().date })"
@@ -214,7 +215,7 @@ props.refer.titles = titles;
           data-testid="SubClock"
           class="w-full flex-even"
           :class="classLimit()"
-          :placeholder="$t(`placeholder.time`)"
+          :placeholder="i18next.t(`placeholder.time`)"
           :model-value="mainUnit().time"
           readonly
           @focus="emit(`openClock`, { time: mainUnit().time })"
@@ -223,7 +224,7 @@ props.refer.titles = titles;
           data-testid="SubDialog"
           class="w-full flex-even"
           :class="classLimit()"
-          :placeholder="$t(`placeholder.alarm`)"
+          :placeholder="i18next.t(`placeholder.alarm`)"
           :model-value="textAlarm()"
           readonly
           @focus="emit(`openAlarm`)"

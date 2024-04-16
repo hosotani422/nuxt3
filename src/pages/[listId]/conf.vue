@@ -9,6 +9,7 @@ import conf from "@/stores/page/conf";
     :title="`${constant.base.title} ${constant.base.version}`"
     :state="conf.state.data"
     @router-back="app.action.routerBack"
+    @react-lang="conf.action.reactLang"
     @download-backup="conf.action.downloadBackup"
     @upload-backup="conf.action.uploadBackup"
     @reset-conf="conf.action.resetConf"

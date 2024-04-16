@@ -39,7 +39,6 @@ export default class Dialog extends Base {
         directives: {
           focus: () => ``,
         },
-        mocks: Base.mockI18n(),
       },
     });
     return wrapper;

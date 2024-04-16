@@ -4,8 +4,8 @@ import fixture from "../../../fixture/page/app";
 
 const it = test.extend<{ wrapper: VueWrapper }>({
   wrapper: async ({}, use) => {
-    fixture.setI18n();
     fixture.setRouter();
+    await fixture.loadLang();
     await fixture.loadData();
     await use(await fixture.getWrapper());
   },

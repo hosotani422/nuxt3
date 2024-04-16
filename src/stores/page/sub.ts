@@ -1,4 +1,5 @@
-import * as Vue from "vue";
+import Vue from "vue";
+import i18next from "i18next";
 import * as Api from "@/api/api";
 import constant from "@/utils/const";
 import app from "@/stores/page/app";
@@ -101,8 +102,21 @@ const useStore = defineStore(`sub`, () => {
     }),
     textAlarm: computed(() => (): string => {
       const alarm: string[] = [];
-      for (const alarmId of main.getter.stateUnit().alarm) {
-        alarm.push(useNuxtApp().$i18n.t(`dialog.alarm.data${alarmId}.label`));
+      for (const alarmId of main.getter.stateUnit().alarm as (
+        | `1`
+        | `2`
+        | `3`
+        | `4`
+        | `5`
+        | `6`
+        | `7`
+        | `8`
+        | `9`
+        | `10`
+        | `11`
+        | `12`
+      )[]) {
+        alarm.push(i18next.t(`dialog.alarm.data${alarmId}.label`));
       }
       return alarm.join(`,`);
     }),
@@ -159,8 +173,8 @@ const useStore = defineStore(`sub`, () => {
       delete state.status[payload.subId];
       constant.sound.play(`warn`);
       notice.action.open({
-        message: useNuxtApp().$i18n.t(`notice.message`),
-        button: useNuxtApp().$i18n.t(`notice.button`),
+        message: i18next.t(`notice.message`),
+        button: i18next.t(`notice.button`),
         callback: async () => {
           notice.action.close();
           state.data = backup;
@@ -194,8 +208,8 @@ const useStore = defineStore(`sub`, () => {
       calendar.action.open({
         select: payload.date,
         current: app.lib.dayjs(payload.date || new Date()).format(`YYYY/MM`),
-        cancel: useNuxtApp().$i18n.t(`button.cancel`),
-        clear: useNuxtApp().$i18n.t(`button.clear`),
+        cancel: i18next.t(`button.cancel`),
+        clear: i18next.t(`button.clear`),
         callback: (date) => {
           calendar.action.close();
           main.getter.stateUnit().date = date || ``;
@@ -206,9 +220,9 @@ const useStore = defineStore(`sub`, () => {
       clock.action.open({
         hour: payload.time ? app.lib.dayjs(`2000/1/1 ${payload.time}`).hour() : 0,
         minute: payload.time ? app.lib.dayjs(`2000/1/1 ${payload.time}`).minute() : 0,
-        cancel: useNuxtApp().$i18n.t(`button.cancel`),
-        clear: useNuxtApp().$i18n.t(`button.clear`),
-        ok: useNuxtApp().$i18n.t(`button.ok`),
+        cancel: i18next.t(`button.cancel`),
+        clear: i18next.t(`button.clear`),
+        ok: i18next.t(`button.ok`),
         callback: (hour, minute) => {
           clock.action.close();
           main.getter.stateUnit().time =
@@ -217,13 +231,13 @@ const useStore = defineStore(`sub`, () => {
       });
     },
     openAlarm: (): void => {
-      const sort = [];
-      for (let i = 1; i <= Number(useNuxtApp().$i18n.t(`dialog.alarm.sort`)); i++) {
-        sort.push(String(i));
+      const sort: (`1` | `2` | `3` | `4` | `5` | `6` | `7` | `8` | `9` | `10` | `11` | `12`)[] = [];
+      for (let i = 1; i <= Number(i18next.t(`dialog.alarm.sort`)); i++) {
+        sort.push(String(i) as `1` | `2` | `3` | `4` | `5` | `6` | `7` | `8` | `9` | `10` | `11` | `12`);
       }
       dialog.action.open({
         mode: `check`,
-        title: useNuxtApp().$i18n.t(`dialog.alarm.title`),
+        title: i18next.t(`dialog.alarm.title`),
         message: ``,
         check: {
           all: true,
@@ -233,14 +247,14 @@ const useStore = defineStore(`sub`, () => {
             for (const id of sort) {
               data[id] = {
                 check: main.getter.stateUnit().alarm.includes(id),
-                title: useNuxtApp().$i18n.t(`dialog.alarm.data${id}.label`),
+                title: i18next.t(`dialog.alarm.data${id}.label`),
               };
             }
             return data;
           })(),
         },
-        ok: useNuxtApp().$i18n.t(`button.ok`),
-        cancel: useNuxtApp().$i18n.t(`button.cancel`),
+        ok: i18next.t(`button.ok`),
+        cancel: i18next.t(`button.cancel`),
         callback: {
           ok: () => {
             dialog.action.close();

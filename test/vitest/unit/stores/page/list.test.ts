@@ -1,5 +1,5 @@
 import { vi, beforeEach, afterEach, describe, it, expect, MockInstance } from "vitest";
-import * as Vue from "vue";
+import Vue from "vue";
 import lodash from "lodash";
 import * as Api from "@/api/api";
 import constant from "@/utils/const";
@@ -13,7 +13,7 @@ import fixture from "../../../fixture/base";
 
 beforeEach(async () => {
   vi.useFakeTimers();
-  fixture.setI18n();
+  fixture.loadLang();
   fixture.loadData();
   vi.mock(`vue-router`, () => ({
     useRoute: () => ({

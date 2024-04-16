@@ -1,4 +1,5 @@
-import * as Vue from "vue";
+import Vue from "vue";
+import i18next from "i18next";
 import * as Api from "@/api/api";
 import constant from "@/utils/const";
 import app from "@/stores/page/app";
@@ -114,15 +115,15 @@ const useStore = defineStore(`list`, () => {
     insertItem: (): void => {
       dialog.action.open({
         mode: `text`,
-        title: useNuxtApp().$i18n.t(`dialog.title.insert`),
+        title: i18next.t(`dialog.title.insert`),
         message: ``,
         text: {
           value: ``,
-          placeholder: useNuxtApp().$i18n.t(`placeholder.list`),
+          placeholder: i18next.t(`placeholder.list`),
           error: ``,
         },
-        ok: useNuxtApp().$i18n.t(`button.ok`),
-        cancel: useNuxtApp().$i18n.t(`button.cancel`),
+        ok: i18next.t(`button.ok`),
+        cancel: i18next.t(`button.cancel`),
         callback: {
           ok: () => {
             const listId = `list${app.lib.dayjs().valueOf()}`;
@@ -151,10 +152,10 @@ const useStore = defineStore(`list`, () => {
     deleteItem: (payload: { listId: string }): void => {
       dialog.action.open({
         mode: `confirm`,
-        title: useNuxtApp().$i18n.t(`dialog.title.delete`),
+        title: i18next.t(`dialog.title.delete`),
         message: ``,
-        ok: useNuxtApp().$i18n.t(`button.ok`),
-        cancel: useNuxtApp().$i18n.t(`button.cancel`),
+        ok: i18next.t(`button.ok`),
+        cancel: i18next.t(`button.cancel`),
         callback: {
           ok: () => {
             const backup = {
@@ -178,8 +179,8 @@ const useStore = defineStore(`list`, () => {
             dialog.action.close();
             constant.sound.play(`warn`);
             notice.action.open({
-              message: useNuxtApp().$i18n.t(`notice.message`),
-              button: useNuxtApp().$i18n.t(`notice.button`),
+              message: i18next.t(`notice.message`),
+              button: i18next.t(`notice.button`),
               callback: () => {
                 state.data = backup.list;
                 main.state.data = backup.main;

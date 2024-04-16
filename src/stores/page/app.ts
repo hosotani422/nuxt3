@@ -1,3 +1,4 @@
+import i18next from "i18next";
 import lodash from "lodash";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
@@ -7,6 +8,8 @@ import list from "@/stores/page/list";
 import main from "@/stores/page/main";
 import sub from "@/stores/page/sub";
 import conf from "@/stores/page/conf";
+import { ja } from "@/locales/ja";
+import { en } from "@/locales/en";
 
 const lib: {
   lodash: typeof lodash;
@@ -74,6 +77,7 @@ const useStore = defineStore(`app`, () => {
 
   const action = {
     initPage: async (): Promise<void> => {
+      await action.initI18n();
       await conf.action.initPage();
       await sub.action.initPage();
       await main.action.initPage();
@@ -83,6 +87,15 @@ const useStore = defineStore(`app`, () => {
       main.action.actPage();
       sub.action.actPage();
       conf.action.actPage();
+    },
+    initI18n: async (): Promise<void> => {
+      i18next.init({
+        lng: `ja`,
+        resources: {
+          ja: { translation: ja },
+          en: { translation: en },
+        },
+      });
     },
     saveRoute: (payload: { listId: string }): void => {
       Api.writeRoute(payload.listId);

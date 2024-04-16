@@ -1,3 +1,4 @@
+import i18next from "i18next";
 import * as Util from "@/utils/base/util";
 import * as Api from "@/api/api";
 import * as Cordova from "@/utils/cordova/cordova";
@@ -55,12 +56,6 @@ const useStore = defineStore(`conf`, () => {
           action.reactSound();
         },
       );
-      watch(
-        () => app.lib.lodash.cloneDeep(state.data.lang),
-        () => {
-          action.reactLang();
-        },
-      );
     },
     loadItem: async (): Promise<void> => {
       state.data = await Api.readConf();
@@ -71,8 +66,8 @@ const useStore = defineStore(`conf`, () => {
     reactSound: (): void => {
       constant.sound.volume(state.data.volume / 3);
     },
-    reactLang: (): void => {
-      useNuxtApp().$i18n.setLocale(state.data.lang);
+    reactLang: (payload: { value: string }): void => {
+      i18next.changeLanguage(payload.value);
     },
     reactAlarm: (): void => {
       if (process.client) {
@@ -81,15 +76,28 @@ const useStore = defineStore(`conf`, () => {
           for (const mainId of main.getter.stateFull(listId).sort) {
             const mainUnit = main.getter.stateUnit(listId, mainId);
             if (mainUnit.date) {
-              for (const alarmId of mainUnit.alarm) {
+              for (const alarmId of mainUnit.alarm as (
+                | `1`
+                | `2`
+                | `3`
+                | `4`
+                | `5`
+                | `6`
+                | `7`
+                | `8`
+                | `9`
+                | `10`
+                | `11`
+                | `12`
+              )[]) {
                 Cordova.Notice.insert({
-                  title: useNuxtApp().$i18n.t(`dialog.title.alarm`),
+                  title: i18next.t(`dialog.title.alarm`),
                   message: `${list.getter.stateUnit(listId).title} ⇒ ${mainUnit.title}`,
                   date: app.lib
                     .dayjs(`${mainUnit.date} ${mainUnit.time || `00:00`}`)
                     .minute(
                       app.lib.dayjs(`${mainUnit.date} ${mainUnit.time || `00:00`}`).minute() -
-                        Number(useNuxtApp().$i18n.t(`dialog.alarm.data${alarmId}.value`)),
+                        Number(i18next.t(`dialog.alarm.data${alarmId}.value`)),
                     )
                     .toDate(),
                 });
@@ -117,9 +125,9 @@ const useStore = defineStore(`conf`, () => {
           (filePath) => {
             dialog.action.open({
               mode: `alert`,
-              title: useNuxtApp().$i18n.t(`dialog.title.backup`),
+              title: i18next.t(`dialog.title.backup`),
               message: filePath,
-              cancel: useNuxtApp().$i18n.t(`button.ok`),
+              cancel: i18next.t(`button.ok`),
               callback: {
                 cancel: () => {
                   dialog.action.close();
@@ -130,9 +138,9 @@ const useStore = defineStore(`conf`, () => {
           (errorCode) => {
             dialog.action.open({
               mode: `alert`,
-              title: useNuxtApp().$i18n.t(`dialog.title.backupError`),
+              title: i18next.t(`dialog.title.backupError`),
               message: String(errorCode),
-              cancel: useNuxtApp().$i18n.t(`button.ok`),
+              cancel: i18next.t(`button.ok`),
               callback: {
                 cancel: () => {
                   dialog.action.close();
@@ -167,9 +175,9 @@ const useStore = defineStore(`conf`, () => {
         } else {
           dialog.action.open({
             mode: `alert`,
-            title: useNuxtApp().$i18n.t(`dialog.title.fileError`),
+            title: i18next.t(`dialog.title.fileError`),
             message: ``,
-            cancel: useNuxtApp().$i18n.t(`button.ok`),
+            cancel: i18next.t(`button.ok`),
             callback: {
               cancel: () => {
                 dialog.action.close();
@@ -183,10 +191,10 @@ const useStore = defineStore(`conf`, () => {
     resetConf: (): void => {
       dialog.action.open({
         mode: `confirm`,
-        title: useNuxtApp().$i18n.t(`dialog.title.reset`),
+        title: i18next.t(`dialog.title.reset`),
         message: ``,
-        ok: useNuxtApp().$i18n.t(`button.ok`),
-        cancel: useNuxtApp().$i18n.t(`button.cancel`),
+        ok: i18next.t(`button.ok`),
+        cancel: i18next.t(`button.cancel`),
         callback: {
           ok: () => {
             state.data = constant.init.conf;
@@ -201,10 +209,10 @@ const useStore = defineStore(`conf`, () => {
     resetList: (): void => {
       dialog.action.open({
         mode: `confirm`,
-        title: useNuxtApp().$i18n.t(`dialog.title.reset`),
+        title: i18next.t(`dialog.title.reset`),
         message: ``,
-        ok: useNuxtApp().$i18n.t(`button.ok`),
-        cancel: useNuxtApp().$i18n.t(`button.cancel`),
+        ok: i18next.t(`button.ok`),
+        cancel: i18next.t(`button.cancel`),
         callback: {
           ok: async () => {
             app.action.routerBack({ listId: constant.init.listId });

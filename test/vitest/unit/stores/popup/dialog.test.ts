@@ -1,8 +1,10 @@
 import { vi, beforeEach, afterEach, describe, it, expect } from "vitest";
+import Validation from "@/validation/schema";
 import dialog from "@/stores/popup/dialog";
 import fixture from "../../../fixture/base";
 
 beforeEach(async () => {
+  fixture.loadLang();
   fixture.loadData();
   fixture.setRouter();
 });
@@ -69,6 +71,16 @@ describe(`action`, () => {
   it(`close`, () => {
     dialog.action.close();
     expect(dialog.state.open).toBe(false);
+  });
+  it(`validateTitle`, () => {
+    const safeParse = vi.fn(() => ({ success: false, error: { errors: [{ message: `message` }] } }));
+    vi.spyOn(Validation, `noEmptySchema`).mockImplementation(
+      () => ({ safeParse }) as unknown as ReturnType<typeof Validation.noEmptySchema>,
+    );
+    dialog.action.validateTitle({ text: `validateTitle` });
+    expect(safeParse).toBeCalledTimes(1);
+    expect(safeParse).toBeCalledWith(`validateTitle`);
+    expect(dialog.state.text.error).toEqual(`message`);
   });
   it(`clickCheckAll`, () => {
     dialog.action.clickCheckAll({ checked: true });

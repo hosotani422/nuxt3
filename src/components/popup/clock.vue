@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import * as Vue from "vue";
+import Vue from "vue";
 import clock from "@/stores/popup/clock";
 defineOptions({
   inheritAttrs: false,

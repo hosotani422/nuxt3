@@ -1,4 +1,5 @@
-import * as Vue from "vue";
+import Vue from "vue";
+import i18next from "i18next";
 import constant from "@/utils/const";
 import app from "@/stores/page/app";
 import conf from "@/stores/page/conf";
@@ -34,8 +35,8 @@ const useStore = defineStore(`calendar`, () => {
   const getter = reactive({
     textWeek: computed(() => (): string[] => {
       const week = [];
-      for (let i = 1; i <= Number(useNuxtApp().$i18n.t(`calendar.sort`)); i++) {
-        week.push(useNuxtApp().$i18n.t(`calendar.week${i}`));
+      for (let i = 1; i <= Number(i18next.t(`calendar.sort`)); i++) {
+        week.push(i18next.t(`calendar.week${i as unknown as `1` | `2` | `3` | `4` | `5` | `6` | `7`}`));
       }
       return week;
     }),

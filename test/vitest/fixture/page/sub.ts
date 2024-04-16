@@ -22,12 +22,6 @@ export default class Sub extends Base {
         classLimit: (() => ({ classLimit: true })) as unknown as typeof sub.getter.classLimit,
         textAlarm: sub.getter.textAlarm,
       },
-      global: {
-        directives: {
-          height: () => ``,
-        },
-        mocks: Base.mockI18n(),
-      },
     });
     return wrapper;
   }

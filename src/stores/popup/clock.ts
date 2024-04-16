@@ -1,4 +1,4 @@
-import * as Vue from "vue";
+import Vue from "vue";
 import constant from "@/utils/const";
 import conf from "@/stores/page/conf";
 

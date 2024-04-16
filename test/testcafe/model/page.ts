@@ -1,4 +1,4 @@
-import * as fs from "fs";
+import fs from "fs";
 import { Selector, t, ClientFunction } from "testcafe";
 
 export default class Page {

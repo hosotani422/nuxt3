@@ -1,6 +1,7 @@
-import * as Vue from "vue";
-import constant from "@/utils/const";
+import Vue from "vue";
+import i18next from "i18next";
 import * as Api from "@/api/api";
+import constant from "@/utils/const";
 import app from "@/stores/page/app";
 import list from "@/stores/page/list";
 import sub from "@/stores/page/sub";
@@ -107,15 +108,15 @@ const useStore = defineStore(`main`, () => {
     insertItem: (): void => {
       dialog.action.open({
         mode: `text`,
-        title: useNuxtApp().$i18n.t(`dialog.title.insert`),
+        title: i18next.t(`dialog.title.insert`),
         message: ``,
         text: {
           value: ``,
-          placeholder: useNuxtApp().$i18n.t(`placeholder.main`),
+          placeholder: i18next.t(`placeholder.main`),
           error: ``,
         },
-        ok: useNuxtApp().$i18n.t(`button.ok`),
-        cancel: useNuxtApp().$i18n.t(`button.cancel`),
+        ok: i18next.t(`button.ok`),
+        cancel: i18next.t(`button.cancel`),
         callback: {
           ok: () => {
             const mainId = `main${app.lib.dayjs().valueOf()}`;
@@ -153,7 +154,7 @@ const useStore = defineStore(`main`, () => {
     moveItem: (payload: { mainId: string }): void => {
       dialog.action.open({
         mode: `radio`,
-        title: useNuxtApp().$i18n.t(`dialog.title.move`),
+        title: i18next.t(`dialog.title.move`),
         message: ``,
         radio: {
           none: false,
@@ -161,8 +162,8 @@ const useStore = defineStore(`main`, () => {
           sort: list.state.data.sort,
           data: list.state.data.data,
         },
-        ok: useNuxtApp().$i18n.t(`button.ok`),
-        cancel: useNuxtApp().$i18n.t(`button.cancel`),
+        ok: i18next.t(`button.ok`),
+        cancel: i18next.t(`button.cancel`),
         callback: {
           ok: () => {
             if (dialog.state.radio.select !== app.getter.listId()) {
@@ -202,8 +203,8 @@ const useStore = defineStore(`main`, () => {
       delete state.status[payload.mainId];
       constant.sound.play(`warn`);
       notice.action.open({
-        message: useNuxtApp().$i18n.t(`notice.message`),
-        button: useNuxtApp().$i18n.t(`notice.button`),
+        message: i18next.t(`notice.message`),
+        button: i18next.t(`notice.button`),
         callback: () => {
           state.data = backup.main;
           sub.state.data = backup.sub;

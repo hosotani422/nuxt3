@@ -5,9 +5,9 @@ import calendar from "@/stores/popup/calendar";
 
 const it = test.extend<{ wrapper: VueWrapper }>({
   wrapper: async ({}, use) => {
-    fixture.setI18n();
     fixture.setAction();
     fixture.setRouter();
+    await fixture.loadLang();
     await fixture.loadData();
     await use(fixture.getWrapper());
   },

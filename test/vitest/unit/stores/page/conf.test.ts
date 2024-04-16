@@ -1,4 +1,5 @@
 import { vi, beforeEach, afterEach, describe, it, expect, MockInstance } from "vitest";
+import i18next from "i18next";
 import * as Api from "@/api/api";
 import * as Cordova from "@/utils/cordova/cordova";
 import constant from "@/utils/const";
@@ -12,7 +13,7 @@ import fixture from "../../../fixture/base";
 
 beforeEach(async () => {
   process.client = true;
-  fixture.setI18n();
+  fixture.loadLang();
   fixture.loadData();
   fixture.setRouter();
 });
@@ -72,6 +73,12 @@ describe(`action`, () => {
     conf.action.reactSound();
     expect(constant.sound.volume).toBeCalledTimes(1);
     expect(constant.sound.volume).toBeCalledWith(1 / 3);
+  });
+  it(`reactLang`, () => {
+    vi.spyOn(i18next, `changeLanguage`).mockReturnThis();
+    conf.action.reactLang({ value: `reactLang` });
+    expect(i18next.changeLanguage).toBeCalledTimes(1);
+    expect(i18next.changeLanguage).toBeCalledWith(`reactLang`);
   });
   it(`reactAlarm`, () => {
     vi.spyOn(Cordova.Notice, `removeAll`).mockReturnValue();

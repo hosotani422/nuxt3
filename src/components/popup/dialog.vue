@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import i18next from "i18next";
 import dialog from "@/stores/popup/dialog";
 defineOptions({
   inheritAttrs: false,
@@ -34,7 +35,7 @@ const emit = defineEmits([`validateTitle`, `clickCheckAll`]);
           :model-value="stateCheckAll()"
           data-testid="DialogCheckAll"
           @change="emit(`clickCheckAll`, { checked: ($event.target as HTMLInputElement).checked })"
-          >{{ $t(`dialog.select.all`) }}</InputCheck
+          >{{ i18next.t(`dialog.select.all`) }}</InputCheck
         >
         <InputCheck
           v-for="checkId of state.check.sort"
@@ -50,7 +51,7 @@ const emit = defineEmits([`validateTitle`, `clickCheckAll`]);
           data-testid="DialogRadioNone"
           value=""
           :checked="state.radio.select === ``"
-          >{{ $t(`dialog.select.none`) }}</InputRadio
+          >{{ i18next.t(`dialog.select.none`) }}</InputRadio
         >
         <InputRadio
           v-for="radioId of state.radio.sort"
