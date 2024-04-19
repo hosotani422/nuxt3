@@ -1,6 +1,8 @@
 import Vue from "vue";
+import lodash from "lodash";
 import i18next from "i18next";
-import * as Api from "@/api/api";
+import * as datefns from "date-fns";
+import Api from "@/api/api";
 import constant from "@/utils/const";
 import app from "@/stores/page/app";
 import list from "@/stores/page/list";
@@ -70,10 +72,11 @@ const useStore = defineStore(`main`, () => {
     }),
     classLimit: computed(() => (mainId: string): { [K in `text-theme-care` | `text-theme-warn`]: boolean } => {
       const unit = getter.stateUnit(``, mainId);
-      const date = `${unit.date || `9999/99/99`} ${unit.time || `00:00`}`;
+      const now = new Date();
+      const date = new Date(`${unit.date || `9999/99/99`} ${unit.time || `00:00`}`);
       return {
-        "text-theme-care": app.lib.dayjs(date).isBefore(app.lib.dayjs().add(2, `day`)),
-        "text-theme-warn": app.lib.dayjs(date).isBefore(app.lib.dayjs().add(1, `day`)),
+        "text-theme-care": datefns.isBefore(date, datefns.addDays(now, 2)),
+        "text-theme-warn": datefns.isBefore(date, datefns.addDays(now, 1)),
       };
     }),
     textCount: computed(() => (mainId: string): string => {
@@ -91,7 +94,7 @@ const useStore = defineStore(`main`, () => {
     },
     actPage: (): void => {
       watch(
-        () => app.lib.lodash.cloneDeep(state.data),
+        () => lodash.cloneDeep(state.data),
         () => {
           action.saveItem();
           conf.action.reactAlarm();
@@ -119,8 +122,9 @@ const useStore = defineStore(`main`, () => {
         cancel: i18next.t(`button.cancel`),
         callback: {
           ok: () => {
-            const mainId = `main${app.lib.dayjs().valueOf()}`;
-            const subId = `sub${app.lib.dayjs().valueOf()}`;
+            const date = new Date().valueOf();
+            const mainId = `main${date}`;
+            const subId = `sub${date}`;
             getter.stateFull().sort.unshift(mainId);
             getter.stateFull().data[mainId] = {
               check: false,
@@ -143,12 +147,10 @@ const useStore = defineStore(`main`, () => {
       });
     },
     copyItem: (payload: { mainId: string }): void => {
-      const mainId = `main${app.lib.dayjs().valueOf()}`;
+      const mainId = `main${new Date().valueOf()}`;
       getter.stateFull().sort.splice(getter.stateFull().sort.indexOf(payload.mainId) + 1, 0, mainId);
-      getter.stateFull().data[mainId] = app.lib.lodash.cloneDeep(getter.stateUnit(``, payload.mainId));
-      sub.state.data[app.getter.listId()]!.data[mainId] = app.lib.lodash.cloneDeep(
-        sub.getter.stateFull(``, payload.mainId),
-      );
+      getter.stateFull().data[mainId] = lodash.cloneDeep(getter.stateUnit(``, payload.mainId));
+      sub.state.data[app.getter.listId()]!.data[mainId] = lodash.cloneDeep(sub.getter.stateFull(``, payload.mainId));
       delete state.status[payload.mainId];
     },
     moveItem: (payload: { mainId: string }): void => {
@@ -189,8 +191,8 @@ const useStore = defineStore(`main`, () => {
     },
     deleteItem: (payload: { mainId: string }): void => {
       const backup = {
-        main: app.lib.lodash.cloneDeep(state.data),
-        sub: app.lib.lodash.cloneDeep(sub.state.data),
+        main: lodash.cloneDeep(state.data),
+        sub: lodash.cloneDeep(sub.state.data),
       };
       if (app.getter.listId() !== constant.base.id.trash) {
         getter.stateFull(constant.base.id.trash).sort.push(payload.mainId);

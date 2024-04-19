@@ -1,6 +1,6 @@
 import { vi, beforeEach, afterEach, describe, it, expect } from "vitest";
 import fs from "fs";
-import * as Api from "@/api/api";
+import Api from "@/api/api";
 import app from "@/stores/page/app";
 import list from "@/stores/page/list";
 import main from "@/stores/page/main";

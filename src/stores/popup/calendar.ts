@@ -1,7 +1,7 @@
 import Vue from "vue";
 import i18next from "i18next";
+import * as datefns from "date-fns";
 import constant from "@/utils/const";
-import app from "@/stores/page/app";
 import conf from "@/stores/page/conf";
 
 const refer: {
@@ -43,32 +43,32 @@ const useStore = defineStore(`calendar`, () => {
     textDay: computed(() => (): { id: string; day: { month: string; day: string; text: string }[] }[] => {
       const month: ReturnType<typeof getter.textDay> = [];
       for (
-        let curMonth = app.lib.dayjs(state.current).subtract(1, `month`),
-          limMonth = app.lib.dayjs(state.current).add(2, `month`);
-        curMonth.isBefore(limMonth);
-        curMonth = curMonth.add(1, `month`)
+        let curMonth = datefns.subMonths(new Date(state.current), 1),
+          limMonth = datefns.addMonths(new Date(state.current), 2);
+        datefns.isBefore(curMonth, limMonth);
+        curMonth = datefns.addMonths(curMonth, 1)
       ) {
         const day: (typeof month)[number][`day`] = [];
         for (
-          let curDay = curMonth.date(1).subtract(curMonth.date(1).day(), `day`),
-            limDay = curMonth.add(1, `month`).date(1);
-          curDay.isBefore(limDay);
-          curDay = curDay.add(1, `day`)
+          let curDay = datefns.subDays(datefns.setDate(curMonth, 1), datefns.getDay(datefns.setDate(curMonth, 1))),
+            limDay = datefns.setDate(datefns.addMonths(curMonth, 1), 1);
+          datefns.isBefore(curDay, limDay);
+          curDay = datefns.addDays(curDay, 1)
         ) {
           day.push({
-            month: curMonth.format(`YYYY/MM`),
-            day: curDay.format(`YYYY/MM/DD`),
-            text: curDay.format(`D`),
+            month: datefns.format(curMonth, `yyyy/MM`),
+            day: datefns.format(curDay, `yyyy/MM/dd`),
+            text: datefns.format(curDay, `d`),
           });
         }
-        month.push({ id: curMonth.format(`YYYY/MM`), day });
+        month.push({ id: datefns.format(curMonth, `yyyy/MM`), day });
       }
       return month;
     }),
     classDay: computed(() => (month: string, day: string): { [K in `select` | `today` | `hide`]: boolean } => ({
       select: day === state.select,
-      today: day === app.lib.dayjs().format(`YYYY/MM/DD`),
-      hide: month !== app.lib.dayjs(day).format(`YYYY/MM`),
+      today: day === datefns.format(new Date(), `yyyy/MM/dd`),
+      hide: month !== datefns.format(new Date(day), `yyyy/MM`),
     })),
   });
 
@@ -98,10 +98,7 @@ const useStore = defineStore(`calendar`, () => {
         )
         .addEventListener(`finish`, () => {
           refer.area!.value!.style.transform = `translateX(-33.333%)`;
-          state.current = app.lib
-            .dayjs(state.current)
-            .add(payload.prev ? -1 : 1, `month`)
-            .format(`YYYY/MM`);
+          state.current = datefns.format(datefns.addMonths(new Date(state.current), payload.prev ? -1 : 1), `yyyy/MM`);
         });
     },
     swipeInit: (payload: { target: HTMLElement; clientX: number; clientY: number }): void => {

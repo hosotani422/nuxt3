@@ -20,3 +20,9 @@ export const hideMount = (): void => {
     hide();
   });
 };
+
+export default {
+  show,
+  hide,
+  hideMount,
+};

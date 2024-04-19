@@ -1,7 +1,9 @@
+import lodash from "lodash";
 import i18next from "i18next";
-import * as Util from "@/utils/base/util";
-import * as Api from "@/api/api";
-import * as Cordova from "@/utils/cordova/cordova";
+import * as datefns from "date-fns";
+import Api from "@/api/api";
+import Util from "@/utils/base/util";
+import Cordova from "@/utils/cordova/cordova";
 import constant from "@/utils/const";
 import app from "@/stores/page/app";
 import list from "@/stores/page/list";
@@ -44,14 +46,14 @@ const useStore = defineStore(`conf`, () => {
     },
     actPage: (): void => {
       watch(
-        () => app.lib.lodash.cloneDeep(state.data),
+        () => lodash.cloneDeep(state.data),
         () => {
           action.saveItem();
         },
         { deep: true },
       );
       watch(
-        () => app.lib.lodash.cloneDeep(state.data.volume),
+        () => lodash.cloneDeep(state.data.volume),
         () => {
           action.reactSound();
         },
@@ -93,13 +95,10 @@ const useStore = defineStore(`conf`, () => {
                 Cordova.Notice.insert({
                   title: i18next.t(`dialog.title.alarm`),
                   message: `${list.getter.stateUnit(listId).title} ⇒ ${mainUnit.title}`,
-                  date: app.lib
-                    .dayjs(`${mainUnit.date} ${mainUnit.time || `00:00`}`)
-                    .minute(
-                      app.lib.dayjs(`${mainUnit.date} ${mainUnit.time || `00:00`}`).minute() -
-                        Number(i18next.t(`dialog.alarm.data${alarmId}.value`)),
-                    )
-                    .toDate(),
+                  date: datefns.subMinutes(
+                    new Date(`${mainUnit.date} ${mainUnit.time || `00:00`}`),
+                    Number(i18next.t(`dialog.alarm.data${alarmId}.value`)),
+                  ),
                 });
               }
             }

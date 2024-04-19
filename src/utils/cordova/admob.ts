@@ -66,3 +66,11 @@ export const hide = (): void => {
 export const remove = (): void => {
   window.admob?.banner.remove();
 };
+
+export default {
+  showBanner,
+  mountBanner,
+  show,
+  hide,
+  remove,
+};

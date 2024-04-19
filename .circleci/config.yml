@@ -3,7 +3,7 @@ version: 2.1
 executors:
   node_executor:
     docker:
-      - image: cimg/node:20.11.0
+      - image: cimg/node:20.12.2
     working_directory: ~/project
 
 commands:
@@ -16,6 +16,9 @@ commands:
       - persist_to_workspace:
           root: ~/project
           paths: .
+  install_pnpm:
+    steps:
+      - run: sudo npm i -g pnpm@9.0.6
   install_package:
     steps:
       - run: pnpm install
@@ -47,6 +50,7 @@ jobs:
     executor: node_executor
     steps:
       - checkout
+      - install_pnpm
       - install_package
       - save_workspace
   lint:
@@ -56,16 +60,16 @@ jobs:
       - lint_format
       - lint_style
       - lint_script
-  test_ui:
-    executor: node_executor
-    steps:
-      - load_workspace
-      - test_ui
   test_ut:
     executor: node_executor
     steps:
       - load_workspace
       - test_ut
+  test_ui:
+    executor: node_executor
+    steps:
+      - load_workspace
+      - test_ui
   test_it:
     executor: node_executor
     steps:
@@ -79,10 +83,10 @@ workflows:
       - lint:
           requires:
             - setup
-      - test_ui:
+      - test_ut:
           requires:
             - setup
-      - test_ut:
+      - test_ui:
           requires:
             - setup
       - test_it:

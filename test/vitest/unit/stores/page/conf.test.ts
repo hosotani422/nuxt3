@@ -1,7 +1,7 @@
 import { vi, beforeEach, afterEach, describe, it, expect, MockInstance } from "vitest";
 import i18next from "i18next";
-import * as Api from "@/api/api";
-import * as Cordova from "@/utils/cordova/cordova";
+import Api from "@/api/api";
+import Cordova from "@/utils/cordova/cordova";
 import constant from "@/utils/const";
 import app from "@/stores/page/app";
 import list from "@/stores/page/list";

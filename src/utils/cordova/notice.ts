@@ -46,3 +46,9 @@ export const remove = (ids: number[], callback?: () => void, scope?: object): vo
 export const removeAll = (callback?: () => void, scope?: object): void => {
   window.cordova?.plugins.notification.local.cancelAll(callback, scope);
 };
+
+export default {
+  insert,
+  remove,
+  removeAll,
+};
