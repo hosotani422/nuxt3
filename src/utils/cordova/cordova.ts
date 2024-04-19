@@ -1,6 +1,11 @@
-import * as Admob from "@/utils/cordova/admob";
-import * as Files from "@/utils/cordova/file";
-import * as Notice from "@/utils/cordova/notice";
-import * as Splash from "@/utils/cordova/splash";
+import Admob from "@/utils/cordova/admob";
+import Files from "@/utils/cordova/file";
+import Notice from "@/utils/cordova/notice";
+import Splash from "@/utils/cordova/splash";
 
-export { Admob, Files as File, Notice, Splash };
+export default {
+  Admob,
+  File: Files,
+  Notice,
+  Splash,
+};

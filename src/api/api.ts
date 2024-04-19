@@ -233,3 +233,16 @@ export const writeRoute = (data: string): void => {
     localStorage.setItem(`route`, data);
   }
 };
+
+export default {
+  readList,
+  writeList,
+  readMain,
+  writeMain,
+  readSub,
+  writeSub,
+  readConf,
+  writeConf,
+  readRoute,
+  writeRoute,
+};

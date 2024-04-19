@@ -1,6 +1,8 @@
 import Vue from "vue";
+import lodash from "lodash";
 import i18next from "i18next";
-import * as Api from "@/api/api";
+import * as datefns from "date-fns";
+import Api from "@/api/api";
 import constant from "@/utils/const";
 import app from "@/stores/page/app";
 import main from "@/stores/page/main";
@@ -94,10 +96,11 @@ const useStore = defineStore(`sub`, () => {
     }),
     classLimit: computed(() => (): { [K in `text-theme-care` | `text-theme-warn`]: boolean } => {
       const unit = main.getter.stateUnit();
-      const date = `${unit.date || `9999/99/99`} ${unit.time || `00:00`}`;
+      const now = new Date();
+      const date = new Date(`${unit.date || `9999/99/99`} ${unit.time || `00:00`}`);
       return {
-        "text-theme-care": app.lib.dayjs(date).isBefore(app.lib.dayjs().add(2, `day`)),
-        "text-theme-warn": app.lib.dayjs(date).isBefore(app.lib.dayjs().add(1, `day`)),
+        "text-theme-care": datefns.isBefore(date, datefns.addDays(now, 2)),
+        "text-theme-warn": datefns.isBefore(date, datefns.addDays(now, 1)),
       };
     }),
     textAlarm: computed(() => (): string => {
@@ -128,7 +131,7 @@ const useStore = defineStore(`sub`, () => {
     },
     actPage: (): void => {
       watch(
-        () => app.lib.lodash.cloneDeep(state.data),
+        () => lodash.cloneDeep(state.data),
         () => {
           action.saveItem();
         },
@@ -142,7 +145,7 @@ const useStore = defineStore(`sub`, () => {
       Api.writeSub(state.data);
     },
     enterItem: async (payload: { subId: string; selectionStart: number }) => {
-      const subId = `sub${app.lib.dayjs().valueOf()}`;
+      const subId = `sub${new Date().valueOf()}`;
       const caret = payload.selectionStart;
       const title = getter.stateFull().data[payload.subId]!.title;
       getter.stateFull().sort.splice(getter.stateFull().sort.indexOf(payload.subId) + 1, 0, subId);
@@ -167,7 +170,7 @@ const useStore = defineStore(`sub`, () => {
       refer.titles!.value[subId]!.$el.selectionEnd = caret;
     },
     deleteItem: (payload: { subId: string }) => {
-      const backup = app.lib.lodash.cloneDeep(state.data);
+      const backup = lodash.cloneDeep(state.data);
       getter.stateFull().sort.splice(getter.stateFull().sort.indexOf(payload.subId), 1);
       delete getter.stateFull().data[payload.subId];
       delete state.status[payload.subId];
@@ -199,7 +202,7 @@ const useStore = defineStore(`sub`, () => {
       getter.stateFull().sort = [];
       getter.stateFull().data = {};
       for (const [i, title] of payload.value.split(`\n`).entries()) {
-        const subId = `sub${app.lib.dayjs().valueOf()}${i}`;
+        const subId = `sub${new Date().valueOf()}${i}`;
         getter.stateFull().sort.push(subId);
         getter.stateFull().data[subId] = { check: false, title };
       }
@@ -207,7 +210,7 @@ const useStore = defineStore(`sub`, () => {
     openCalendar: (payload: { date: string }): void => {
       calendar.action.open({
         select: payload.date,
-        current: app.lib.dayjs(payload.date || new Date()).format(`YYYY/MM`),
+        current: datefns.format(new Date(payload.date || new Date()), `yyyy/MM`),
         cancel: i18next.t(`button.cancel`),
         clear: i18next.t(`button.clear`),
         callback: (date) => {
@@ -218,15 +221,15 @@ const useStore = defineStore(`sub`, () => {
     },
     openClock: (payload: { time: string }): void => {
       clock.action.open({
-        hour: payload.time ? app.lib.dayjs(`2000/1/1 ${payload.time}`).hour() : 0,
-        minute: payload.time ? app.lib.dayjs(`2000/1/1 ${payload.time}`).minute() : 0,
+        hour: payload.time ? datefns.getHours(new Date(`2000/1/1 ${payload.time}`)) : 0,
+        minute: payload.time ? datefns.getMinutes(new Date(`2000/1/1 ${payload.time}`)) : 0,
         cancel: i18next.t(`button.cancel`),
         clear: i18next.t(`button.clear`),
         ok: i18next.t(`button.ok`),
         callback: (hour, minute) => {
           clock.action.close();
           main.getter.stateUnit().time =
-            hour != null && minute != null ? app.lib.dayjs(`2000/1/1 ${hour}:${minute}`).format(`HH:mm`) : ``;
+            hour != null && minute != null ? datefns.format(new Date(`2000/1/1 ${hour}:${minute}`), `HH:mm`) : ``;
         },
       });
     },

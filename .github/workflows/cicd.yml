@@ -17,13 +17,13 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
       - name: Setup Pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         with:
-          version: 8.11.0
+          version: 9.0.6
       - name: Install Dependency
         run: pnpm install
       - name: Build Storybook
@@ -40,9 +40,9 @@ jobs:
         run: pnpm lint:style
       - name: Lint Eslint
         run: pnpm lint:script
-      - name: Test Storybook
-        run: pnpm test:ui.ci
       - name: Test Vitest
         run: pnpm test:ut
+      - name: Test Storybook
+        run: pnpm test:ui.ci
       - name: Test Playwright
         run: pnpm test:it
