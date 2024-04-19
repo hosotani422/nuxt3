@@ -18,3 +18,12 @@ export const id = {
   main: `main0000000000000`,
   sub: `sub0000000000000`,
 };
+
+export default {
+  title,
+  version,
+  backup,
+  admobId,
+  duration,
+  id,
+};

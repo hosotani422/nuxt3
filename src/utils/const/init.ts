@@ -109,3 +109,15 @@ export const notice: (typeof notices)[`state`] = {
   callback: () => ``,
   timeoutId: 0,
 };
+
+export default {
+  listId,
+  list,
+  main,
+  sub,
+  conf,
+  calendar,
+  clock,
+  dialog,
+  notice,
+};

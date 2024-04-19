@@ -1,7 +1,7 @@
 import { vi, beforeEach, afterEach, describe, it, expect, MockInstance } from "vitest";
 import Vue from "vue";
 import lodash from "lodash";
-import * as Api from "@/api/api";
+import Api from "@/api/api";
 import constant from "@/utils/const";
 import app from "@/stores/page/app";
 import list from "@/stores/page/list";

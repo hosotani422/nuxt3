@@ -1,26 +1,12 @@
 import i18next from "i18next";
-import lodash from "lodash";
-import dayjs from "dayjs";
-import "dayjs/locale/ja";
 import constant from "@/utils/const/index";
-import * as Api from "@/api/api";
+import Api from "@/api/api";
 import list from "@/stores/page/list";
 import main from "@/stores/page/main";
 import sub from "@/stores/page/sub";
 import conf from "@/stores/page/conf";
 import { ja } from "@/locales/ja";
 import { en } from "@/locales/en";
-
-const lib: {
-  lodash: typeof lodash;
-  dayjs: typeof dayjs;
-} = {
-  lodash,
-  dayjs: (() => {
-    dayjs.locale(`ja`);
-    return dayjs;
-  })(),
-};
 
 const useStore = defineStore(`app`, () => {
   const state: {
@@ -128,4 +114,4 @@ const useStore = defineStore(`app`, () => {
 
 const store = useStore(createPinia());
 
-export default { lib, state: store.state, getter: store.getter, action: store.action };
+export default { state: store.state, getter: store.getter, action: store.action };

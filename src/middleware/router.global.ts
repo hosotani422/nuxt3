@@ -1,4 +1,4 @@
-import * as Api from "@/api/api";
+import Api from "@/api/api";
 import app from "@/stores/page/app";
 
 export default defineNuxtRouteMiddleware(async () => {

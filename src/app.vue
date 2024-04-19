@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import * as Cordova from "@/utils/cordova/cordova";
+import Cordova from "@/utils/cordova/cordova";
 import app from "@/stores/page/app";
 import calendar from "@/stores/popup/calendar";
 import clock from "@/stores/popup/clock";
