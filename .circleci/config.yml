@@ -18,7 +18,7 @@ commands:
           paths: .
   install_package:
     steps:
-      - run: pnpm install
+      - run: pnpm i -g pnpm
   lint_format:
     steps:
       - run: pnpm lint:format
