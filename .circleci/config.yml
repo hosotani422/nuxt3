@@ -3,7 +3,7 @@ version: 2.1
 executors:
   node_executor:
     docker:
-      - image: cimg/node:20.12.0
+      - image: cimg/node:20.12.2
     working_directory: ~/project
 
 commands:
@@ -16,9 +16,15 @@ commands:
       - persist_to_workspace:
           root: ~/project
           paths: .
+  install_pnpm:
+    steps:
+      - run: |
+          corepack enable
+          corepack prepare pnpm@latest-9 --activate
+          pnpm config set store-dir .pnpm-store
   install_package:
     steps:
-      - run: npx install -g pnpm
+      - run: pnpm install
   lint_format:
     steps:
       - run: pnpm lint:format
