@@ -5,7 +5,7 @@
   "engines": {
     "npm": "The only package manager is pnpm",
     "yarn": "The only package manager is pnpm",
-    "pnpm": ">=9.0.6"
+    "pnpm": ">=8.0.0"
   },
   "scripts": {
     "build": "nuxt build",

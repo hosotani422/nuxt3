@@ -16,12 +16,6 @@ commands:
       - persist_to_workspace:
           root: ~/project
           paths: .
-  install_pnpm:
-    steps:
-      - run: |
-          corepack enable
-          corepack prepare pnpm@latest-9 --activate
-          pnpm config set store-dir .pnpm-store
   install_package:
     steps:
       - run: pnpm install
@@ -53,7 +47,6 @@ jobs:
     executor: node_executor
     steps:
       - checkout
-      - install_pnpm
       - install_package
       - save_workspace
   lint:
