@@ -18,7 +18,7 @@ commands:
           paths: .
   install_pnpm:
     steps:
-      - run: npm i -g pnpm@latest
+      - run: npm i -g pnpm@9.0.6
   install_package:
     steps:
       - run: pnpm install
