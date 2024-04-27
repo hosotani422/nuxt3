@@ -57,6 +57,7 @@ jobs:
     executor: node_executor
     steps:
       - load_workspace
+      - install_pnpm
       - lint_format
       - lint_style
       - lint_script
@@ -64,16 +65,19 @@ jobs:
     executor: node_executor
     steps:
       - load_workspace
+      - install_pnpm
       - test_ut
   test_ui:
     executor: node_executor
     steps:
       - load_workspace
+      - install_pnpm
       - test_ui
   test_it:
     executor: node_executor
     steps:
       - load_workspace
+      - install_pnpm
       - test_it
 
 workflows:
