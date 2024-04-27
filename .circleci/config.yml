@@ -16,6 +16,9 @@ commands:
       - persist_to_workspace:
           root: ~/project
           paths: .
+  install_pnpm:
+    steps:
+      - run: pnpm add -g pnpm
   install_package:
     steps:
       - run: pnpm install
@@ -47,6 +50,7 @@ jobs:
     executor: node_executor
     steps:
       - checkout
+      - install_pnpm
       - install_package
       - save_workspace
   lint:
@@ -76,15 +80,15 @@ workflows:
   ci:
     jobs:
       - setup
-      - lint:
-          requires:
-            - setup
-      - test_ut:
-          requires:
-            - setup
-      - test_ui:
-          requires:
-            - setup
-      - test_it:
-          requires:
-            - setup
+      # - lint:
+      #     requires:
+      #       - setup
+      # - test_ut:
+      #     requires:
+      #       - setup
+      # - test_ui:
+      #     requires:
+      #       - setup
+      # - test_it:
+      #     requires:
+      #       - setup

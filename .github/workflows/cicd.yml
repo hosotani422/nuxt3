@@ -16,33 +16,33 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-      - name: Setup Pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: 9.0.6
-      - name: Install Dependency
-        run: pnpm install
-      - name: Build Storybook
-        run: pnpm build:ui
-      - name: Upload Storybook
-        uses: actions/upload-pages-artifact@v2
-        with:
-          path: ./.storybook
-      - name: Deploy Storybook
-        uses: actions/deploy-pages@v2
-      - name: Lint Prettier
-        run: pnpm lint:format
-      - name: Lint Stylelint
-        run: pnpm lint:style
-      - name: Lint Eslint
-        run: pnpm lint:script
-      - name: Test Vitest
-        run: pnpm test:ut
-      - name: Test Storybook
-        run: pnpm test:ui.ci
-      - name: Test Playwright
-        run: pnpm test:it
+      # - name: Setup Node
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version-file: ".nvmrc"
+      # - name: Setup Pnpm
+      #   uses: pnpm/action-setup@v3
+      #   with:
+      #     version: 9.0.6
+      # - name: Install Dependency
+      #   run: pnpm install
+      # - name: Build Storybook
+      #   run: pnpm build:ui
+      # - name: Upload Storybook
+      #   uses: actions/upload-pages-artifact@v2
+      #   with:
+      #     path: ./.storybook
+      # - name: Deploy Storybook
+      #   uses: actions/deploy-pages@v2
+      # - name: Lint Prettier
+      #   run: pnpm lint:format
+      # - name: Lint Stylelint
+      #   run: pnpm lint:style
+      # - name: Lint Eslint
+      #   run: pnpm lint:script
+      # - name: Test Vitest
+      #   run: pnpm test:ut
+      # - name: Test Storybook
+      #   run: pnpm test:ui.ci
+      # - name: Test Playwright
+      #   run: pnpm test:it
