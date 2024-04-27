@@ -29,3 +29,8 @@ export const tuple = <T extends unknown[]>(...param: T): T => param;
 // window.addEventListener(`error`, (_event: ErrorEvent) => {
 //   alert(`${_event.error.toString()}\n${_event.error.stack}`);
 // });
+
+export default {
+  isJson,
+  tuple,
+};
