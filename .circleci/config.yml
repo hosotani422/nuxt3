@@ -53,6 +53,7 @@ jobs:
     executor: node_executor
     steps:
       - checkout
+      - install_pnpm
       - install_package
       - save_workspace
   lint:
