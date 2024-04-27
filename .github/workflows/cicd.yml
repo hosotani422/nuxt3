@@ -40,9 +40,9 @@ jobs:
         run: pnpm lint:style
       - name: Lint Eslint
         run: pnpm lint:script
-      - name: Test Storybook
-        run: pnpm test:ui.ci
       - name: Test Vitest
         run: pnpm test:ut
+      - name: Test Storybook
+        run: pnpm test:ui.ci
       - name: Test Playwright
         run: pnpm test:it

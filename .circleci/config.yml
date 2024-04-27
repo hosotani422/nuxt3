@@ -18,7 +18,7 @@ commands:
           paths: .
   install_package:
     steps:
-      - run: pnpm i -g pnpm
+      - run: npx install -g pnpm
   lint_format:
     steps:
       - run: pnpm lint:format
@@ -56,16 +56,16 @@ jobs:
       - lint_format
       - lint_style
       - lint_script
-  test_ui:
-    executor: node_executor
-    steps:
-      - load_workspace
-      - test_ui
   test_ut:
     executor: node_executor
     steps:
       - load_workspace
       - test_ut
+  test_ui:
+    executor: node_executor
+    steps:
+      - load_workspace
+      - test_ui
   test_it:
     executor: node_executor
     steps:
@@ -79,10 +79,10 @@ workflows:
       - lint:
           requires:
             - setup
-      - test_ui:
+      - test_ut:
           requires:
             - setup
-      - test_ut:
+      - test_ui:
           requires:
             - setup
       - test_it:
