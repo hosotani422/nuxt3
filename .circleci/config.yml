@@ -3,7 +3,7 @@ version: 2.1
 executors:
   node_executor:
     docker:
-      - image: cimg/node:20.11.0
+      - image: cimg/node:20.12.0
     working_directory: ~/project
 
 commands:
@@ -18,7 +18,7 @@ commands:
           paths: .
   install_package:
     steps:
-      - run: npm install -g pnpm
+      - run: pnpm install
   lint_format:
     steps:
       - run: pnpm lint:format
