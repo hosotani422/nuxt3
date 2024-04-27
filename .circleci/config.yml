@@ -18,7 +18,10 @@ commands:
           paths: .
   install_pnpm:
     steps:
-      - run: npm i -g pnpm@latest
+      - run: |
+          corepack enable
+          corepack prepare pnpm@latest-9 --activate
+          pnpm config set store-dir .pnpm-store
   install_package:
     steps:
       - run: pnpm install
