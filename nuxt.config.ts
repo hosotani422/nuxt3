@@ -1,4 +1,5 @@
 import path from "path";
+import postcss from "./postcss.config.js";
 
 export default defineNuxtConfig({
   ssr: true,
@@ -28,5 +29,5 @@ export default defineNuxtConfig({
       },
     ],
   },
-  postcss: require(`./postcss.config.js`),
+  postcss,
 });

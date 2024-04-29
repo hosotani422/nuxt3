@@ -6,10 +6,10 @@ import conf from "@/stores/page/conf";
 
 <template>
   <PageConf
-    :title="`${constant.base.title} ${constant.base.version}`"
+    :update-key="app.state.updateKey"
+    :constant="constant"
     :state="conf.state.data"
     @router-back="app.action.routerBack"
-    @react-lang="conf.action.reactLang"
     @download-backup="conf.action.downloadBackup"
     @upload-backup="conf.action.uploadBackup"
     @reset-conf="conf.action.resetConf"

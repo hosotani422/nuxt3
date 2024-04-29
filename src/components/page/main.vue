@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import Vue from "vue";
 import i18next from "i18next";
 import app from "@/stores/page/app";
 import list from "@/stores/page/list";
@@ -7,135 +6,100 @@ import main from "@/stores/page/main";
 defineOptions({
   inheritAttrs: false,
 });
-const props = defineProps<{
-  refer: typeof main.refer;
+defineProps<{
   status: typeof main.state.status;
   listId: typeof app.getter.listId;
-  listUnit: typeof list.getter.stateUnit;
-  stateFull: typeof main.getter.stateFull;
-  stateUnit: typeof main.getter.stateUnit;
-  classItem: typeof main.getter.classItem;
+  classStatus: typeof main.getter.classStatus;
   classLimit: typeof main.getter.classLimit;
   textCount: typeof main.getter.textCount;
+  listUnit: typeof list.action.getUnit;
+  mainFull: typeof main.action.getFull;
+  mainUnit: typeof main.action.getUnit;
 }>();
-const emit = defineEmits([
-  `routerList`,
-  `routerSub`,
-  `routerConf`,
-  `insertItem`,
-  `copyItem`,
-  `moveItem`,
-  `deleteItem`,
-  `checkItem`,
-  `switchEdit`,
-  `dragInit`,
-  `dragStart`,
-  `dragMove`,
-  `dragEnd`,
-]);
-const wrap = ref<Vue.ComponentPublicInstance<HTMLElement>>();
-const items = ref<{ [K: string]: Vue.ComponentPublicInstance<HTMLElement> }>({});
-props.refer.wrap = wrap;
-props.refer.items = items;
+const emit = defineEmits<{
+  routerList: [];
+  routerSub: [arg: { mainId: string }];
+  routerConf: [];
+  entryItem: [];
+  copyItem: [arg: { mainId: string }];
+  moveItem: [arg: { mainId: string }];
+  deleteItem: [arg: { mainId: string }];
+  editItem: [arg?: { mainId: string }];
+  dragInit: [arg: { mainId: string; y: number }];
+  dragStart: [];
+  dragMove: [arg: { y: number }];
+  dragEnd: [];
+}>();
 </script>
 
 <template>
   <div
     data-testid="MainRoot"
-    class="theme-grad-color absolute inset-0 z-[1] flex flex-col"
-    @click="emit(`switchEdit`)"
-    @mousemove.prevent="
+    class="theme-color-grad absolute inset-0 z-[1] flex flex-col"
+    @touchmove="
       emit(`dragStart`);
-      emit(`dragMove`, { clientY: $event.clientY });
+      emit(`dragMove`, { y: $event.changedTouches[0]!.clientY });
     "
-    @mouseup="emit(`dragEnd`)"
-    @touchmove.prevent="
+    @mousemove="
       emit(`dragStart`);
-      emit(`dragMove`, { clientY: $event.changedTouches[0]!.clientY });
+      emit(`dragMove`, { y: $event.clientY });
     "
     @touchend="emit(`dragEnd`)"
+    @mouseup="emit(`dragEnd`)"
+    @click="emit(`editItem`)"
   >
     <div
       data-testid="MainHead"
-      class="theme-grad-color theme-shadow-normal relative z-[9] flex flex-auto items-center gap-3 p-3"
+      class="theme-color-grad theme-shadow-outer relative z-[9] flex flex-initial items-center gap-3 p-3"
     >
-      <IconList data-testid="MainList" class="flex-auto" @click="emit(`routerList`)" />
-      <ClientOnly class="flex-even">
+      <IconList data-testid="MainList" class="flex-initial" @click="emit(`routerList`)" />
+      <client-only>
         <InputTextbox
           v-model="listUnit().title"
           data-testid="MainTitle"
-          class="flex-even text-xl"
+          class="flex-1 text-xl"
           :placeholder="i18next.t(`placeholder.list`)"
         />
-      </ClientOnly>
-      <IconConf data-testid="MainConf" class="flex-auto" @click="emit(`routerConf`)" />
-      <IconPlus data-testid="MainPlus" class="flex-auto" @click="emit(`insertItem`)" />
+      </client-only>
+      <IconConf data-testid="MainConf" class="flex-initial" @click="emit(`routerConf`)" />
+      <IconPlus data-testid="MainPlus" class="flex-initial" @click="emit(`entryItem`)" />
     </div>
-    <ul ref="wrap" data-testid="MainBody" class="flex-even select-none overflow-auto p-3">
-      <ClientOnly>
+    <ul data-id="MainBody" data-testid="MainBody" class="flex-1 select-none overflow-auto p-3">
+      <client-only>
         <transition-group appear>
           <li
-            v-for="mainId of stateFull().sort"
-            :ref="
-              (el: Vue.ComponentPublicInstance<any>) => {
-                if (el) {
-                  items[mainId] = el;
-                }
-              }
-            "
+            v-for="mainId of mainFull().sort"
             :key="`list${listId()}main${mainId}`"
+            :data-id="`MainItem${mainId}`"
             data-testid="MainItem"
-            class="theme-back-color scale-up [&.select]:theme-shadow-inner [&.edit]:theme-shadow-outer [&.drag]:theme-shadow-outer relative flex h-16 items-center gap-3 overflow-hidden border-b-[0.1rem] border-solid border-b-font-dark p-3 [&.check]:line-through [&.check]:opacity-50 [&.drag]:z-[1] [&.drag]:scale-[1.03] [&.edit]:z-[1] [&.edit]:scale-[1.03] [&.hide]:invisible"
-            :class="classItem(mainId)"
+            class="theme-color-border theme-color-back trans-select-label trans-edit-item trans-check-item anime-scale-item group relative flex h-16 items-center gap-3 overflow-hidden border-b-[0.1rem] border-solid p-3"
+            :class="{ ...classStatus(mainId), ...classLimit(mainId) }"
             @contextmenu.prevent
-            @click="status[mainId] !== `edit` && emit(`routerSub`, { mainId })"
-            @longclick="
-              emit(`switchEdit`, { mainId });
-              emit(`dragInit`, { mainId, clientY: $event.detail.clientY });
-            "
             @longtouch="
-              emit(`switchEdit`, { mainId });
-              emit(`dragInit`, { mainId, clientY: $event.detail.changedTouches[0]!.clientY });
+              emit(`editItem`, { mainId });
+              emit(`dragInit`, { mainId, y: $event.detail.changedTouches[0]!.clientY });
             "
+            @longclick="
+              emit(`editItem`, { mainId });
+              emit(`dragInit`, { mainId, y: $event.detail.clientY });
+            "
+            @click="status[mainId] !== `edit` && emit(`routerSub`, { mainId })"
           >
-            <InputCheck
-              data-testid="MainCheck"
-              class="flex-auto"
-              :model-value="stateUnit(``, mainId).check"
-              @change="emit(`checkItem`, { event: $event, mainId, checked: $event.target.checked })"
-              @click.stop
-            />
-            <div data-testid="MainTask" class="line-clamp-1 flex-even" :class="classLimit(mainId)">
-              {{ stateUnit(``, mainId).title }}
+            <InputCheck v-model="mainUnit({ mainId }).check" data-testid="MainCheck" class="flex-initial" @click.stop />
+            <div data-testid="MainTask" class="line-clamp-1 flex-1">
+              {{ mainUnit({ mainId }).title }}
             </div>
-            <div data-testid="MainCount" class="flex-auto" :class="classLimit(mainId)">
+            <div data-testid="MainCount" class="flex-initial">
               {{ textCount(mainId) }}
             </div>
-            <transition>
-              <div v-if="classItem(mainId).edit" class="slide-right theme-back-color absolute right-3 flex gap-3">
-                <IconClone
-                  data-testid="MainClone"
-                  class="flex-auto"
-                  :class="classLimit(mainId)"
-                  @click.stop="emit(`copyItem`, { mainId })"
-                />
-                <IconMove
-                  data-testid="MainMove"
-                  class="flex-auto"
-                  :class="classLimit(mainId)"
-                  @click.stop="emit(`moveItem`, { mainId })"
-                />
-                <IconTrash
-                  data-testid="MainTrash"
-                  class="flex-auto"
-                  :class="classLimit(mainId)"
-                  @click.stop="emit(`deleteItem`, { mainId })"
-                />
-              </div>
-            </transition>
+            <div class="theme-color-back trans-option-label absolute right-3 flex translate-x-[150%] gap-3">
+              <IconClone data-testid="MainClone" class="flex-initial" @click.stop="emit(`copyItem`, { mainId })" />
+              <IconMove data-testid="MainMove" class="flex-initial" @click.stop="emit(`moveItem`, { mainId })" />
+              <IconTrash data-testid="MainTrash" class="flex-initial" @click.stop="emit(`deleteItem`, { mainId })" />
+            </div>
           </li>
         </transition-group>
-      </ClientOnly>
+      </client-only>
     </ul>
     <router-view v-slot="slot">
       <transition>

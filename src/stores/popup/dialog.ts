@@ -1,9 +1,22 @@
 import Validation from "@/validation/schema";
 import constant from "@/utils/const";
 
+const temp: {
+  callback: {
+    ok?: () => void;
+    cancel?: () => void;
+  };
+} = {
+  callback: {
+    ok: () => ``,
+    cancel: () => ``,
+  },
+};
+
 const useStore = defineStore(`dialog`, () => {
   const state: {
     open: boolean;
+    init: boolean;
     mode: `alert` | `confirm` | `text` | `check` | `radio`;
     title: string;
     message: string;
@@ -32,27 +45,26 @@ const useStore = defineStore(`dialog`, () => {
         };
       };
     };
-    ok: string;
-    cancel: string;
-    callback: {
-      ok?: () => void;
-      cancel: () => void;
-    };
+    ok?: string;
+    cancel?: string;
   } = reactive(constant.init.dialog);
 
   const getter = reactive({
     stateCheckAll: computed(() => (): boolean => {
-      for (const id of state.check.sort) {
-        if (!state.check.data[id]!.check) {
-          return false;
-        }
+      return Object.values(state.check!.data).reduce((last, current) => last && current.check, true);
+    }),
+    errorValidation: computed(() => (): string => {
+      if (state.mode === `text`) {
+        return Validation.emptySchema().safeParse(state.text!.value).error?.errors[0]?.message || ``;
+      } else if (state.mode === `radio`) {
+        return Validation.emptySchema().safeParse(state.radio!.select).error?.errors[0]?.message || ``;
       }
-      return true;
+      return ``;
     }),
   });
 
   const action = {
-    open: (payload: {
+    open: (arg: {
       mode: typeof state.mode;
       title: typeof state.title;
       message: typeof state.message;
@@ -61,31 +73,25 @@ const useStore = defineStore(`dialog`, () => {
       radio?: typeof state.radio;
       ok?: typeof state.ok;
       cancel?: typeof state.cancel;
-      callback?: typeof state.callback;
+      callback?: typeof temp.callback;
     }): void => {
+      state.init = true;
       state.open = true;
-      state.mode = payload.mode;
-      state.title = payload.title;
-      state.message = payload.message;
-      payload.text && (state.text = payload.text);
-      payload.check && (state.check = payload.check);
-      payload.radio && (state.radio = payload.radio);
-      payload.ok && (state.ok = payload.ok);
-      payload.cancel && (state.cancel = payload.cancel);
-      payload.callback?.ok && (state.callback.ok = payload.callback.ok);
-      payload.callback?.cancel && (state.callback.cancel = payload.callback.cancel);
+      state.mode = arg.mode;
+      state.title = arg.title;
+      state.message = arg.message;
+      arg.text && (state.text = arg.text);
+      arg.check && (state.check = arg.check);
+      arg.radio && (state.radio = arg.radio);
+      state.ok = arg.ok;
+      state.cancel = arg.cancel;
+      temp.callback = arg.callback!;
     },
     close: (): void => {
       state.open = false;
     },
-    validateTitle: (payload: { text: string }): void => {
-      const result = Validation.noEmptySchema().safeParse(payload.text);
-      state.text.error = result.success ? `` : result.error.errors[0]!.message;
-    },
-    clickCheckAll: (payload: { checked: boolean }): void => {
-      for (const id of state.check.sort) {
-        state.check.data[id]!.check = payload.checked;
-      }
+    clickCheckAll: (arg: { check: boolean }): void => {
+      Object.values(state.check!.data).forEach((data) => (data.check = arg.check));
     },
   };
 
@@ -94,4 +100,4 @@ const useStore = defineStore(`dialog`, () => {
 
 const store = useStore(createPinia());
 
-export default { state: store.state, getter: store.getter, action: store.action };
+export default { temp, state: store.state, getter: store.getter, action: store.action };

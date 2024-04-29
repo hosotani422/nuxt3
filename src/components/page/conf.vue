@@ -1,201 +1,162 @@
 <script setup lang="ts">
 import i18next from "i18next";
+import constants from "@/utils/const";
+import app from "@/stores/page/app";
 import conf from "@/stores/page/conf";
 defineOptions({
   inheritAttrs: false,
 });
 defineProps<{
-  title: string;
-  state: (typeof conf)[`state`][`data`];
+  constant: typeof constants;
+  updateKey: typeof app.state.updateKey;
+  state: typeof conf.state.data;
 }>();
-const emit = defineEmits([
-  `routerBack`,
-  `reactLang`,
-  `downloadBackup`,
-  `uploadBackup`,
-  `resetConf`,
-  `resetList`,
-  `swipeInit`,
-  `swipeStart`,
-  `swipeMove`,
-  `swipeEnd`,
-]);
+const emit = defineEmits<{
+  routerBack: [];
+  downloadBackup: [arg: { elem: HTMLElement }];
+  uploadBackup: [arg: { files: FileList }];
+  resetConf: [];
+  resetList: [];
+  swipeInit: [arg: { x: number; y: number }];
+  swipeStart: [arg: { x: number; y: number }];
+  swipeMove: [arg: { y: number }];
+  swipeEnd: [arg: { y: number }];
+}>();
 </script>
 
 <template>
   <div
+    data-id="ConfRoot"
     data-testid="ConfRoot"
-    class="theme-mask-color absolute inset-x-0 bottom-0 z-[10] h-[200%] select-none active:transition speed1:active:duration-1000 speed2:active:duration-500 speed3:active:duration-200 fromto:!translate-y-[50%] fromto:!bg-transparent"
-    @mousemove="
-      emit(`swipeStart`, { clientX: $event.clientX, clientY: $event.clientY });
-      emit(`swipeMove`, { clientY: $event.clientY });
-    "
-    @mouseup="emit(`swipeEnd`, { clientY: $event.clientY })"
+    class="theme-color-mask anime-slide-conf absolute inset-x-0 bottom-0 z-10 h-[200%] select-none"
     @touchmove="
-      emit(`swipeStart`, {
-        clientX: $event.changedTouches[0]!.clientX,
-        clientY: $event.changedTouches[0]!.clientY,
-      });
-      emit(`swipeMove`, { clientY: $event.changedTouches[0]!.clientY });
+      emit(`swipeStart`, { x: $event.changedTouches[0]!.clientX, y: $event.changedTouches[0]!.clientY });
+      emit(`swipeMove`, { y: $event.changedTouches[0]!.clientY });
     "
-    @touchend="emit(`swipeEnd`, { clientY: $event.changedTouches[0]!.clientY })"
+    @mousemove="
+      emit(`swipeStart`, { x: $event.clientX, y: $event.clientY });
+      emit(`swipeMove`, { y: $event.clientY });
+    "
+    @touchend="emit(`swipeEnd`, { y: $event.changedTouches[0]!.clientY })"
+    @mouseup="emit(`swipeEnd`, { y: $event.clientY })"
   >
     <div
       data-testid="ConfBack"
-      class="absolute left-0 top-0 z-[1] h-[55%] w-[100%]"
-      @mousedown="
-        emit(`swipeInit`, {
-          target: ($event.currentTarget as HTMLElement).parentElement,
-          clientX: $event.clientX,
-          clientY: $event.clientY,
-        })
-      "
-      @touchstart="
-        emit(`swipeInit`, {
-          target: ($event.currentTarget as HTMLElement).parentElement,
-          clientX: $event.changedTouches[0]!.clientX,
-          clientY: $event.changedTouches[0]!.clientY,
-        })
-      "
+      class="absolute inset-x-0 top-0 z-[1] h-[55%]"
+      @touchstart="emit(`swipeInit`, { x: $event.changedTouches[0]!.clientX, y: $event.changedTouches[0]!.clientY })"
+      @mousedown="emit(`swipeInit`, { x: $event.clientX, y: $event.clientY })"
     />
     <div
+      :key="`Conf${updateKey}`"
       data-testid="ConfHome"
-      class="theme-grad-color theme-shadow-normal absolute inset-x-0 bottom-0 z-[1] flex h-[45%] flex-col"
+      class="theme-color-grad theme-shadow-outer absolute inset-x-0 bottom-0 z-[1] flex h-[45%] flex-col"
     >
       <div
         data-testid="ConfHead"
-        class="theme-grad-color theme-shadow-normal relative z-[9] flex flex-auto items-center gap-3 p-3"
+        class="theme-color-grad theme-shadow-outer relative z-[9] flex flex-initial items-center gap-3 p-3"
       >
-        <IconDown data-testid="ConfDown" class="flex-auto" @click="emit(`routerBack`)" />
-        <p data-testid="ConfTitle" class="flex-even text-xl">{{ i18next.t(`conf.title`) }}</p>
-        <p data-testid="ConfName" class="flex-auto">{{ title }}</p>
+        <IconDown data-testid="ConfDown" class="flex-initial" @click="emit(`routerBack`)" />
+        <p data-testid="ConfTitle" class="flex-1 text-xl">{{ i18next.t(`conf.title`) }}</p>
+        <p data-testid="ConfName" class="flex-initial">
+          {{ `${constant.base.app.name} ${constant.base.app.version}` }}
+        </p>
       </div>
-      <ul data-testid="ConfBody" class="flex-even overflow-auto p-3">
+      <ul data-testid="ConfBody" class="flex-1 overflow-auto p-3">
         <li
           data-testid="ConfItem"
-          class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3"
+          class="theme-color-border theme-color-back flex h-16 items-center gap-3 border-b-[0.1rem] border-solid p-3"
         >
-          <p data-testid="ConfSizeTitle" class="flex-even">{{ i18next.t(`conf.size.title`) }}</p>
-          <InputRange v-model="state.size" data-testid="ConfSizeValue" class="flex-even" :min="1" :max="3" :step="1" />
-          <p data-testid="ConfSizeName" class="flex-auto">
-            {{ i18next.t(`conf.size.value.${state.size}`) }}
-          </p>
+          <p data-testid="ConfSizeTitle" class="flex-[0_1_5rem]">{{ i18next.t(`conf.size.title`) }}</p>
+          <InputRange v-model="state.size" data-testid="ConfSizeValue" class="flex-1" :min="1" :max="3" :step="1" />
+          <p data-testid="ConfSizeName" class="flex-initial">{{ i18next.t(`conf.size.value.${state.size}`) }}</p>
         </li>
         <li
           data-testid="ConfItem"
-          class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3"
+          class="theme-color-border theme-color-back flex h-16 items-center gap-3 border-b-[0.1rem] border-solid p-3"
         >
-          <p data-testid="ConfSpeedTitle" class="flex-even">{{ i18next.t(`conf.speed.title`) }}</p>
-          <InputRange
-            v-model="state.speed"
-            data-testid="ConfSpeedValue"
-            class="flex-even"
-            :min="1"
-            :max="3"
-            :step="1"
-          />
-          <p data-testid="ConfSpeedName" class="flex-auto">{{ i18next.t(`conf.speed.value.${state.speed}`) }}</p>
+          <p data-testid="ConfSpeedTitle" class="flex-[0_1_5rem]">{{ i18next.t(`conf.speed.title`) }}</p>
+          <InputRange v-model="state.speed" data-testid="ConfSpeedValue" class="flex-1" :min="1" :max="3" :step="1" />
+          <p data-testid="ConfSpeedName" class="flex-initial">{{ i18next.t(`conf.speed.value.${state.speed}`) }}</p>
         </li>
         <li
           data-testid="ConfItem"
-          class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3"
+          class="theme-color-border theme-color-back flex h-16 items-center gap-3 border-b-[0.1rem] border-solid p-3"
         >
-          <p data-testid="ConfVolumeTitle" class="flex-even">{{ i18next.t(`conf.volume.title`) }}</p>
-          <InputRange
-            v-model="state.volume"
-            data-testid="ConfVolumeValue"
-            class="flex-even"
-            :min="0"
-            :max="3"
-            :step="1"
-          />
-          <p data-testid="ConfVolumeName" class="flex-auto">{{ i18next.t(`conf.volume.value.${state.volume}`) }}</p>
-        </li>
-        <li
-          data-testid="ConfItem"
-          class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3"
-        >
-          <p data-testid="ConfVibrateTitle" class="flex-even">{{ i18next.t(`conf.vibrate.title`) }}</p>
-          <InputRadio v-model="state.vibrate" data-testid="ConfVibrateOff" class="flex-auto" value="off">{{
-            i18next.t(`conf.vibrate.value.off`)
-          }}</InputRadio>
-          <InputRadio v-model="state.vibrate" data-testid="ConfVibrateOn" class="flex-auto" value="on">{{
-            i18next.t(`conf.vibrate.value.on`)
-          }}</InputRadio>
-        </li>
-        <li
-          data-testid="ConfItem"
-          class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3"
-        >
-          <p data-testid="ConfThemeTitle" class="flex-even">{{ i18next.t(`conf.theme.title`) }}</p>
-          <InputRadio v-model="state.theme" data-testid="ConfThemeLight" class="flex-auto" value="light">{{
+          <p data-testid="ConfThemeTitle" class="flex-1">{{ i18next.t(`conf.theme.title`) }}</p>
+          <InputRadio v-model="state.theme" data-testid="ConfThemeLight" class="flex-initial" value="light">{{
             i18next.t(`conf.theme.value.light`)
           }}</InputRadio>
-          <InputRadio v-model="state.theme" data-testid="ConfThemeDark" class="flex-auto" value="dark">{{
+          <InputRadio v-model="state.theme" data-testid="ConfThemeDark" class="flex-initial" value="dark">{{
             i18next.t(`conf.theme.value.dark`)
           }}</InputRadio>
         </li>
         <li
           data-testid="ConfItem"
-          class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3"
+          class="theme-color-border theme-color-back flex h-16 items-center gap-3 border-b-[0.1rem] border-solid p-3"
         >
-          <p data-testid="ConfLangTitle" class="flex-even">{{ i18next.t(`conf.lang.title`) }}</p>
-          <InputRadio
-            v-model="state.lang"
-            data-testid="ConfLangEn"
-            class="flex-auto"
-            value="en"
-            @change="emit(`reactLang`, { value: ($event.target as HTMLInputElement).value })"
-            >{{ i18next.t(`conf.lang.value.en`) }}</InputRadio
-          >
-          <InputRadio
-            v-model="state.lang"
-            data-testid="ConfLangJa"
-            class="flex-auto"
-            value="ja"
-            @change="emit(`reactLang`, { value: ($event.target as HTMLInputElement).value })"
-            >{{ i18next.t(`conf.lang.value.ja`) }}</InputRadio
-          >
+          <p data-testid="ConfLangTitle" class="flex-1">{{ i18next.t(`conf.lang.title`) }}</p>
+          <InputRadio v-model="state.lang" data-testid="ConfLangEn" class="flex-initial" value="en">{{
+            i18next.t(`conf.lang.value.en`)
+          }}</InputRadio>
+          <InputRadio v-model="state.lang" data-testid="ConfLangJa" class="flex-initial" value="ja">{{
+            i18next.t(`conf.lang.value.ja`)
+          }}</InputRadio>
         </li>
         <li
           data-testid="ConfItem"
-          class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3"
+          class="theme-color-border theme-color-back flex h-16 items-center gap-3 border-b-[0.1rem] border-solid p-3"
         >
-          <p data-testid="ConfSaveTitle" class="flex-even">{{ i18next.t(`conf.save.title`) }}</p>
-          <InputRadio v-model="state.save" data-testid="ConfSaveLocal" class="flex-auto" value="local">{{
+          <p data-testid="ConfVibrateTitle" class="flex-1">{{ i18next.t(`conf.vibrate.title`) }}</p>
+          <InputRadio v-model="state.vibrate" data-testid="ConfVibrateOff" class="flex-initial" value="off">{{
+            i18next.t(`conf.vibrate.value.off`)
+          }}</InputRadio>
+          <InputRadio v-model="state.vibrate" data-testid="ConfVibrateOn" class="flex-initial" value="on">{{
+            i18next.t(`conf.vibrate.value.on`)
+          }}</InputRadio>
+        </li>
+        <li
+          data-testid="ConfItem"
+          class="theme-color-border theme-color-back flex h-16 items-center gap-3 border-b-[0.1rem] border-solid p-3"
+        >
+          <p data-testid="ConfSaveTitle" class="flex-1">{{ i18next.t(`conf.save.title`) }}</p>
+          <InputRadio v-model="state.save" data-testid="ConfSaveLocal" class="flex-initial" value="local">{{
             i18next.t(`conf.save.value.local`)
           }}</InputRadio>
-          <InputRadio v-model="state.save" data-testid="ConfSaveRest" class="flex-auto" value="rest">{{
+          <InputRadio v-model="state.save" data-testid="ConfSaveRest" class="flex-initial" value="rest">{{
             i18next.t(`conf.save.value.rest`)
           }}</InputRadio>
-          <InputRadio v-model="state.save" data-testid="ConfSaveGql" class="flex-auto" value="gql">{{
+          <InputRadio v-model="state.save" data-testid="ConfSaveGql" class="flex-initial" value="gql">{{
             i18next.t(`conf.save.value.gql`)
           }}</InputRadio>
         </li>
         <li
           data-testid="ConfItem"
-          class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3"
+          class="theme-color-border theme-color-back flex h-16 items-center gap-3 border-b-[0.1rem] border-solid p-3"
         >
-          <p data-testid="ConfBackupTitle" class="flex-even">{{ i18next.t(`conf.backup.title`) }}</p>
-          <a class="flex-auto" data-testid="ConfBackupDownload" @click="emit(`downloadBackup`, { event: $event })">
-            <InputButton class="flex-auto text-theme-fine">{{ i18next.t(`conf.backup.download`) }}</InputButton>
+          <p data-testid="ConfBackupTitle" class="flex-1">{{ i18next.t(`conf.backup.title`) }}</p>
+          <a
+            class="flex-[0_1_2rem] text-theme-fine"
+            data-testid="ConfBackupDownload"
+            @click="emit(`downloadBackup`, { elem: $event.currentTarget as HTMLElement })"
+          >
+            <InputButton>{{ i18next.t(`conf.backup.download`) }}</InputButton>
           </a>
           <InputFile
             data-testid="ConfBackupUpload"
-            class="flex-auto text-theme-warn"
-            @change="emit(`uploadBackup`, { event: $event })"
+            class="flex-[0_1_2rem] text-theme-warn"
+            @change="emit(`uploadBackup`, { files: $event.target.files })"
             >{{ i18next.t(`conf.backup.upload`) }}</InputFile
           >
         </li>
         <li
           data-testid="ConfItem"
-          class="theme-back-color flex h-16 items-center gap-4 border-b-[0.1rem] border-solid border-b-font-dark p-3"
+          class="theme-color-border theme-color-back flex h-16 items-center gap-3 border-b-[0.1rem] border-solid p-3"
         >
-          <p data-testid="ConfResetTitle" class="flex-even">{{ i18next.t(`conf.reset.title`) }}</p>
-          <InputButton data-testid="ConfResetConf" class="flex-auto text-theme-fine" @click="emit(`resetConf`)">{{
+          <p data-testid="ConfResetTitle" class="flex-1">{{ i18next.t(`conf.reset.title`) }}</p>
+          <InputButton data-testid="ConfResetConf" class="flex-[0_1_2rem] text-theme-fine" @click="emit(`resetConf`)">{{
             i18next.t(`conf.reset.conf`)
           }}</InputButton>
-          <InputButton data-testid="ConfResetList" class="flex-auto text-theme-warn" @click="emit(`resetList`)">{{
+          <InputButton data-testid="ConfResetList" class="flex-[0_1_2rem] text-theme-warn" @click="emit(`resetList`)">{{
             i18next.t(`conf.reset.list`)
           }}</InputButton>
         </li>

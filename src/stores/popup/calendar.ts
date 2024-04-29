@@ -1,25 +1,21 @@
-import Vue from "vue";
-import i18next from "i18next";
 import * as datefns from "date-fns";
+import i18next from "i18next";
 import constant from "@/utils/const";
-import conf from "@/stores/page/conf";
+import Util from "@/utils/base/util";
+import app from "@/stores/page/app";
 
-const refer: {
-  body?: Vue.Ref<Vue.ComponentPublicInstance<HTMLElement> | undefined>;
-  area?: Vue.Ref<Vue.ComponentPublicInstance<HTMLElement> | undefined>;
-} = {};
-
-const prop: {
+const temp: {
   swipe: {
     status?: `start` | `move` | `end`;
-    target?: HTMLElement;
+    elem?: HTMLElement;
     x?: number;
     y?: number;
     left?: number;
-    listener?: () => void;
   };
+  callback: (date: string) => void;
 } = {
   swipe: {},
+  callback: () => ``,
 };
 
 const useStore = defineStore(`calendar`, () => {
@@ -29,22 +25,44 @@ const useStore = defineStore(`calendar`, () => {
     current: string;
     cancel: string;
     clear: string;
-    callback: (date?: string) => void;
   } = reactive(constant.init.calendar);
 
   const getter = reactive({
-    textWeek: computed(() => (): string[] => {
-      const week = [];
-      for (let i = 1; i <= Number(i18next.t(`calendar.sort`)); i++) {
-        week.push(i18next.t(`calendar.week${i as unknown as `1` | `2` | `3` | `4` | `5` | `6` | `7`}`));
+    classStatus: computed(() => (month: string, day: string): { [K in `select` | `today` | `hide`]: boolean } => ({
+      select: day === state.select,
+      today: day === datefns.format(new Date(), `yyyy/MM/dd`),
+      hide: month !== datefns.format(day, `yyyy/MM`),
+    })),
+  });
+
+  const action = {
+    open: (arg: {
+      select: typeof state.select;
+      cancel: typeof state.cancel;
+      clear: typeof state.clear;
+      callback: typeof temp.callback;
+    }): void => {
+      state.open = true;
+      state.select = arg.select;
+      state.current = datefns.format(arg.select || new Date(), `yyyy/MM`);
+      state.cancel = arg.cancel;
+      state.clear = arg.clear;
+      temp.callback = arg.callback;
+    },
+    close: (): void => {
+      state.open = false;
+    },
+    getWeek: (): string[] => {
+      const week: ReturnType<typeof action.getWeek> = [];
+      for (const id of i18next.t(`calendar.sort`, { returnObjects: true })) {
+        week.push(i18next.t(`calendar.data.${id}`));
       }
       return week;
-    }),
-    textDay: computed(() => (): { id: string; day: { month: string; day: string; text: string }[] }[] => {
-      const month: ReturnType<typeof getter.textDay> = [];
+    },
+    getDay: (): { id: string; day: { id: string; text: string }[] }[] => {
+      const month: ReturnType<typeof action.getDay> = [];
       for (
-        let curMonth = datefns.subMonths(new Date(state.current), 1),
-          limMonth = datefns.addMonths(new Date(state.current), 2);
+        let curMonth = datefns.subMonths(state.current, 1), limMonth = datefns.addMonths(state.current, 2);
         datefns.isBefore(curMonth, limMonth);
         curMonth = datefns.addMonths(curMonth, 1)
       ) {
@@ -55,96 +73,69 @@ const useStore = defineStore(`calendar`, () => {
           datefns.isBefore(curDay, limDay);
           curDay = datefns.addDays(curDay, 1)
         ) {
-          day.push({
-            month: datefns.format(curMonth, `yyyy/MM`),
-            day: datefns.format(curDay, `yyyy/MM/dd`),
-            text: datefns.format(curDay, `d`),
-          });
+          day.push({ id: datefns.format(curDay, `yyyy/MM/dd`), text: datefns.format(curDay, `d`) });
         }
         month.push({ id: datefns.format(curMonth, `yyyy/MM`), day });
       }
       return month;
-    }),
-    classDay: computed(() => (month: string, day: string): { [K in `select` | `today` | `hide`]: boolean } => ({
-      select: day === state.select,
-      today: day === datefns.format(new Date(), `yyyy/MM/dd`),
-      hide: month !== datefns.format(new Date(day), `yyyy/MM`),
-    })),
-  });
-
-  const action = {
-    open: (payload: {
-      select: typeof state.select;
-      current: typeof state.current;
-      cancel: typeof state.cancel;
-      clear: typeof state.clear;
-      callback: typeof state.callback;
-    }): void => {
-      state.open = true;
-      state.select = payload.select;
-      state.current = payload.current;
-      state.cancel = payload.cancel;
-      state.clear = payload.clear;
-      state.callback = payload.callback;
     },
-    close: (): void => {
-      state.open = false;
-    },
-    pageMove: (payload: { prev: boolean }): void => {
-      refer
-        .area!.value!.animate(
-          { transform: `translateX(${payload.prev ? `0px` : `-66.666%`})` },
-          { duration: constant.base.duration[conf.state.data.speed], easing: `ease-in-out` },
+    pageMove: (arg: { mode: `prev` | `next` }): void => {
+      Util.getById(`CalendarArea`)
+        .animate(
+          { transform: `translateX(${arg.mode === `prev` ? `0px` : `-66.666%`})` },
+          { duration: app.action.getDuration(), easing: `ease-in-out` },
         )
         .addEventListener(`finish`, () => {
-          refer.area!.value!.style.transform = `translateX(-33.333%)`;
-          state.current = datefns.format(datefns.addMonths(new Date(state.current), payload.prev ? -1 : 1), `yyyy/MM`);
+          Util.getById<HTMLElement>(`CalendarArea`).style.transform = `translateX(-33.333%)`;
+          state.current = datefns.format(datefns.addMonths(state.current, arg.mode === `prev` ? -1 : 1), `yyyy/MM`);
         });
     },
-    swipeInit: (payload: { target: HTMLElement; clientX: number; clientY: number }): void => {
-      prop.swipe.status = `start`;
-      prop.swipe.target = payload.target;
-      prop.swipe.x = payload.clientX;
-      prop.swipe.y = payload.clientY;
-      prop.swipe.left =
-        prop.swipe.target.getBoundingClientRect().left - refer.body!.value!.parentElement!.getBoundingClientRect().left;
+    swipeInit: (arg: { x: number; y: number }): void => {
+      if (!temp.swipe.status) {
+        temp.swipe.status = `start`;
+        temp.swipe.elem = Util.getById<HTMLElement>(`CalendarArea`);
+        temp.swipe.x = arg.x;
+        temp.swipe.y = arg.y;
+        temp.swipe.left =
+          temp.swipe.elem.getBoundingClientRect().left -
+          Util.getById(`CalendarRoot`).children[0]!.getBoundingClientRect().left;
+      }
     },
-    swipeStart: (payload: { clientX: number; clientY: number }): void => {
-      if (prop.swipe.status === `start`) {
-        if (Math.abs(payload.clientX - prop.swipe.x!) + Math.abs(payload.clientY - prop.swipe.y!) > 10) {
-          Math.abs(payload.clientX - prop.swipe.x!) > Math.abs(payload.clientY - prop.swipe.y!)
-            ? (prop.swipe.status = `move`)
-            : (prop.swipe = {});
+    swipeStart: (arg: { x: number; y: number }): void => {
+      if (temp.swipe.status === `start`) {
+        if (Math.abs(arg.x - temp.swipe.x!) + Math.abs(arg.y - temp.swipe.y!) > 10) {
+          if (Math.abs(arg.x - temp.swipe.x!) > Math.abs(arg.y - temp.swipe.y!)) {
+            temp.swipe.status = `move`;
+          } else {
+            temp.swipe = {};
+          }
         }
       }
     },
-    swipeMove: (payload: { clientX: number }): void => {
-      if (prop.swipe.status === `move`) {
-        prop.swipe.target!.style.transform = `translateX(${prop.swipe.left! + payload.clientX - prop.swipe.x!}px)`;
+    swipeMove: (arg: { x: number }): void => {
+      if (temp.swipe.status === `move`) {
+        temp.swipe.elem!.style.transform = `translateX(${temp.swipe.left! + arg.x - temp.swipe.x!}px)`;
       }
     },
-    swipeEnd: (payload: { clientX: number }): void => {
-      if (prop.swipe.status === `move`) {
-        prop.swipe.status = `end`;
-        if (payload.clientX - prop.swipe.x! >= 75) {
-          action.pageMove({ prev: true });
-          prop.swipe = {};
-        } else if (payload.clientX - prop.swipe.x! <= -75) {
-          action.pageMove({ prev: false });
-          prop.swipe = {};
+    swipeEnd: (arg: { x: number }): void => {
+      if (temp.swipe.status === `move`) {
+        temp.swipe.status = `end`;
+        if (Math.abs(arg.x - temp.swipe.x!) >= 75) {
+          action.pageMove({ mode: arg.x - temp.swipe.x! > 0 ? `prev` : `next` });
+          temp.swipe = {};
         } else {
-          prop.swipe
-            .target!.animate(
+          temp.swipe
+            .elem!.animate(
               { transform: `translateX(-33.333%)` },
-              { duration: constant.base.duration[conf.state.data.speed], easing: `ease-in-out` },
+              { duration: app.action.getDuration(), easing: `ease-in-out` },
             )
             .addEventListener(`finish`, () => {
-              prop.swipe.target!.style.transform = `translateX(-33.333%)`;
-              prop.swipe = {};
+              temp.swipe.elem!.style.transform = `translateX(-33.333%)`;
+              temp.swipe = {};
             });
         }
       } else {
-        prop.swipe = {};
+        temp.swipe = {};
       }
     },
   };
@@ -154,4 +145,4 @@ const useStore = defineStore(`calendar`, () => {
 
 const store = useStore(createPinia());
 
-export default { refer, prop, state: store.state, getter: store.getter, action: store.action };
+export default { temp, state: store.state, getter: store.getter, action: store.action };

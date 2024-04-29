@@ -5,7 +5,6 @@ fixture(`main`).beforeEach(async () => {
   await Page.initMain();
 });
 test(`page - init`, async (t) => {
-  await t.wait(1000);
   await t.expect(await Page.getUrl()).eql(`/list1111111111111`);
   await t.expect(Page.getByTestId(`MainList`).count).eql(1);
   await t.expect(Page.getByTestId(`MainTitle`).value).eql(`list1`);
@@ -17,7 +16,7 @@ test(`page - init`, async (t) => {
   await t.expect(Page.getByTestId(`MainTask`).nth(0).textContent).eql(`main1`);
   await t.expect(Page.getByTestId(`MainTask`).nth(1).textContent).eql(`main2`);
   await t.expect(Page.getByTestId(`MainCount`).nth(0).textContent).eql(`1/2`);
-  await t.expect(Page.getByTestId(`MainCount`).nth(1).textContent).eql(`1/1`);
+  await t.expect(Page.getByTestId(`MainCount`).nth(1).textContent).eql(`0/0`);
 });
 test(`page - list`, async (t) => {
   await t.click(Page.getByTestId(`MainList`));
@@ -49,10 +48,8 @@ test(`item - select`, async (t) => {
 test(`item - check`, async (t) => {
   await t.click(Page.getByTestId(`MainCheck`).nth(0));
   await t.expect(Page.getByTestId(`MainCheck`).nth(0).checked).eql(true);
-  await t.expect(Page.getByTestId(`MainTask`).nth(0).textContent).eql(`main2`);
-  await t.click(Page.getByTestId(`MainCheck`).nth(1));
+  await t.click(Page.getByTestId(`MainCheck`).nth(0));
   await t.expect(Page.getByTestId(`MainCheck`).nth(0).checked).eql(false);
-  await t.expect(Page.getByTestId(`MainTask`).nth(0).textContent).eql(`main1`);
 });
 test(`item - title`, async (t) => {
   await t.click(Page.getByTestId(`MainItem`).nth(0));
@@ -84,7 +81,7 @@ test(`item - clone`, async (t) => {
 test(`item - move`, async (t) => {
   await Page.longClick(Page.getByTestId(`MainItem`).nth(0));
   await t.click(Page.getByTestId(`MainMove`));
-  await t.click(Page.getByTestId(`DialogRadio`).nth(1));
+  await t.click(Page.getByTestId(`DialogRadio`).nth(0));
   await t.click(Page.getByTestId(`DialogOk`));
   await t.expect(Page.getByTestId(`MainItem`).count).eql(1);
   await t.click(Page.getByTestId(`MainList`));
@@ -96,7 +93,7 @@ test(`item - move`, async (t) => {
 });
 test(`item - delete`, async (t) => {
   await Page.longClick(Page.getByTestId(`MainItem`).nth(0));
-  await t.click(Page.getByTestId(`MainTrash`));
+  await t.click(Page.getByTestId(`MainTrash`).nth(0));
   await t.expect(Page.getByTestId(`MainItem`).count).eql(1);
   await t.click(Page.getByTestId(`MainList`));
   await t.click(Page.getByTestId(`ListItem`).nth(2));

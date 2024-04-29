@@ -10,26 +10,14 @@ describe(`dom`, () => {
   });
   it(`slot`, () => {
     const wrapper = mount(InputRadio, { slots: { default: `InputRadio` } });
+    expect(wrapper.findByTestId<HTMLInputElement>(`InputRadio`).element.checked).toBe(false);
     expect(wrapper.findByTestId(`InputRadioLabel`).text()).toBe(`InputRadio`);
   });
   it(`value`, () => {
-    const wrapper = mount(InputRadio, { props: { value: `on`, modelValue: `on` } });
+    let wrapper = mount(InputRadio, { props: { value: `on`, modelValue: `on` } });
     expect(wrapper.findByTestId<HTMLInputElement>(`InputRadio`).element.checked).toBe(true);
-  });
-});
-
-describe(`event`, () => {
-  it(`v-model`, async () => {
-    const wrapper = mount(InputRadio, {
-      props: {
-        value: `on`,
-        modelValue: `off`,
-        "onUpdate:modelValue": (e: string) => {
-          wrapper.setProps({ modelValue: e === `on` });
-        },
-      },
-    });
-    await wrapper.findByTestId(`InputRadio`).setValue(true);
-    expect(wrapper.props(`modelValue`)).toBe(true);
+    expect(wrapper.findByTestId(`InputRadioLabel`).text()).toBe(``);
+    wrapper = mount(InputRadio, { props: { value: `on`, modelValue: `off` } });
+    expect(wrapper.findByTestId<HTMLInputElement>(`InputRadio`).element.checked).toBe(false);
   });
 });

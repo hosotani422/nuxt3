@@ -12,22 +12,20 @@ const meta: Meta<typeof PageList> = {
     setup() {
       mock();
       return {
-        refer: list.refer,
+        constant: constant,
         status: list.state.status,
-        title: constant.base.title,
-        trashId: constant.base.id.trash,
-        getListId: app.getter.listId,
-        stateFull: list.getter.stateFull,
-        stateUnit: list.getter.stateUnit,
-        classItem: list.getter.classItem,
-        iconType: list.getter.iconType,
+        selectId: app.getter.listId,
+        classStatus: list.getter.classStatus,
         classLimit: list.getter.classLimit,
+        typeIcon: list.getter.typeIcon,
         textCount: list.getter.textCount,
+        listFull: list.action.getFull,
+        listUnit: list.action.getUnit,
         routerBack: app.action.routerBack,
-        insertItem: list.action.insertItem,
+        entryItem: list.action.entryItem,
         copyItem: list.action.copyItem,
         deleteItem: list.action.deleteItem,
-        switchEdit: list.action.switchEdit,
+        editItem: list.action.editItem,
         dragInit: list.action.dragInit,
         dragStart: list.action.dragStart,
         dragMove: list.action.dragMove,
@@ -39,22 +37,20 @@ const meta: Meta<typeof PageList> = {
       };
     },
     template: `<PageList
-        :refer="refer"
+        :constant="constant"
         :status="status"
-        :title="title"
-        :trashId="trashId"
-        :getListId="getListId"
-        :stateFull="stateFull"
-        :stateUnit="stateUnit"
-        :classItem="classItem"
-        :iconType="iconType"
+        :selectId="selectId"
+        :classStatus="classStatus"
         :classLimit="classLimit"
+        :typeIcon="typeIcon"
         :textCount="textCount"
+        :listFull="listFull"
+        :listUnit="listUnit"
         @routerBack="routerBack"
-        @insertItem="insertItem"
+        @entryItem="entryItem"
         @copyItem="copyItem"
         @deleteItem="deleteItem"
-        @switchEdit="switchEdit"
+        @editItem="editItem"
         @dragInit="dragInit"
         @dragStart="dragStart"
         @dragMove="dragMove"

@@ -5,36 +5,32 @@ fixture(`conf`).beforeEach(async () => {
   await Page.initConf();
 });
 test(`page - init`, async (t) => {
-  await t.wait(1000);
   await t.expect(await Page.getUrl()).eql(`/list1111111111111/conf`);
   await t.expect(Page.getByTestId(`ConfDown`).count).eql(1);
   await t.expect(Page.getByTestId(`ConfTitle`).textContent).eql(`設定`);
-  await t.expect(Page.getByTestId(`ConfName`).textContent).contains(`Memotea`);
-  await t.expect(Page.getByTestId(`ConfItem`).count).eql(9);
+  await t.expect(Page.getByTestId(`ConfName`).textContent).contains(`Memosuku`);
+  await t.expect(Page.getByTestId(`ConfItem`).count).eql(8);
   await t.expect(Page.getByTestId(`ConfSizeTitle`).textContent).eql(`文字サイズ`);
   await t.expect(Page.getByTestId(`ConfSizeValue`).value).eql(`2`);
   await t.expect(Page.getByTestId(`ConfSizeName`).textContent).eql(`中`);
   await t.expect(Page.getByTestId(`ConfSpeedTitle`).textContent).eql(`アニメ速度`);
   await t.expect(Page.getByTestId(`ConfSpeedValue`).value).eql(`2`);
   await t.expect(Page.getByTestId(`ConfSpeedName`).textContent).eql(`中`);
-  await t.expect(Page.getByTestId(`ConfVolumeTitle`).textContent).eql(`音量`);
-  await t.expect(Page.getByTestId(`ConfVolumeValue`).value).eql(`1`);
-  await t.expect(Page.getByTestId(`ConfVolumeName`).textContent).eql(`小`);
-  await t.expect(Page.getByTestId(`ConfVibrateTitle`).textContent).eql(`振動`);
-  await t.expect(Page.getByTestId(`ConfVibrateOff`).checked).eql(false);
-  await t.expect(Page.getByTestId(`ConfVibrateOn`).checked).eql(true);
-  await t.expect(Page.getByTestId(`InputRadioLabel`).nth(0).textContent).eql(`無`);
-  await t.expect(Page.getByTestId(`InputRadioLabel`).nth(1).textContent).eql(`有`);
   await t.expect(Page.getByTestId(`ConfThemeTitle`).textContent).eql(`テーマ`);
   await t.expect(Page.getByTestId(`ConfThemeLight`).checked).eql(false);
   await t.expect(Page.getByTestId(`ConfThemeDark`).checked).eql(true);
-  await t.expect(Page.getByTestId(`InputRadioLabel`).nth(2).textContent).eql(`明`);
-  await t.expect(Page.getByTestId(`InputRadioLabel`).nth(3).textContent).eql(`暗`);
+  await t.expect(Page.getByTestId(`InputRadioLabel`).nth(0).textContent).eql(`明`);
+  await t.expect(Page.getByTestId(`InputRadioLabel`).nth(1).textContent).eql(`暗`);
   await t.expect(Page.getByTestId(`ConfLangTitle`).textContent).eql(`言語`);
   await t.expect(Page.getByTestId(`ConfLangEn`).checked).eql(false);
   await t.expect(Page.getByTestId(`ConfLangJa`).checked).eql(true);
-  await t.expect(Page.getByTestId(`InputRadioLabel`).nth(4).textContent).eql(`英語`);
-  await t.expect(Page.getByTestId(`InputRadioLabel`).nth(5).textContent).eql(`日本語`);
+  await t.expect(Page.getByTestId(`InputRadioLabel`).nth(2).textContent).eql(`英語`);
+  await t.expect(Page.getByTestId(`InputRadioLabel`).nth(3).textContent).eql(`日本語`);
+  await t.expect(Page.getByTestId(`ConfVibrateTitle`).textContent).eql(`振動`);
+  await t.expect(Page.getByTestId(`ConfVibrateOff`).checked).eql(false);
+  await t.expect(Page.getByTestId(`ConfVibrateOn`).checked).eql(true);
+  await t.expect(Page.getByTestId(`InputRadioLabel`).nth(4).textContent).eql(`無`);
+  await t.expect(Page.getByTestId(`InputRadioLabel`).nth(5).textContent).eql(`有`);
   await t.expect(Page.getByTestId(`ConfSaveTitle`).textContent).eql(`自動保存`);
   await t.expect(Page.getByTestId(`ConfSaveLocal`).checked).eql(true);
   await t.expect(Page.getByTestId(`ConfSaveRest`).checked).eql(false);
@@ -65,10 +61,6 @@ test(`item - speed`, async (t) => {
   await t.typeText(Page.getByTestId(`ConfSpeedValue`), `3`, { replace: true });
   await t.expect(Page.getByTestId(`ConfSpeedName`).textContent).eql(`高`);
 });
-test(`item - volume`, async (t) => {
-  await t.typeText(Page.getByTestId(`ConfVolumeValue`), `3`, { replace: true });
-  await t.expect(Page.getByTestId(`ConfVolumeName`).textContent).eql(`大`);
-});
 test(`item - vibrate`, async (t) => {
   await t.click(Page.getByTestId(`ConfVibrateOff`));
   await t.expect(Page.getByTestId(`ConfVibrateOff`).checked).eql(true);
@@ -92,7 +84,7 @@ test(`item - save`, async (t) => {
 });
 test(`item - upload`, async (t) => {
   await t.click(Page.getByTestId(`ConfThemeLight`));
-  await t.setFilesToUpload(Page.getByTestId(`ConfBackupUpload`), `../../memotea.bak`);
+  await t.setFilesToUpload(Page.getByTestId(`ConfBackupUpload`), `../../memosuku.bak`);
   await t.expect(Page.getByTestId(`ConfThemeLight`).checked).eql(false);
   await t.expect(Page.getByTestId(`ConfThemeDark`).checked).eql(true);
 });

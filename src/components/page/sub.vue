@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import Vue from "vue";
 import i18next from "i18next";
 import app from "@/stores/page/app";
 import main from "@/stores/page/main";
@@ -7,193 +6,137 @@ import sub from "@/stores/page/sub";
 defineOptions({
   inheritAttrs: false,
 });
-const props = defineProps<{
-  refer: typeof sub.refer;
+defineProps<{
   listId: typeof app.getter.listId;
   mainId: typeof app.getter.mainId;
-  mainUnit: typeof main.getter.stateUnit;
-  stateFull: typeof sub.getter.stateFull;
-  stateUnit: typeof sub.getter.stateUnit;
-  classItem: typeof sub.getter.classItem;
-  textMemo: typeof sub.getter.textMemo;
+  classStatus: typeof sub.getter.classStatus;
   classLimit: typeof sub.getter.classLimit;
+  textMemo: typeof sub.getter.textMemo;
   textAlarm: typeof sub.getter.textAlarm;
+  mainUnit: typeof main.action.getUnit;
+  subFull: typeof sub.action.getFull;
+  subUnit: typeof sub.action.getUnit;
 }>();
-const emit = defineEmits([
-  `routerBack`,
-  `enterItem`,
-  `backItem`,
-  `deleteItem`,
-  `checkItem`,
-  `switchItem`,
-  `switchEdit`,
-  `inputMemo`,
-  `openCalendar`,
-  `openClock`,
-  `openAlarm`,
-  `dragInit`,
-  `dragStart`,
-  `dragMove`,
-  `dragEnd`,
-  `swipeInit`,
-  `swipeStart`,
-  `swipeMove`,
-  `swipeEnd`,
-]);
-const home = ref<Vue.ComponentPublicInstance<HTMLElement>>();
-const wrap = ref<Vue.ComponentPublicInstance<HTMLElement>>();
-const items = ref<{ [K: string]: Vue.ComponentPublicInstance<HTMLElement> }>({});
-const titles = ref<{ [K: string]: Vue.ComponentPublicInstance<HTMLElement> }>({});
-props.refer.home = home;
-props.refer.wrap = wrap;
-props.refer.items = items;
-props.refer.titles = titles;
+const emit = defineEmits<{
+  routerBack: [arg?: { listId: string }];
+  toggleMode: [];
+  convertItem: [arg: { text: string }];
+  divideItem: [arg: { subId: string; caret: number }];
+  connectItem: [arg: { subId: string }];
+  deleteItem: [arg: { subId: string }];
+  openCalendar: [];
+  openClock: [];
+  openAlarm: [];
+  dragInit: [arg: { subId: string; y: number }];
+  dragStart: [];
+  dragMove: [arg: { y: number }];
+  dragEnd: [];
+  swipeInit: [arg: { x: number; y: number }];
+  swipeStart: [arg: { x: number; y: number }];
+  swipeMove: [arg: { x: number }];
+  swipeEnd: [arg: { x: number }];
+}>();
 </script>
 
 <template>
   <div
+    data-id="SubRoot"
     data-testid="SubRoot"
-    class="theme-mask-color absolute inset-y-0 right-0 z-[10] w-[200%] active:transition speed1:active:duration-1000 speed2:active:duration-500 speed3:active:duration-200 fromto:!translate-x-[50%] fromto:!bg-transparent"
-    @touchstart.capture="emit(`switchEdit`)"
-    @mousemove.prevent="
+    class="theme-color-mask anime-slide-sub absolute inset-y-0 right-0 z-10 w-[200%]"
+    @touchmove="
       emit(`dragStart`);
-      emit(`dragMove`, { clientY: $event.clientY });
+      emit(`dragMove`, { y: $event.changedTouches[0]!.clientY });
+      emit(`swipeStart`, { x: $event.changedTouches[0]!.clientX, y: $event.changedTouches[0]!.clientY });
+      emit(`swipeMove`, { x: $event.changedTouches[0]!.clientX });
     "
     @mousemove="
-      emit(`swipeStart`, { clientX: $event.clientX, clientY: $event.clientY });
-      emit(`swipeMove`, { clientX: $event.clientX });
-    "
-    @mouseup="
-      emit(`dragEnd`);
-      emit(`swipeEnd`, { clientX: $event.clientX });
-    "
-    @touchmove.prevent="
       emit(`dragStart`);
-      emit(`dragMove`, { clientY: $event.changedTouches[0]!.clientY });
-    "
-    @touchmove="
-      emit(`swipeStart`, {
-        clientX: $event.changedTouches[0]!.clientX,
-        clientY: $event.changedTouches[0]!.clientY,
-      });
-      emit(`swipeMove`, { clientX: $event.changedTouches[0]!.clientX });
+      emit(`dragMove`, { y: $event.clientY });
+      emit(`swipeStart`, { x: $event.clientX, y: $event.clientY });
+      emit(`swipeMove`, { x: $event.clientX });
     "
     @touchend="
       emit(`dragEnd`);
-      emit(`swipeEnd`, { clientX: $event.changedTouches[0]!.clientX });
+      emit(`swipeEnd`, { x: $event.changedTouches[0]!.clientX });
+    "
+    @mouseup="
+      emit(`dragEnd`);
+      emit(`swipeEnd`, { x: $event.clientX });
     "
   >
     <div
       data-testid="SubBack"
-      class="absolute left-0 top-0 z-[1] h-[100%] w-[57%]"
-      @mousedown="
-        emit(`swipeInit`, {
-          target: ($event.currentTarget as HTMLElement).parentElement,
-          clientX: $event.clientX,
-          clientY: $event.clientY,
-        })
-      "
-      @touchstart="
-        emit(`swipeInit`, {
-          target: ($event.currentTarget as HTMLElement).parentElement,
-          clientX: $event.changedTouches[0]!.clientX,
-          clientY: $event.changedTouches[0]!.clientY,
-        })
-      "
+      class="absolute inset-y-0 left-0 z-[1] w-[57%]"
+      @touchstart="emit(`swipeInit`, { x: $event.changedTouches[0]!.clientX, y: $event.changedTouches[0]!.clientY })"
+      @mousedown="emit(`swipeInit`, { x: $event.clientX, y: $event.clientY })"
     />
     <div
-      ref="home"
+      data-id="SubHome"
       data-testid="SubHome"
-      class="theme-grad-color theme-shadow-reverse absolute inset-y-0 left-[57%] z-[1] flex w-[43%] flex-col"
+      class="theme-color-grad theme-shadow-outer absolute inset-y-0 right-0 z-[1] flex w-[43%] flex-col"
     >
       <div
         data-testid="SubHead"
-        class="theme-grad-color theme-shadow-normal relative z-[9] flex flex-auto items-center gap-3 p-3"
+        class="theme-color-grad theme-shadow-outer relative z-[9] flex flex-initial items-center gap-3 p-3"
       >
-        <IconRight data-testid="SubRight" class="flex-auto" @click="emit(`routerBack`)" />
+        <IconRight data-testid="SubRight" class="flex-initial" @click="emit(`routerBack`)" />
         <InputTextbox
           v-model="mainUnit().title"
           data-testid="SubTitle"
-          class="flex-even text-xl"
+          class="flex-1 text-xl"
           :placeholder="i18next.t(`placeholder.main`)"
         />
-        <IconMode data-testid="SubMode" class="flex-auto" @click="emit(`switchItem`)" />
+        <IconMode data-testid="SubMode" class="flex-initial" @click="emit(`toggleMode`)" />
       </div>
-      <div data-testid="SubBody" class="flex-even overflow-auto p-3">
+      <div data-testid="SubBody" class="flex-1 overflow-auto p-3">
         <transition mode="out-in">
           <InputTextarea
             v-if="!mainUnit().task"
             data-testid="SubMemo"
-            class="theme-back-color fade-normal size-full"
+            class="theme-color-back anime-fade-item size-full"
             :placeholder="i18next.t(`placeholder.memo`)"
             :model-value="textMemo()"
-            @input="emit(`inputMemo`, { value: ($event.target as HTMLInputElement).value })"
+            @input="emit(`convertItem`, { text: ($event.target as HTMLInputElement).value })"
           />
-          <ul v-else ref="wrap" class="fade-normal">
+          <ul v-else data-id="SubBody" class="anime-fade-item">
             <transition-group>
               <li
-                v-for="(subId, index) of stateFull().sort"
-                :ref="
-                  (el: Vue.ComponentPublicInstance<any>) => {
-                    if (el) {
-                      items[subId] = el;
-                    }
-                  }
-                "
+                v-for="(subId, index) of subFull().sort"
                 :key="`list${listId()}main${mainId()}sub${subId}`"
+                :data-id="`SubItem${subId}`"
                 data-testid="SubItem"
-                class="theme-back-color scale-up [&.edit]:theme-shadow-outer [&.drag]:theme-shadow-outer relative flex items-start gap-3 overflow-hidden border-b-[0.1rem] border-solid border-b-font-dark p-3 [&.check]:line-through [&.check]:opacity-50 [&.drag]:z-[1] [&.drag]:scale-[1.03] [&.edit]:z-[1] [&.edit]:scale-[1.03] [&.hide]:invisible"
-                :class="classItem(subId)"
+                class="theme-color-border theme-color-back trans-select-text trans-edit-item trans-check-item anime-scale-item group relative flex items-start gap-3 overflow-hidden border-b-[0.1rem] border-solid p-3"
+                :class="classStatus(subId)"
               >
-                <InputCheck
-                  data-testid="SubCheck"
-                  class="flex-auto"
-                  :model-value="stateUnit(``, ``, subId).check"
-                  @change="
-                    emit(`checkItem`, {
-                      subId,
-                      checked: ($event.target as HTMLInputElement).checked,
-                    })
-                  "
-                />
+                <InputCheck v-model="subUnit({ subId }).check" data-testid="SubCheck" class="peer/check flex-initial" />
                 <InputTextarea
-                  :ref="
-                    (el: Vue.ComponentPublicInstance<any>) => {
-                      if (el) {
-                        titles[subId] = el;
-                      }
-                    }
-                  "
-                  v-model="stateUnit(``, ``, subId).title"
+                  v-model="subUnit({ subId }).title"
+                  :data-id="`SubTask${subId}`"
                   data-testid="SubTask"
-                  class="flex-even !p-0"
+                  class="peer/text flex-1 !p-0"
                   :placeholder="i18next.t(`placeholder.sub`)"
                   sizing="content"
-                  @click="emit(`switchEdit`, { subId })"
                   @keydown.enter.prevent="
-                    emit(`enterItem`, {
-                      subId,
-                      selectionStart: ($event.target as HTMLInputElement).selectionStart,
-                    })
+                    emit(`divideItem`, { subId, caret: ($event.target as HTMLInputElement).selectionStart! })
                   "
                   @keydown.backspace="
                     index > 0 &&
                       ($event.target as HTMLInputElement).selectionStart === 0 &&
-                      ($event.preventDefault(), emit(`backItem`, { subId }))
+                      ($event.target as HTMLInputElement).selectionEnd === 0 &&
+                      ($event.preventDefault(), emit(`connectItem`, { subId }))
                   "
                 />
                 <IconDrag
                   data-testid="SubDrag"
-                  @mousedown="emit(`dragInit`, { subId, clientY: $event.clientY })"
-                  @touchstart="emit(`dragInit`, { subId, clientY: $event.changedTouches[0]?.clientY })"
+                  class="flex-initial"
+                  @touchstart="emit(`dragInit`, { subId, y: $event.changedTouches[0]?.clientY })"
+                  @mousedown="emit(`dragInit`, { subId, y: $event.clientY })"
                 />
                 <transition>
                   <IconTrash
-                    v-if="stateFull().sort.length > 1 && classItem(subId).edit"
                     data-testid="SubTrash"
-                    class="slide-right theme-back-color absolute right-3"
-                    @mousedown="emit(`deleteItem`, { subId })"
-                    @touchstart="emit(`deleteItem`, { subId })"
+                    class="theme-color-back trans-option-text absolute right-3 translate-x-[150%]"
+                    @click="emit(`deleteItem`, { subId })"
                   />
                 </transition>
               </li>
@@ -201,33 +144,34 @@ props.refer.titles = titles;
           </ul>
         </transition>
       </div>
-      <div class="theme-grad-color theme-shadow-reverse relative z-[9] flex flex-auto items-center gap-3 p-3">
+      <div
+        data-testid="SubFoot"
+        class="theme-color-grad theme-shadow-outer flex flex-initial items-center gap-3 p-3"
+        :class="classLimit()"
+      >
         <InputTextbox
           data-testid="SubCalendar"
-          class="w-full flex-even"
-          :class="classLimit()"
+          class="w-full flex-1"
           :placeholder="i18next.t(`placeholder.date`)"
           :model-value="mainUnit().date"
           readonly
-          @focus="emit(`openCalendar`, { date: mainUnit().date })"
+          @click="emit(`openCalendar`)"
         />
         <InputTextbox
           data-testid="SubClock"
-          class="w-full flex-even"
-          :class="classLimit()"
+          class="w-full flex-1"
           :placeholder="i18next.t(`placeholder.time`)"
           :model-value="mainUnit().time"
           readonly
-          @focus="emit(`openClock`, { time: mainUnit().time })"
+          @click="emit(`openClock`)"
         />
         <InputTextbox
           data-testid="SubDialog"
-          class="w-full flex-even"
-          :class="classLimit()"
+          class="w-full flex-1"
           :placeholder="i18next.t(`placeholder.alarm`)"
           :model-value="textAlarm()"
           readonly
-          @focus="emit(`openAlarm`)"
+          @click="emit(`openAlarm`)"
         />
       </div>
     </div>

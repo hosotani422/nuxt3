@@ -1,4 +1,4 @@
-# Memotea
+# Memosuku
 
 ## インストール
 

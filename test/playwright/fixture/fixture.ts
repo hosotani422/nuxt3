@@ -7,7 +7,7 @@ export default class Fixture {
     private readonly contest: BrowserContext,
   ) {}
   private async loadData(): Promise<void> {
-    const backup = fs.readFileSync(`./test/memotea.bak`, `utf8`).split(`\n`);
+    const backup = fs.readFileSync(`./test/memosuku.bak`, `utf8`).split(`\n`);
     this.contest.addInitScript((backup) => {
       window.localStorage.setItem(`route`, backup[0]!);
       window.localStorage.setItem(`list`, backup[1]!);
@@ -17,8 +17,7 @@ export default class Fixture {
     }, backup);
   }
   private async openPage(): Promise<void> {
-    await this.page.goto(``);
-    await this.page.goto(`/list0000000000000`);
+    await this.page.goto(`/list1111111111111`);
   }
   public async initList(): Promise<void> {
     await this.loadData();

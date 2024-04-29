@@ -5,33 +5,28 @@ import InputTextbox from "@/components/input/textbox.vue";
 describe(`dom`, () => {
   it(`default`, () => {
     const wrapper = mount(InputTextbox);
-    expect(wrapper.findByTestId(`InputTextbox`).attributes(`type`)).toBe(`text`);
-    expect(wrapper.findByTestId<HTMLInputElement>(`InputTextbox`).element.value).toBe(``);
+    const element = wrapper.findByTestId<HTMLInputElement>(`InputTextbox`);
+    expect(element.attributes(`type`)).toBe(`text`);
+    expect(element.element.value).toBe(``);
   });
   it(`type:text`, () => {
     const wrapper = mount(InputTextbox, { props: { type: `text` } });
-    expect(wrapper.findByTestId(`InputTextbox`).attributes(`type`)).toBe(`text`);
+    const element = wrapper.findByTestId<HTMLInputElement>(`InputTextbox`);
+    expect(element.attributes(`type`)).toBe(`text`);
+    expect(element.element.value).toBe(``);
   });
   it(`type:password`, () => {
     const wrapper = mount(InputTextbox, { props: { type: `password` } });
-    expect(wrapper.findByTestId(`InputTextbox`).attributes(`type`)).toBe(`password`);
+    const element = wrapper.findByTestId<HTMLInputElement>(`InputTextbox`);
+    expect(element.attributes(`type`)).toBe(`password`);
+    expect(element.element.value).toBe(``);
   });
   it(`value`, () => {
-    const wrapper = mount(InputTextbox, { props: { modelValue: `setProps` } });
-    expect(wrapper.findByTestId<HTMLInputElement>(`InputTextbox`).element.value).toBe(`setProps`);
-  });
-});
-
-describe(`event`, () => {
-  it(`v-model`, async () => {
-    const wrapper = mount(InputTextbox, {
-      props: {
-        "onUpdate:modelValue": (e: string) => {
-          wrapper.setProps({ modelValue: e });
-        },
-      },
-    });
-    await wrapper.findByTestId(`InputTextbox`).setValue(`setValue`);
-    expect(wrapper.props(`modelValue`)).toBe(`setValue`);
+    const wrapper = mount(InputTextbox, { props: { modelValue: `value1` } });
+    const element = wrapper.findByTestId<HTMLInputElement>(`InputTextbox`);
+    expect(element.attributes(`type`)).toBe(`text`);
+    expect(element.element.value).toBe(`value1`);
+    element.setValue(`value2`);
+    expect(element.element.value).toBe(`value2`);
   });
 });

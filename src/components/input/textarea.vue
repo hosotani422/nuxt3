@@ -4,29 +4,29 @@ defineOptions({
 });
 const prop = withDefaults(
   defineProps<{
-    modelValue?: string;
     sizing?: `fixed` | `content`;
+    modelValue?: string;
   }>(),
   {
-    modelValue: ``,
     sizing: `fixed`,
+    modelValue: ``,
   },
 );
 const emit = defineEmits<{
   "update:modelValue": [value: string];
 }>();
-const updateValue = ($event: Event): void => {
-  emit(`update:modelValue`, ($event.target as HTMLInputElement).value);
+const updateValue = (value: string): void => {
+  emit(`update:modelValue`, value);
 };
 </script>
 
 <template>
   <textarea
     data-testid="InputTextarea"
-    class="m-0 resize-none overflow-auto border-0 bg-transparent p-2 text-base leading-8 outline-0 placeholder:text-theme-half"
+    class="m-0 resize-none overflow-auto border-0 bg-transparent p-2 leading-8 outline-0 placeholder:text-theme-half"
     :style="`field-sizing: ${prop.sizing}`"
     v-bind="$attrs"
-    @input="updateValue($event)"
-    v-text="modelValue"
+    :value="modelValue"
+    @input="updateValue(($event.target as HTMLInputElement).value)"
   />
 </template>

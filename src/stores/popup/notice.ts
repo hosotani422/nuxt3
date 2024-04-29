@@ -1,26 +1,32 @@
 import constant from "@/utils/const";
 
+const temp: {
+  timeoutId: number;
+  callback: () => void;
+} = {
+  timeoutId: 0,
+  callback: () => ``,
+};
+
 const useStore = defineStore(`notice`, () => {
   const state: {
     open: boolean;
     message: string;
     button: string;
-    callback: () => void;
-    timeoutId: number;
   } = reactive(constant.init.notice);
 
   const action = {
-    open: (payload: {
+    open: (arg: {
       message: typeof state.message;
       button: typeof state.button;
-      callback: typeof state.callback;
+      callback: typeof temp.callback;
     }): void => {
       state.open = true;
-      state.message = payload.message;
-      state.button = payload.button;
-      state.callback = payload.callback;
-      clearTimeout(state.timeoutId);
-      state.timeoutId = setTimeout(() => {
+      state.message = arg.message;
+      state.button = arg.button;
+      temp.callback = arg.callback;
+      clearTimeout(temp.timeoutId);
+      temp.timeoutId = setTimeout(() => {
         action.close();
       }, 3000) as unknown as number;
     },
@@ -34,4 +40,4 @@ const useStore = defineStore(`notice`, () => {
 
 const store = useStore(createPinia());
 
-export default { state: store.state, action: store.action };
+export default { temp, state: store.state, action: store.action };

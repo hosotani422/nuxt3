@@ -5,10 +5,9 @@ fixture(`list`).beforeEach(async () => {
   await Page.initList();
 });
 test(`page - init`, async (t) => {
-  await t.wait(1000);
   await t.expect(await Page.getUrl()).eql(`/list1111111111111/list`);
   await t.expect(Page.getByTestId(`ListPlus`).count).eql(1);
-  await t.expect(Page.getByTestId(`ListTitle`).textContent).eql(`Memotea`);
+  await t.expect(Page.getByTestId(`ListTitle`).textContent).eql(`Memosuku`);
   await t.expect(Page.getByTestId(`ListLeft`).count).eql(1);
   await t.expect(Page.getByTestId(`ListItem`).count).eql(3);
   await t.expect(Page.getByTestId(`ListIcon`).nth(0).find(`title`).getAttribute(`id`)).eql(`list`);
@@ -101,16 +100,16 @@ test(`item - edit`, async (t) => {
 });
 test(`item - current`, async (t) => {
   await Page.longClick(Page.getByTestId(`ListItem`).nth(0));
-  await t.expect(Page.getByTestId(`ListClone`).count).eql(1);
-  await t.expect(Page.getByTestId(`ListTrash`).count).eql(0);
+  await t.expect(Page.getByTestId(`ListClone`).count).eql(2);
+  await t.expect(Page.getByTestId(`ListTrash`).count).eql(1);
 });
 test(`item - normal`, async (t) => {
   await Page.longClick(Page.getByTestId(`ListItem`).nth(1));
-  await t.expect(Page.getByTestId(`ListClone`).count).eql(1);
+  await t.expect(Page.getByTestId(`ListClone`).count).eql(2);
   await t.expect(Page.getByTestId(`ListTrash`).count).eql(1);
 });
 test(`item - trash`, async (t) => {
   await Page.longClick(Page.getByTestId(`ListItem`).nth(2));
-  await t.expect(Page.getByTestId(`ListClone`).count).eql(0);
-  await t.expect(Page.getByTestId(`ListTrash`).count).eql(0);
+  await t.expect(Page.getByTestId(`ListClone`).count).eql(2);
+  await t.expect(Page.getByTestId(`ListTrash`).count).eql(1);
 });

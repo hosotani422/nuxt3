@@ -5,18 +5,21 @@ defineOptions({
 withDefaults(
   defineProps<{
     type?: `button` | `reset` | `submit`;
+    disabled?: boolean;
   }>(),
   {
     type: `button`,
+    disabled: false,
   },
 );
 </script>
 
 <template>
   <button
-    data-testid="InputButton"
-    class="m-0 h-8 select-none border-0 bg-transparent p-0 text-base outline-0"
     :type="type"
+    data-testid="InputButton"
+    class="h-8 select-none border-0 bg-transparent outline-0 disabled:opacity-50"
+    :disabled="disabled"
     v-bind="$attrs"
   >
     <slot>button</slot>

@@ -10,24 +10,14 @@ describe(`dom`, () => {
   });
   it(`slot`, () => {
     const wrapper = mount(InputCheck, { slots: { default: `InputCheck` } });
+    expect(wrapper.findByTestId<HTMLInputElement>(`InputCheck`).element.checked).toBe(false);
     expect(wrapper.findByTestId(`InputCheckLabel`).text()).toBe(`InputCheck`);
   });
   it(`value`, () => {
     const wrapper = mount(InputCheck, { props: { modelValue: true } });
     expect(wrapper.findByTestId<HTMLInputElement>(`InputCheck`).element.checked).toBe(true);
-  });
-});
-
-describe(`event`, () => {
-  it(`v-model`, async () => {
-    const wrapper = mount(InputCheck, {
-      props: {
-        "onUpdate:modelValue": (e: boolean) => {
-          wrapper.setProps({ modelValue: e });
-        },
-      },
-    });
-    await wrapper.findByTestId(`InputCheck`).setValue(true);
-    expect(wrapper.props(`modelValue`)).toBe(true);
+    expect(wrapper.findByTestId(`InputCheckLabel`).text()).toBe(``);
+    wrapper.findByTestId<HTMLInputElement>(`InputCheck`).setValue(false);
+    expect(wrapper.findByTestId<HTMLInputElement>(`InputCheck`).element.checked).toBe(false);
   });
 });

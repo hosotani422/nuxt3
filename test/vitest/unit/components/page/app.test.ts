@@ -5,7 +5,7 @@ import fixture from "../../../fixture/page/app";
 const it = test.extend<{ wrapper: VueWrapper }>({
   wrapper: async ({}, use) => {
     fixture.setRouter();
-    await fixture.loadLang();
+    await fixture.init();
     await fixture.loadData();
     await use(await fixture.getWrapper());
   },
@@ -14,13 +14,15 @@ const it = test.extend<{ wrapper: VueWrapper }>({
 describe(`dom`, () => {
   it(`root`, ({ wrapper }) => {
     expect(wrapper.findByTestIdAll(`AppRoot`)).toHaveLength(1);
-    expect(wrapper.findByTestId(`AppRoot`).classes()).toContain(`light`);
-    expect(wrapper.findByTestId(`AppRoot`).classes()).toContain(`speed2`);
+    expect(wrapper.findByTestId(`AppRoot`).classes()).toContain(`dark`);
+    expect(wrapper.findByTestId(`AppRoot`).classes()).toContain(`just`);
     expect(wrapper.findByTestId(`AppRoot`).classes()).toContain(`text-base`);
   });
   it(`header`, ({ wrapper }) => {
     expect(wrapper.findByTestIdAll(`AppTitle`)).toHaveLength(1);
-    expect(wrapper.findByTestId(`AppTitle`).text()).toBe(`Memotea`);
+    expect(wrapper.findByTestId(`AppTitle`).text()).toBe(`Memosuku`);
+    expect(wrapper.findByTestIdAll(`AppCharset`)).toHaveLength(1);
+    expect(wrapper.findByTestId(`AppCharset`).attributes(`charset`)).toBe(`utf-8`);
     expect(wrapper.findByTestIdAll(`AppViewport`)).toHaveLength(1);
     expect(wrapper.findByTestId(`AppViewport`).attributes(`name`)).toBe(`viewport`);
     expect(wrapper.findByTestId(`AppViewport`).attributes(`content`)).toBe(`width=device-width, initial-scale=1`);
@@ -32,8 +34,5 @@ describe(`dom`, () => {
     expect(wrapper.findByTestId(`AppIcon`).attributes(`href`)).toBe(`/favicon.png`);
     expect(wrapper.findByTestIdAll(`AppNoScript`)).toHaveLength(1);
     expect(wrapper.findByTestId(`AppNoScript`).text()).toBe(`JavaScript is required`);
-  });
-  it(`footer`, ({ wrapper }) => {
-    expect(wrapper.findByTestIdAll(`AppFoot`)).toHaveLength(0);
   });
 });

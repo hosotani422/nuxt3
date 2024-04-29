@@ -1,3 +1,4 @@
+import * as Vue from "vue";
 import i18next from "i18next";
 import constant from "@/utils/const/index";
 import Api from "@/api/api";
@@ -8,104 +9,106 @@ import conf from "@/stores/page/conf";
 import { ja } from "@/locales/ja";
 import { en } from "@/locales/en";
 
+const temp: {
+  routeStart: boolean;
+  backId: string;
+  route?: typeof useRoute;
+  router?: typeof useRouter;
+} = {
+  routeStart: true,
+  backId: ``,
+};
+
 const useStore = defineStore(`app`, () => {
   const state: {
-    initClient: boolean;
-    backId: string;
+    updateKey: string;
   } = reactive({
-    initClient: false,
-    backId: ``,
+    updateKey: ``,
   });
 
   const getter = reactive({
-    isApp: computed(() => (): boolean => false),
     listId: computed(() => (): string => {
-      const listId = useRoute()?.params?.listId;
-      return listId && !Array.isArray(listId) ? listId : ``;
+      return temp.route?.params?.listId || ``;
     }),
     mainId: computed(() => (): string => {
-      const mainId = useRoute()?.params?.mainId;
-      return mainId && !Array.isArray(mainId) ? mainId : ``;
+      return temp.route?.params?.mainId || ``;
     }),
-    classTop: computed(() => (): string => {
-      const classList: string[] = [conf.state.data.theme];
-      classList.push(
-        (() => {
-          if (conf.state.data.speed === 1) {
-            return `speed1`;
-          } else if (conf.state.data.speed === 3) {
-            return `speed3`;
-          }
-          return `speed2`;
-        })(),
-      );
-      classList.push(
-        (() => {
-          if (conf.state.data.size === 1) {
-            return `text-sm`;
-          } else if (conf.state.data.size === 3) {
-            return `text-lg`;
-          }
-          return `text-base`;
-        })(),
-      );
-      return classList.join(` `);
+    attrClass: computed(() => (attrs: Vue.SetupContext[`attrs`]): Vue.SetupContext[`attrs`] => {
+      return Object.fromEntries(Object.entries(attrs).filter(([key]) => key === `class`));
     }),
-    classBottom: computed(() => (): string => {
-      if (process.client && window.outerHeight <= 400) {
-        return `flex-[0_0_32px]`;
-      } else if (process.client && window.outerHeight >= 720) {
-        return `flex-[0_0_90px]`;
+    attrAlmost: computed(() => (attrs: Vue.SetupContext[`attrs`]): Vue.SetupContext[`attrs`] => {
+      return Object.fromEntries(Object.entries(attrs).filter(([key]) => key !== `class`));
+    }),
+    classTheme: computed(() => (): string => {
+      return conf.state.data.theme;
+    }),
+    classSize: computed(() => (): string => {
+      if (conf.state.data.size === 1) {
+        return `text-sm`;
+      } else if (conf.state.data.size === 3) {
+        return `text-lg`;
       }
-      return `flex-[0_0_50px]`;
+      return `text-base`;
+    }),
+    classSpeed: computed(() => (): string => {
+      if (conf.state.data.speed === 1) {
+        return `slow`;
+      } else if (conf.state.data.speed === 3) {
+        return `fast`;
+      }
+      return `just`;
     }),
   });
 
   const action = {
-    initPage: async (): Promise<void> => {
-      await action.initI18n();
-      await conf.action.initPage();
-      await sub.action.initPage();
-      await main.action.initPage();
-      await list.action.initPage();
-      action.clearTrash();
-      list.action.actPage();
-      main.action.actPage();
-      sub.action.actPage();
-      conf.action.actPage();
-    },
-    initI18n: async (): Promise<void> => {
-      i18next.init({
+    init: async (): Promise<void> => {
+      temp.route = useRoute();
+      temp.router = useRouter();
+      await i18next.init({
         lng: `ja`,
         resources: {
           ja: { translation: ja },
           en: { translation: en },
         },
       });
+      await conf.action.init();
+      await sub.action.init();
+      await main.action.init();
+      await list.action.init();
+      action.clearTrash();
     },
-    saveRoute: (payload: { listId: string }): void => {
-      Api.writeRoute(payload.listId);
+    getDuration: (): number => {
+      if (conf.state.data.speed === 1) {
+        return 500;
+      } else if (conf.state.data.speed === 3) {
+        return 100;
+      }
+      return 250;
     },
     routerList: (): void => {
-      useRouter().push(`/${getter.listId()}/list`);
+      temp.router.push(`/${getter.listId()}/list`);
     },
-    routerMain: (payload: { listId: string }): void => {
-      useRouter().push(`/${payload.listId}`);
+    routerMain: (arg: { listId: string }): void => {
+      temp.router.push(`/${arg.listId}`);
     },
-    routerSub: (payload: { mainId: string }): void => {
-      useRouter().push(`/${getter.listId()}/sub/${payload.mainId}`);
+    routerSub: (arg: { mainId: string }): void => {
+      temp.router.push(`/${getter.listId()}/sub/${arg.mainId}`);
     },
     routerConf: (): void => {
-      useRouter().push(`/${getter.listId()}/conf`);
+      temp.router.push(`/${getter.listId()}/conf`);
     },
-    routerBack: (payload?: { listId: string }): void => {
-      state.backId = payload?.listId || ``;
-      payload?.listId && action.saveRoute({ listId: state.backId });
-      useRouter().back();
+    routerBack: (arg?: { listId: string }): void => {
+      temp.backId = arg?.listId || ``;
+      temp.backId && Api.writeRoute(temp.backId);
+      temp.router.back();
     },
     clearTrash: (): void => {
-      main.state.data[constant.base.id.trash] = { sort: [], data: {} };
-      sub.state.data[constant.base.id.trash] = { data: {} };
+      const trashId = constant.base.id.trash;
+      main.state.data[trashId] = { sort: [], data: {} };
+      sub.state.data[trashId] = { data: {} };
+    },
+    forceUpdate: (): void => {
+      state.updateKey = String(new Date().valueOf());
     },
   };
 
@@ -114,4 +117,4 @@ const useStore = defineStore(`app`, () => {
 
 const store = useStore(createPinia());
 
-export default { state: store.state, getter: store.getter, action: store.action };
+export default { temp, state: store.state, getter: store.getter, action: store.action };

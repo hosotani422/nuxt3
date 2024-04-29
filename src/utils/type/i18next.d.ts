@@ -25,51 +25,8 @@ type Locale = {
     time: string;
     alarm: string;
   };
-  dialog: {
-    title: {
-      insert: string;
-      move: string;
-      delete: string;
-      reset: string;
-      backup: string;
-      backupError: string;
-      fileError: string;
-      alarm: string;
-    };
-    select: {
-      all: string;
-      none: string;
-    };
-    alarm: {
-      title: string;
-      sort: string;
-      data1: { label: string; value: number };
-      data2: { label: string; value: number };
-      data3: { label: string; value: number };
-      data4: { label: string; value: number };
-      data5: { label: string; value: number };
-      data6: { label: string; value: number };
-      data7: { label: string; value: number };
-      data8: { label: string; value: number };
-      data9: { label: string; value: number };
-      data10: { label: string; value: number };
-      data11: { label: string; value: number };
-      data12: { label: string; value: number };
-    };
-  };
-  calendar: {
-    sort: string;
-    week1: string;
-    week2: string;
-    week3: string;
-    week4: string;
-    week5: string;
-    week6: string;
-    week7: string;
-  };
-  notice: {
-    message: string;
-    button: string;
+  validation: {
+    empty: string;
   };
   conf: {
     title: string;
@@ -80,10 +37,6 @@ type Locale = {
     speed: {
       title: string;
       value: { [L in `1` | `2` | `3`]: string };
-    };
-    volume: {
-      title: string;
-      value: { [L in `0` | `1` | `2` | `3`]: string };
     };
     vibrate: {
       title: string;
@@ -112,7 +65,30 @@ type Locale = {
       list: string;
     };
   };
-  validation: {
-    noempty: string;
+  calendar: {
+    sort: string[];
+    data: { [K in string]: string };
+  };
+  dialog: {
+    title: {
+      entry: string;
+      move: string;
+      delete: string;
+      reset: string;
+      alarm: string;
+      error: string;
+    };
+    select: {
+      all: string;
+      none: string;
+    };
+    alarm: {
+      sort: string[];
+      data: { [K in string]: { label: string; value: number } };
+    };
+  };
+  notice: {
+    message: string;
+    button: string;
   };
 };

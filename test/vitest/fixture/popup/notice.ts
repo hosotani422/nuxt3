@@ -10,12 +10,10 @@ export default class Notice extends Base {
     notice.state.button = `button`;
     const wrapper = mount(PopupNotice, {
       props: {
+        temp: notice.temp,
         state: notice.state,
       },
     });
     return wrapper;
-  }
-  public static setAction(): void {
-    vi.spyOn(notice.state, `callback`).mockReturnValue();
   }
 }

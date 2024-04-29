@@ -1,10 +1,12 @@
 import constant from "@/utils/const";
+import app from "@/stores/page/app";
 import list from "@/stores/page/list";
 import main from "@/stores/page/main";
 import sub from "@/stores/page/sub";
 import conf from "@/stores/page/conf";
 
 export default (): void => {
+  app.action.init();
   list.state.data = {
     sort: [``, ...constant.init.list.sort],
     data: {

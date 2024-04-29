@@ -5,7 +5,6 @@ import PopupCalendar from "@/components/popup/calendar.vue";
 
 export default class Calendar extends Base {
   public static getWrapper(): VueWrapper {
-    vi.useFakeTimers();
     vi.setSystemTime(new Date(2023, 8, 22, 0, 0, 0, 0));
     calendar.state.open = true;
     calendar.state.select = `2023/09/22`;
@@ -14,16 +13,13 @@ export default class Calendar extends Base {
     calendar.state.clear = `clear`;
     const wrapper = mount(PopupCalendar, {
       props: {
-        refer: calendar.refer,
+        temp: calendar.temp,
         state: calendar.state,
-        textWeek: calendar.getter.textWeek,
-        textDay: calendar.getter.textDay,
-        classDay: calendar.getter.classDay,
+        classStatus: calendar.getter.classStatus,
+        getWeek: calendar.action.getWeek,
+        getDay: calendar.action.getDay,
       },
     });
     return wrapper;
-  }
-  public static setAction(): void {
-    vi.spyOn(calendar.state, `callback`).mockReturnValue();
   }
 }

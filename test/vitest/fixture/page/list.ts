@@ -9,17 +9,29 @@ export default class List extends Base {
   public static getWrapper(): VueWrapper {
     const wrapper = mount(PageList, {
       props: {
-        refer: list.refer,
+        constant,
         status: list.state.status,
-        title: constant.base.title,
-        trashId: constant.base.id.trash,
-        getListId: app.getter.listId,
-        stateFull: list.getter.stateFull,
-        stateUnit: list.getter.stateUnit,
-        classItem: ((mainId: string) => ({ edit: mainId === `list0000000000000` })) as typeof list.getter.classItem,
-        iconType: list.getter.iconType,
-        classLimit: (() => ({ classLimit: true })) as unknown as typeof list.getter.classLimit,
-        textCount: (() => `textCount`) as typeof list.getter.textCount,
+        selectId: app.getter.listId,
+        classStatus: (listId: string) => ({
+          select: listId === `list1111111111111`,
+          edit: listId === `list0000000000000`,
+          hide: listId === `list0000000000000`,
+        }),
+        classLimit: (listId: string) => ({
+          "text-theme-care": listId === `list0000000000000`,
+          "text-theme-warn": listId === `list1111111111111`,
+        }),
+        typeIcon: list.getter.typeIcon,
+        textCount: (listId: string) => {
+          if (listId === `list1111111111111`) {
+            return `1/1`;
+          } else if (listId === `list0000000000000`) {
+            return `0/0`;
+          }
+          return `9/9`;
+        },
+        listFull: list.action.getFull,
+        listUnit: list.action.getUnit,
       },
     });
     return wrapper;

@@ -43,14 +43,18 @@ const meta: Meta<typeof PopupDialog> = {
         },
       });
       return {
+        temp: dialog.temp,
         state: dialog.state,
         stateCheckAll: dialog.getter.stateCheckAll,
+        errorValidation: dialog.getter.errorValidation,
         clickCheckAll: dialog.action.clickCheckAll,
       };
     },
     template: `<PopupDialog
+        :temp="temp"
         :state="state"
         :stateCheckAll="stateCheckAll"
+        :errorValidation="errorValidation"
         @clickCheckAll="clickCheckAll"
       />`,
   }),

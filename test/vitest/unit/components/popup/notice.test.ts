@@ -5,10 +5,6 @@ import notice from "@/stores/popup/notice";
 
 const it = test.extend<{ wrapper: VueWrapper }>({
   wrapper: async ({}, use) => {
-    fixture.setAction();
-    fixture.setRouter();
-    await fixture.loadLang();
-    await fixture.loadData();
     await use(fixture.getWrapper());
   },
 });
@@ -24,8 +20,9 @@ describe(`dom`, () => {
 
 describe(`event`, () => {
   it(`all`, ({ wrapper }) => {
-    vi.spyOn(notice.state, `callback`).mockReturnValue();
+    const callbackMock = vi.spyOn(notice.temp, `callback`).mockReturnValue();
     wrapper.findByTestId(`NoticeBack`).trigger(`click`);
-    expect(notice.state.callback).toBeCalledTimes(1);
+    expect(callbackMock).toBeCalledTimes(1);
+    expect(callbackMock).toBeCalledWith();
   });
 });

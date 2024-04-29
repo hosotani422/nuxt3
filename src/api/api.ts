@@ -206,9 +206,9 @@ export const readRoute = async (): Promise<string> => {
     });
     return JSON.parse(response.data.readRoute);
   } else if (process.client) {
-    return localStorage.getItem(`route`) || constant.init.listId;
+    return localStorage.getItem(`route`) || constant.base.id.inbox;
   }
-  return constant.init.listId;
+  return constant.base.id.inbox;
 };
 
 export const writeRoute = (data: string): void => {

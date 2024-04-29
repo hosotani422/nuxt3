@@ -3,13 +3,12 @@ import app from "@/stores/page/app";
 
 export default defineNuxtRouteMiddleware(async () => {
   if (process.client) {
-    if (!app.state.initClient) {
-      app.state.initClient = true;
-      return navigateTo(`/${await Api.readRoute()}`);
-    } else if (app.state.backId) {
-      const backId = app.state.backId;
-      app.state.backId = ``;
-      return navigateTo(`/${backId}`, { replace: true });
+    if (app.temp.routeStart) {
+      useRouter().push(`/${await Api.readRoute()}`);
+      app.temp.routeStart = false;
+    } else if (app.temp.backId) {
+      useRouter().replace(`/${app.temp.backId}`);
+      app.temp.backId = ``;
     }
   }
 });
