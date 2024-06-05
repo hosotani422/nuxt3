@@ -16,32 +16,29 @@ test.describe(`conf`, () => {
     await expect(page).toHaveURL(`/list1111111111111/conf`);
     await expect(page.getByTestId(`ConfDown`)).toHaveCount(1);
     await expect(page.getByTestId(`ConfTitle`)).toHaveText(`設定`);
-    await expect(page.getByTestId(`ConfName`)).toContainText(`Memotea`);
-    await expect(page.getByTestId(`ConfItem`)).toHaveCount(9);
+    await expect(page.getByTestId(`ConfName`)).toContainText(`Memosuku`);
+    await expect(page.getByTestId(`ConfItem`)).toHaveCount(8);
     await expect(page.getByTestId(`ConfSizeTitle`)).toHaveText(`文字サイズ`);
     await expect(page.getByTestId(`ConfSizeValue`)).toHaveValue(`2`);
     await expect(page.getByTestId(`ConfSizeName`)).toHaveText(`中`);
     await expect(page.getByTestId(`ConfSpeedTitle`)).toHaveText(`アニメ速度`);
     await expect(page.getByTestId(`ConfSpeedValue`)).toHaveValue(`2`);
     await expect(page.getByTestId(`ConfSpeedName`)).toHaveText(`中`);
-    await expect(page.getByTestId(`ConfVolumeTitle`)).toHaveText(`音量`);
-    await expect(page.getByTestId(`ConfVolumeValue`)).toHaveValue(`1`);
-    await expect(page.getByTestId(`ConfVolumeName`)).toHaveText(`小`);
-    await expect(page.getByTestId(`ConfVibrateTitle`)).toHaveText(`振動`);
-    await expect(page.getByTestId(`ConfVibrateOff`)).not.toBeChecked();
-    await expect(page.getByTestId(`ConfVibrateOn`)).toBeChecked();
-    await expect(page.getByTestId(`InputRadioLabel`).nth(0)).toHaveText(`無`);
-    await expect(page.getByTestId(`InputRadioLabel`).nth(1)).toHaveText(`有`);
     await expect(page.getByTestId(`ConfThemeTitle`)).toHaveText(`テーマ`);
     await expect(page.getByTestId(`ConfThemeLight`)).not.toBeChecked();
     await expect(page.getByTestId(`ConfThemeDark`)).toBeChecked();
-    await expect(page.getByTestId(`InputRadioLabel`).nth(2)).toHaveText(`明`);
-    await expect(page.getByTestId(`InputRadioLabel`).nth(3)).toHaveText(`暗`);
+    await expect(page.getByTestId(`InputRadioLabel`).nth(0)).toHaveText(`明`);
+    await expect(page.getByTestId(`InputRadioLabel`).nth(1)).toHaveText(`暗`);
     await expect(page.getByTestId(`ConfLangTitle`)).toHaveText(`言語`);
     await expect(page.getByTestId(`ConfLangEn`)).not.toBeChecked();
     await expect(page.getByTestId(`ConfLangJa`)).toBeChecked();
-    await expect(page.getByTestId(`InputRadioLabel`).nth(4)).toHaveText(`英語`);
-    await expect(page.getByTestId(`InputRadioLabel`).nth(5)).toHaveText(`日本語`);
+    await expect(page.getByTestId(`InputRadioLabel`).nth(2)).toHaveText(`英語`);
+    await expect(page.getByTestId(`InputRadioLabel`).nth(3)).toHaveText(`日本語`);
+    await expect(page.getByTestId(`ConfVibrateTitle`)).toHaveText(`振動`);
+    await expect(page.getByTestId(`ConfVibrateOff`)).not.toBeChecked();
+    await expect(page.getByTestId(`ConfVibrateOn`)).toBeChecked();
+    await expect(page.getByTestId(`InputRadioLabel`).nth(4)).toHaveText(`無`);
+    await expect(page.getByTestId(`InputRadioLabel`).nth(5)).toHaveText(`有`);
     await expect(page.getByTestId(`ConfSaveTitle`)).toHaveText(`自動保存`);
     await expect(page.getByTestId(`ConfSaveLocal`)).toBeChecked();
     await expect(page.getByTestId(`ConfSaveRest`)).not.toBeChecked();
@@ -72,10 +69,6 @@ test.describe(`conf`, () => {
     await page.getByTestId(`ConfSpeedValue`).fill(`3`);
     await expect(page.getByTestId(`ConfSpeedName`)).toHaveText(`高`);
   });
-  test(`item - volume`, async ({ page }) => {
-    await page.getByTestId(`ConfVolumeValue`).fill(`3`);
-    await expect(page.getByTestId(`ConfVolumeName`)).toHaveText(`大`);
-  });
   test(`item - vibrate`, async ({ page }) => {
     await page.getByTestId(`ConfVibrateOff`).check();
     await expect(page.getByTestId(`ConfVibrateOff`)).toBeChecked();
@@ -105,12 +98,12 @@ test.describe(`conf`, () => {
     for await (const chunk of stream) {
       download += chunk;
     }
-    const upload = fs.readFileSync(`./test/memotea.bak`, `utf8`);
+    const upload = fs.readFileSync(`./test/memosuku.bak`, `utf8`);
     await expect(download).toBe(upload);
   });
   test(`item - upload`, async ({ page }) => {
     await page.getByTestId(`ConfThemeLight`).check();
-    await page.getByTestId(`ConfBackupUpload`).setInputFiles(`./test/memotea.bak`);
+    await page.getByTestId(`ConfBackupUpload`).setInputFiles(`./test/memosuku.bak`);
     await expect(page.getByTestId(`ConfThemeLight`)).not.toBeChecked();
     await expect(page.getByTestId(`ConfThemeDark`)).toBeChecked();
   });

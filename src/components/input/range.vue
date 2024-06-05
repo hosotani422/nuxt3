@@ -19,8 +19,8 @@ const prop = withDefaults(
 const emit = defineEmits<{
   "update:modelValue": [value: number];
 }>();
-const updateValue = ($event: Event): void => {
-  emit(`update:modelValue`, Number(($event.target as HTMLInputElement).value));
+const updateValue = (value: string): void => {
+  emit(`update:modelValue`, Number(value));
 };
 const updateStyle = computed(() => () => {
   const rate = ((prop.modelValue - prop.min) / (prop.max - prop.min)) * 100;
@@ -31,15 +31,15 @@ defineExpose({ updateStyle });
 
 <template>
   <input
-    data-testid="InputRange"
-    :style="updateStyle()"
-    class="h-[0.1rem] w-full appearance-none [&::-webkit-slider-thumb]:h-[1rem] [&::-webkit-slider-thumb]:w-[1rem] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-theme-fine"
     type="range"
+    data-testid="InputRange"
+    class="h-[0.1rem] w-full appearance-none [&::-webkit-slider-thumb]:size-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-theme-fine"
+    :style="updateStyle()"
     :min="min"
     :max="max"
     :step="step"
     :value="modelValue"
     v-bind="$attrs"
-    @input="updateValue($event)"
+    @change="updateValue(($event.target as HTMLInputElement).value)"
   />
 </template>

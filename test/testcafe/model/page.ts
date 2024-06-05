@@ -1,9 +1,9 @@
-import fs from "fs";
+import * as fs from "fs";
 import { Selector, t, ClientFunction } from "testcafe";
 
 export default class Page {
   private static async loadData(): Promise<void> {
-    const backup = fs.readFileSync(`./test/memotea.bak`, `utf8`).split(`\n`);
+    const backup = fs.readFileSync(`./test/memosuku.bak`, `utf8`).split(`\n`);
     await ClientFunction((route, list, main, sub, conf) => {
       localStorage.setItem(`route`, route);
       localStorage.setItem(`list`, list);
@@ -11,7 +11,6 @@ export default class Page {
       localStorage.setItem(`sub`, sub);
       localStorage.setItem(`conf`, conf);
     })(backup[0], backup[1], backup[2], backup[3], backup[4]);
-    await t.wait(1000);
   }
   private static async openPage(): Promise<void> {
     await t.navigateTo(`/list1111111111111`);

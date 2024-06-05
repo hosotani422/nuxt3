@@ -14,8 +14,6 @@ export default defineConfig({
   testDir: `./test`,
   // Glob patterns or regular expressions that match test files.
   testMatch: `*.test.ts`,
-  // Folder for test artifacts such as screenshots, videos, traces, etc.
-  outputDir: `./report`,
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -132,7 +130,7 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: {
     command: `pnpm dev`,
-    url: `http://localhost:3000`,
+    url: `http://localhost:3000/list1111111111111`,
     reuseExistingServer: !process.env.CI,
   },
 });

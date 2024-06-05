@@ -19,12 +19,12 @@ test.describe(`sub`, () => {
     await expect(page.getByTestId(`SubItem`)).toHaveCount(2);
     await expect(page.getByTestId(`SubCheck`).nth(0)).not.toBeChecked();
     await expect(page.getByTestId(`SubCheck`).nth(1)).toBeChecked();
-    await expect(page.getByTestId(`SubTask`).nth(0)).toHaveText(`sub1`);
-    await expect(page.getByTestId(`SubTask`).nth(1)).toHaveText(`sub2`);
+    await expect(page.getByTestId(`SubTask`).nth(0)).toHaveValue(`sub1`);
+    await expect(page.getByTestId(`SubTask`).nth(1)).toHaveValue(`sub2`);
     await expect(page.getByTestId(`SubItem`).nth(0).getByTestId(`SubDrag`)).toHaveCount(1);
     await expect(page.getByTestId(`SubItem`).nth(1).getByTestId(`SubDrag`)).toHaveCount(1);
-    await expect(page.getByTestId(`SubItem`).nth(0).getByTestId(`SubTrash`)).toHaveCount(0);
-    await expect(page.getByTestId(`SubItem`).nth(1).getByTestId(`SubTrash`)).toHaveCount(0);
+    await expect(page.getByTestId(`SubItem`).nth(0).getByTestId(`SubTrash`)).toHaveCount(1);
+    await expect(page.getByTestId(`SubItem`).nth(1).getByTestId(`SubTrash`)).toHaveCount(1);
     await expect(page.getByTestId(`SubCalendar`)).toHaveValue(`2000/01/01`);
     await expect(page.getByTestId(`SubClock`)).toHaveValue(`00:00`);
     await expect(page.getByTestId(`SubDialog`)).toHaveValue(`5分前,1時間前`);
@@ -40,31 +40,25 @@ test.describe(`sub`, () => {
   test(`item - check`, async ({ page }) => {
     await page.getByTestId(`SubCheck`).nth(0).check();
     await expect(page.getByTestId(`SubCheck`).nth(0)).toBeChecked();
-    await expect(page.getByTestId(`SubTask`).nth(0)).toHaveText(`sub2`);
-    await page.getByTestId(`SubCheck`).nth(1).uncheck();
+    await page.getByTestId(`SubCheck`).nth(0).uncheck();
     await expect(page.getByTestId(`SubCheck`).nth(0)).not.toBeChecked();
-    await expect(page.getByTestId(`SubTask`).nth(0)).toHaveText(`sub1`);
-  });
-  test(`item - select`, async ({ page }) => {
-    await page.getByTestId(`SubTask`).nth(0).click();
-    await expect(page.getByTestId(`SubItem`).nth(0)).toHaveClass(/ edit/);
   });
   test(`item - edit`, async ({ page }) => {
     await page.getByTestId(`SubTask`).nth(0).press(`Enter`);
     await expect(page.getByTestId(`SubItem`)).toHaveCount(3);
-    await expect(page.getByTestId(`SubTask`).nth(0)).toHaveText(``);
+    await expect(page.getByTestId(`SubTask`).nth(1)).toHaveValue(``);
     await page.getByTestId(`SubTask`).nth(1).press(`Backspace`);
     await expect(page.getByTestId(`SubItem`)).toHaveCount(2);
-    await expect(page.getByTestId(`SubTask`).nth(0)).toHaveText(`sub1`);
+    await expect(page.getByTestId(`SubTask`).nth(1)).toHaveValue(`sub2`);
   });
   test(`item - delete`, async ({ page }) => {
     await page.getByTestId(`SubTask`).nth(0).click();
-    await page.getByTestId(`SubTrash`).dispatchEvent(`touchstart`);
+    await page.getByTestId(`SubTrash`).nth(0).dispatchEvent(`click`);
     await expect(page.getByTestId(`SubItem`)).toHaveCount(1);
-    await expect(page.getByTestId(`SubTask`).nth(0)).toHaveText(`sub2`);
+    await expect(page.getByTestId(`SubTask`).nth(0)).toHaveValue(`sub2`);
     await page.getByTestId(`NoticeBack`).click();
     await expect(page.getByTestId(`SubItem`)).toHaveCount(2);
-    await expect(page.getByTestId(`SubTask`).nth(0)).toHaveText(`sub1`);
+    await expect(page.getByTestId(`SubTask`).nth(0)).toHaveValue(`sub1`);
   });
   test(`item - mode`, async ({ page }) => {
     await page.getByTestId(`SubMode`).click();
@@ -75,15 +69,15 @@ test.describe(`sub`, () => {
     await expect(page.getByTestId(`SubCheck`).nth(0)).not.toBeChecked();
     await expect(page.getByTestId(`SubCheck`).nth(1)).not.toBeChecked();
     await expect(page.getByTestId(`SubCheck`).nth(2)).not.toBeChecked();
-    await expect(page.getByTestId(`SubTask`).nth(0)).toHaveText(`sub1`);
-    await expect(page.getByTestId(`SubTask`).nth(1)).toHaveText(`sub2`);
-    await expect(page.getByTestId(`SubTask`).nth(2)).toHaveText(`sub3`);
+    await expect(page.getByTestId(`SubTask`).nth(0)).toHaveValue(`sub1`);
+    await expect(page.getByTestId(`SubTask`).nth(1)).toHaveValue(`sub2`);
+    await expect(page.getByTestId(`SubTask`).nth(2)).toHaveValue(`sub3`);
     await expect(page.getByTestId(`SubItem`).nth(0).getByTestId(`SubDrag`)).toHaveCount(1);
     await expect(page.getByTestId(`SubItem`).nth(1).getByTestId(`SubDrag`)).toHaveCount(1);
     await expect(page.getByTestId(`SubItem`).nth(2).getByTestId(`SubDrag`)).toHaveCount(1);
-    await expect(page.getByTestId(`SubItem`).nth(0).getByTestId(`SubTrash`)).toHaveCount(0);
-    await expect(page.getByTestId(`SubItem`).nth(1).getByTestId(`SubTrash`)).toHaveCount(0);
-    await expect(page.getByTestId(`SubItem`).nth(2).getByTestId(`SubTrash`)).toHaveCount(0);
+    await expect(page.getByTestId(`SubItem`).nth(0).getByTestId(`SubTrash`)).toHaveCount(1);
+    await expect(page.getByTestId(`SubItem`).nth(1).getByTestId(`SubTrash`)).toHaveCount(1);
+    await expect(page.getByTestId(`SubItem`).nth(2).getByTestId(`SubTrash`)).toHaveCount(1);
   });
   test(`item - drag`, async ({ page, fixture }) => {
     await fixture.dragDrop(page.getByTestId(`SubDrag`).nth(0), page.getByTestId(`SubDrag`).nth(1));

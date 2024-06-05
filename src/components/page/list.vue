@@ -1,159 +1,124 @@
 <script setup lang="ts">
-import Vue from "vue";
+import constants from "@/utils/const";
 import app from "@/stores/page/app";
 import list from "@/stores/page/list";
 defineOptions({
   inheritAttrs: false,
 });
-const props = defineProps<{
-  refer: typeof list.refer;
-  title: string;
-  trashId: string;
+defineProps<{
+  constant: typeof constants;
   status: typeof list.state.status;
-  getListId: typeof app.getter.listId;
-  stateFull: typeof list.getter.stateFull;
-  stateUnit: typeof list.getter.stateUnit;
-  classItem: typeof list.getter.classItem;
-  iconType: typeof list.getter.iconType;
+  selectId: typeof app.getter.listId;
+  classStatus: typeof list.getter.classStatus;
   classLimit: typeof list.getter.classLimit;
+  typeIcon: typeof list.getter.typeIcon;
   textCount: typeof list.getter.textCount;
+  listFull: typeof list.action.getFull;
+  listUnit: typeof list.action.getUnit;
 }>();
-const emit = defineEmits([
-  `routerBack`,
-  `insertItem`,
-  `copyItem`,
-  `deleteItem`,
-  `switchEdit`,
-  `dragInit`,
-  `dragStart`,
-  `dragMove`,
-  `dragEnd`,
-  `swipeInit`,
-  `swipeStart`,
-  `swipeMove`,
-  `swipeEnd`,
-]);
-const wrap = ref<Vue.ComponentPublicInstance<HTMLElement>>();
-const items = ref<{ [K: string]: Vue.ComponentPublicInstance<HTMLElement> }>({});
-props.refer.wrap = wrap;
-props.refer.items = items;
+const emit = defineEmits<{
+  routerBack: [arg?: { listId: string }];
+  entryItem: [];
+  copyItem: [arg: { listId: string }];
+  deleteItem: [arg: { listId: string }];
+  editItem: [arg?: { listId: string }];
+  dragInit: [arg: { listId: string; y: number }];
+  dragStart: [];
+  dragMove: [arg: { y: number }];
+  dragEnd: [];
+  swipeInit: [arg: { x: number; y: number }];
+  swipeStart: [arg: { x: number; y: number }];
+  swipeMove: [arg: { x: number }];
+  swipeEnd: [arg: { x: number }];
+}>();
 </script>
 
 <template>
   <div
+    data-id="ListRoot"
     data-testid="ListRoot"
-    class="theme-mask-color absolute inset-y-0 left-0 z-[10] w-[200%] active:transition speed1:active:duration-1000 speed2:active:duration-500 speed3:active:duration-200 fromto:!translate-x-[-50%] fromto:!bg-transparent"
-    @click="emit(`switchEdit`)"
-    @mousemove.prevent="
+    class="theme-color-mask anime-slide-list absolute inset-y-0 left-0 z-10 w-[200%]"
+    @touchmove="
       emit(`dragStart`);
-      emit(`dragMove`, { clientY: $event.clientY });
+      emit(`dragMove`, { y: $event.changedTouches[0]!.clientY });
+      emit(`swipeStart`, { x: $event.changedTouches[0]!.clientX, y: $event.changedTouches[0]!.clientY });
+      emit(`swipeMove`, { x: $event.changedTouches[0]!.clientX });
     "
     @mousemove="
-      emit(`swipeStart`, {
-        clientX: $event.clientX,
-        clientY: $event.clientY,
-      });
-      emit(`swipeMove`, { clientX: $event.clientX });
-    "
-    @mouseup="
-      emit(`dragEnd`);
-      emit(`swipeEnd`, { clientX: $event.clientX });
-    "
-    @touchmove.prevent="
       emit(`dragStart`);
-      emit(`dragMove`, { clientY: $event.changedTouches[0]!.clientY });
-    "
-    @touchmove="
-      emit(`swipeStart`, {
-        clientX: $event.changedTouches[0]!.clientX,
-        clientY: $event.changedTouches[0]!.clientY,
-      });
-      emit(`swipeMove`, { clientX: $event.changedTouches[0]!.clientX });
+      emit(`dragMove`, { y: $event.clientY });
+      emit(`swipeStart`, { x: $event.clientX, y: $event.clientY });
+      emit(`swipeMove`, { x: $event.clientX });
     "
     @touchend="
       emit(`dragEnd`);
-      emit(`swipeEnd`, { clientX: $event.changedTouches[0]!.clientX });
+      emit(`swipeEnd`, { x: $event.changedTouches[0]!.clientX });
     "
+    @mouseup="
+      emit(`dragEnd`);
+      emit(`swipeEnd`, { x: $event.clientX });
+    "
+    @click="emit(`editItem`)"
   >
     <div
       data-testid="ListBack"
-      class="absolute left-[43%] top-0 z-[1] h-[100%] w-[57%]"
-      @mousedown="
-        emit(`swipeInit`, {
-          target: ($event.currentTarget as HTMLElement).parentElement,
-          clientX: $event.clientX,
-          clientY: $event.clientY,
-        })
-      "
-      @touchstart="
-        emit(`swipeInit`, {
-          target: ($event.currentTarget as HTMLElement).parentElement,
-          clientX: $event.changedTouches[0]!.clientX,
-          clientY: $event.changedTouches[0]!.clientY,
-        })
-      "
+      class="absolute inset-y-0 right-0 z-[1] w-[57%]"
+      @touchstart="emit(`swipeInit`, { x: $event.changedTouches[0]!.clientX, y: $event.changedTouches[0]!.clientY })"
+      @mousedown="emit(`swipeInit`, { x: $event.clientX, y: $event.clientY })"
     />
     <div
       data-testid="ListHome"
-      class="theme-grad-color theme-shadow-normal absolute inset-y-0 left-0 z-[1] flex w-[43%] flex-col"
+      class="theme-color-grad theme-shadow-outer absolute inset-y-0 left-0 z-[1] flex w-[43%] flex-col"
     >
       <div
         data-testid="ListHead"
-        class="theme-grad-color theme-shadow-normal relative z-[9] flex flex-auto items-center gap-3 p-3"
+        class="theme-color-grad theme-shadow-outer relative z-[9] flex flex-initial items-center gap-3 p-3"
       >
-        <IconPlus data-testid="ListPlus" class="flex-auto" @click="emit(`insertItem`)" />
-        <p data-testid="ListTitle" class="line-clamp-1 flex-even text-xl">{{ title }}</p>
-        <IconLeft data-testid="ListLeft" class="flex-auto" @click="emit(`routerBack`)" />
+        <IconPlus data-testid="ListPlus" class="flex-initial" @click="emit(`entryItem`)" />
+        <p data-testid="ListTitle" class="line-clamp-1 flex-1 text-xl">{{ constant.base.app.name }}</p>
+        <IconLeft data-testid="ListLeft" class="flex-initial" @click="emit(`routerBack`)" />
       </div>
-      <ul ref="wrap" data-testid="ListBody" class="flex-even select-none overflow-auto p-3">
+      <ul data-id="ListBody" data-testid="ListBody" class="flex-1 select-none overflow-auto p-3">
         <transition-group>
           <li
-            v-for="listId of stateFull().sort"
+            v-for="listId of listFull().sort"
             :key="`list${listId}`"
-            :ref="
-              (el: Vue.ComponentPublicInstance<any>) => {
-                if (el) {
-                  items[listId] = el;
-                }
-              }
-            "
+            :data-id="`ListItem${listId}`"
             data-testid="ListItem"
-            class="theme-back-color scale-up [&.select]:theme-shadow-inner [&.edit]:theme-shadow-outer relative flex h-16 items-center gap-3 overflow-hidden border-b-[0.1rem] border-solid border-b-font-dark p-3 [&.edit]:z-[1] [&.edit]:scale-[1.03] [&.hide]:invisible"
-            :class="classItem(listId)"
-            @longclick="
-              emit(`switchEdit`, { listId });
-              emit(`dragInit`, { listId, clientY: $event.detail.clientY });
-            "
+            class="theme-color-border theme-color-back trans-select-label trans-edit-item anime-scale-item group relative flex h-16 items-center gap-3 overflow-hidden border-b-[0.1rem] border-solid p-3"
+            :class="{ ...classStatus(listId), ...classLimit(listId) }"
+            @contextmenu.prevent
             @longtouch="
-              emit(`switchEdit`, { listId });
-              emit(`dragInit`, { listId, clientY: $event.detail.changedTouches[0]!.clientY });
+              emit(`editItem`, { listId });
+              emit(`dragInit`, { listId, y: $event.detail.changedTouches[0]!.clientY });
+            "
+            @longclick="
+              emit(`editItem`, { listId });
+              emit(`dragInit`, { listId, y: $event.detail.clientY });
             "
             @click="status[listId] !== `edit` && emit(`routerBack`, { listId })"
-            @contextmenu.prevent
           >
-            <component :is="iconType(listId)" data-testid="ListIcon" />
-            <p data-testid="ListTask" class="line-clamp-1 flex-even" :class="classLimit(listId)">
-              {{ stateUnit(listId).title }}
+            <component :is="typeIcon(listId)" data-testid="ListIcon" class="flex-initial" />
+            <p data-testid="ListTask" class="line-clamp-1 flex-1">
+              {{ listUnit({ listId }).title }}
             </p>
-            <p data-testid="ListCount" class="flex-auto" :class="classLimit(listId)">
+            <p data-testid="ListCount" class="flex-initial">
               {{ textCount(listId) }}
             </p>
-            <transition>
-              <div v-if="classItem(listId).edit" class="slide-right theme-back-color absolute right-3 flex gap-3">
-                <IconClone
-                  v-if="listId !== trashId"
-                  data-testid="ListClone"
-                  :class="classLimit(listId)"
-                  @click.stop="emit(`copyItem`, { listId })"
-                />
-                <IconTrash
-                  v-if="listId !== getListId() && listId !== trashId"
-                  data-testid="ListTrash"
-                  :class="classLimit(listId)"
-                  @click.stop="emit(`deleteItem`, { listId })"
-                />
-              </div>
-            </transition>
+            <div class="theme-color-back trans-option-label absolute right-3 flex translate-x-[150%] gap-3">
+              <IconClone
+                v-if="listId !== constant.base.id.trash"
+                data-testid="ListClone"
+                class="flex-initial"
+                @click.stop="emit(`copyItem`, { listId })"
+              />
+              <IconTrash
+                v-if="listId !== selectId() && listId !== constant.base.id.trash"
+                data-testid="ListTrash"
+                class="flex-initial"
+                @click.stop="emit(`deleteItem`, { listId })"
+              />
+            </div>
           </li>
         </transition-group>
       </ul>

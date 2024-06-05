@@ -23,7 +23,7 @@ test.describe(`main`, () => {
     await expect(page.getByTestId(`MainTask`).nth(0)).toHaveText(`main1`);
     await expect(page.getByTestId(`MainTask`).nth(1)).toHaveText(`main2`);
     await expect(page.getByTestId(`MainCount`).nth(0)).toHaveText(`1/2`);
-    await expect(page.getByTestId(`MainCount`).nth(1)).toHaveText(`1/1`);
+    await expect(page.getByTestId(`MainCount`).nth(1)).toHaveText(`0/0`);
   });
   test(`page - list`, async ({ page }) => {
     await page.getByTestId(`MainList`).click();
@@ -55,10 +55,8 @@ test.describe(`main`, () => {
   test(`item - check`, async ({ page }) => {
     await page.getByTestId(`MainCheck`).nth(0).check();
     await expect(page.getByTestId(`MainCheck`).nth(0)).toBeChecked();
-    await expect(page.getByTestId(`MainTask`).nth(0)).toHaveText(`main2`);
-    await page.getByTestId(`MainCheck`).nth(1).uncheck();
+    await page.getByTestId(`MainCheck`).nth(0).uncheck();
     await expect(page.getByTestId(`MainCheck`).nth(0)).not.toBeChecked();
-    await expect(page.getByTestId(`MainTask`).nth(0)).toHaveText(`main1`);
   });
   test(`item - title`, async ({ page }) => {
     await page.getByTestId(`MainItem`).nth(0).click();
@@ -81,7 +79,7 @@ test.describe(`main`, () => {
   });
   test(`item - clone`, async ({ page, fixture }) => {
     await fixture.longClick(page.getByTestId(`MainItem`).nth(0));
-    await page.getByTestId(`MainClone`).click();
+    await page.getByTestId(`MainClone`).nth(0).click();
     await expect(page.getByTestId(`MainItem`)).toHaveCount(3);
     await expect(page.getByTestId(`MainCheck`).nth(1)).not.toBeChecked();
     await expect(page.getByTestId(`MainTask`).nth(1)).toHaveText(`main1`);
@@ -89,8 +87,8 @@ test.describe(`main`, () => {
   });
   test(`item - move`, async ({ page, fixture }) => {
     await fixture.longClick(page.getByTestId(`MainItem`).nth(0));
-    await page.getByTestId(`MainMove`).click();
-    await page.getByTestId(`DialogRadio`).nth(1).check();
+    await page.getByTestId(`MainMove`).nth(0).click();
+    await page.getByTestId(`DialogRadio`).nth(0).check();
     await page.getByTestId(`DialogOk`).click();
     await expect(page.getByTestId(`MainItem`)).toHaveCount(1);
     await page.getByTestId(`MainList`).click();
@@ -102,7 +100,7 @@ test.describe(`main`, () => {
   });
   test(`item - delete`, async ({ page, fixture }) => {
     await fixture.longClick(page.getByTestId(`MainItem`).nth(0));
-    await page.getByTestId(`MainTrash`).click();
+    await page.getByTestId(`MainTrash`).nth(0).click();
     await expect(page.getByTestId(`MainItem`)).toHaveCount(1);
     await page.getByTestId(`MainList`).click();
     await page.getByTestId(`ListItem`).nth(2).click();

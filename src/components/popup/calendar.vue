@@ -1,102 +1,90 @@
 <script setup lang="ts">
-import Vue from "vue";
 import calendar from "@/stores/popup/calendar";
 defineOptions({
   inheritAttrs: false,
 });
-const props = defineProps<{
-  refer: typeof calendar.refer;
+defineProps<{
+  temp: typeof calendar.temp;
   state: typeof calendar.state;
-  textWeek: typeof calendar.getter.textWeek;
-  textDay: typeof calendar.getter.textDay;
-  classDay: typeof calendar.getter.classDay;
+  classStatus: typeof calendar.getter.classStatus;
+  getWeek: typeof calendar.action.getWeek;
+  getDay: typeof calendar.action.getDay;
 }>();
-const emit = defineEmits([`close`, `pageMove`, `swipeInit`, `swipeStart`, `swipeMove`, `swipeEnd`]);
-const body = ref<Vue.ComponentPublicInstance<HTMLElement>>();
-const area = ref<Vue.ComponentPublicInstance<HTMLElement>>();
-props.refer.body = body;
-props.refer.area = area;
+const emit = defineEmits<{
+  close: [];
+  pageMove: [arg: { mode: `prev` | `next` }];
+  swipeInit: [arg: { x: number; y: number }];
+  swipeStart: [arg: { x: number; y: number }];
+  swipeMove: [arg: { x: number }];
+  swipeEnd: [arg: { x: number }];
+}>();
 </script>
 
 <template>
   <BasePopup
+    data-id="CalendarRoot"
     data-testid="CalendarRoot"
     :open="state.open"
-    @mousemove="
-      emit(`swipeStart`, { clientX: $event.clientX, clientY: $event.clientY });
-      emit(`swipeMove`, { clientX: $event.clientX });
-    "
-    @mouseup="emit(`swipeEnd`, { clientX: $event.clientX })"
     @touchmove="
-      emit(`swipeStart`, {
-        clientX: $event.changedTouches[0]!.clientX,
-        clientY: $event.changedTouches[0]!.clientY,
-      });
-      emit(`swipeMove`, { clientX: $event.changedTouches[0]!.clientX });
+      emit(`swipeStart`, { x: $event.changedTouches[0]!.clientX, y: $event.changedTouches[0]!.clientY });
+      emit(`swipeMove`, { x: $event.changedTouches[0]!.clientX });
     "
-    @touchend="emit(`swipeEnd`, { clientX: $event.changedTouches[0]!.clientX })"
+    @mousemove="
+      emit(`swipeStart`, { x: $event.clientX, y: $event.clientY });
+      emit(`swipeMove`, { x: $event.clientX });
+    "
+    @touchend="emit(`swipeEnd`, { x: $event.changedTouches[0]!.clientX })"
+    @mouseup="emit(`swipeEnd`, { x: $event.clientX })"
   >
-    <div class="flex flex-auto flex-col gap-4">
-      <div class="flex items-center">
-        <IconPrev data-testid="CalendarPrev" class="flex-auto" @click="emit(`pageMove`, { prev: true })" />
-        <p data-testid="CalendarCurrent" class="flex-even text-center">{{ state.current }}</p>
-        <IconNext data-testid="CalendarNext" class="flex-auto" @click="emit(`pageMove`, { prev: false })" />
+    <div class="flex flex-initial flex-col gap-3">
+      <div class="flex flex-initial items-center">
+        <IconPrev data-testid="CalendarPrev" class="flex-initial" @click="emit(`pageMove`, { mode: `prev` })" />
+        <p data-testid="CalendarCurrent" class="flex-1 text-center">{{ state.current }}</p>
+        <IconNext data-testid="CalendarNext" class="flex-initial" @click="emit(`pageMove`, { mode: `next` })" />
       </div>
-      <ul class="flex">
+      <ul class="flex flex-initial">
         <li
-          v-for="week of textWeek()"
+          v-for="week of getWeek()"
           :key="`week${week}`"
           data-testid="CalendarWeek"
-          class="flex-even text-center text-xs"
+          class="flex-1 text-center text-xs"
         >
           {{ week }}
         </li>
       </ul>
     </div>
-    <div ref="body" class="flex-auto overflow-hidden">
+    <div data-id="CalendarBody" class="flex-initial overflow-x-hidden">
       <div
-        ref="area"
+        data-id="CalendarArea"
         data-testid="CalendarArea"
-        class="flex h-[15rem] w-[300%] translate-x-[-33.33%] current:transition-transform speed1:current:duration-1000 speed2:current:duration-500 speed3:current:duration-200 [&.back]:translate-x-[-33.333%] [&.next]:translate-x-[-66.666%] [&.prev]:translate-x-0"
-        @mousedown="
-          emit(`swipeInit`, {
-            target: $event.currentTarget,
-            clientX: $event.clientX,
-            clientY: $event.clientY,
-          })
-        "
-        @touchstart="
-          emit(`swipeInit`, {
-            target: $event.currentTarget,
-            clientX: $event.changedTouches[0]!.clientX,
-            clientY: $event.changedTouches[0]!.clientY,
-          })
-        "
+        class="trans-slide-calendar flex h-64 w-[300%] translate-x-[-33.33%]"
+        @touchstart="emit(`swipeInit`, { x: $event.changedTouches[0]!.clientX, y: $event.changedTouches[0]!.clientY })"
+        @mousedown="emit(`swipeInit`, { x: $event.clientX, y: $event.clientY })"
       >
         <ul
-          v-for="month in textDay()"
+          v-for="month in getDay()"
           :key="`month${month.id}`"
           data-testid="CalendarMonth"
-          class="flex flex-even flex-wrap"
+          class="flex flex-1 flex-wrap"
         >
           <li
             v-for="day in month.day"
-            :key="`month${month.id}day${day.day}`"
+            :key="`month${month.id}day${day.id}`"
             data-testid="CalendarDay"
-            class="flex flex-[0_0_14.285%] items-center justify-center border-[0.1rem] border-solid border-transparent p-2 text-base [&.hide]:invisible [&.select]:!border-[0.1rem] [&.select]:!border-solid [&.select]:!border-[#303030] [&.select]:bg-theme-fine [&.select]:text-font-dark [&.select]:shadow-[0_0_0_0.1rem_#303030_inset] [&.today]:!border-[0.1rem] [&.today]:!border-solid [&.today]:!border-theme-fine"
-            :class="classDay(month.id, day.day)"
-            @click="state.callback(day.day)"
+            class="flex flex-[0_0_14.285%] items-center justify-center border-[0.1rem] border-solid border-transparent [&.hide]:invisible [&.select]:!border-theme-fine [&.today]:text-theme-fine"
+            :class="classStatus(month.id, day.id)"
+            @click="temp.callback(day.id)"
           >
             {{ day.text }}
           </li>
         </ul>
       </div>
     </div>
-    <div class="flex flex-auto justify-end gap-4">
-      <InputButton data-testid="CalendarCancel" class="flex-auto text-theme-fine" @click="emit(`close`)">{{
+    <div class="flex flex-initial justify-end gap-3">
+      <InputButton data-testid="CalendarCancel" class="flex-initial text-theme-fine" @click="emit(`close`)">{{
         state.cancel
       }}</InputButton>
-      <InputButton data-testid="CalendarClear" class="flex-auto text-theme-warn" @click="state.callback()">{{
+      <InputButton data-testid="CalendarClear" class="flex-initial text-theme-warn" @click="temp.callback(``)">{{
         state.clear
       }}</InputButton>
     </div>

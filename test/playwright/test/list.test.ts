@@ -14,7 +14,7 @@ test.describe(`list`, () => {
   test(`page - init`, async ({ page }) => {
     await expect(page).toHaveURL(`/list1111111111111/list`);
     await expect(page.getByTestId(`ListPlus`)).toHaveCount(1);
-    await expect(page.getByTestId(`ListTitle`)).toHaveText(`Memotea`);
+    await expect(page.getByTestId(`ListTitle`)).toHaveText(`Memosuku`);
     await expect(page.getByTestId(`ListLeft`)).toHaveCount(1);
     await expect(page.getByTestId(`ListItem`)).toHaveCount(3);
     await expect(page.getByTestId(`ListIcon`).nth(0).locator(`title`)).toHaveId(`list`);
@@ -77,7 +77,7 @@ test.describe(`list`, () => {
   });
   test(`item - clone`, async ({ page, fixture }) => {
     await fixture.longClick(page.getByTestId(`ListItem`).nth(0));
-    await page.getByTestId(`ListClone`).click();
+    await page.getByTestId(`ListClone`).nth(0).click();
     await expect(page.getByTestId(`ListItem`)).toHaveCount(4);
     await expect(page.getByTestId(`ListIcon`).nth(1).locator(`title`)).toHaveId(`list`);
     await expect(page.getByTestId(`ListTask`).nth(1)).toHaveText(`list1`);
@@ -107,17 +107,17 @@ test.describe(`list`, () => {
   });
   test(`item - current`, async ({ page, fixture }) => {
     await fixture.longClick(page.getByTestId(`ListItem`).nth(0));
-    await expect(page.getByTestId(`ListClone`)).toHaveCount(1);
-    await expect(page.getByTestId(`ListTrash`)).toHaveCount(0);
+    await expect(page.getByTestId(`ListClone`)).toHaveCount(2);
+    await expect(page.getByTestId(`ListTrash`)).toHaveCount(1);
   });
   test(`item - normal`, async ({ page, fixture }) => {
     await fixture.longClick(page.getByTestId(`ListItem`).nth(1));
-    await expect(page.getByTestId(`ListClone`)).toHaveCount(1);
+    await expect(page.getByTestId(`ListClone`)).toHaveCount(2);
     await expect(page.getByTestId(`ListTrash`)).toHaveCount(1);
   });
   test(`item - trash`, async ({ page, fixture }) => {
     await fixture.longClick(page.getByTestId(`ListItem`).nth(2));
-    await expect(page.getByTestId(`ListClone`)).toHaveCount(0);
-    await expect(page.getByTestId(`ListTrash`)).toHaveCount(0);
+    await expect(page.getByTestId(`ListClone`)).toHaveCount(2);
+    await expect(page.getByTestId(`ListTrash`)).toHaveCount(1);
   });
 });

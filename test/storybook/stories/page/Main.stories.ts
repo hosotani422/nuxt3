@@ -12,24 +12,22 @@ const meta: Meta<typeof PageMain> = {
     setup() {
       mock();
       return {
-        refer: main.refer,
         status: main.state.status,
         listId: app.getter.listId,
-        listUnit: list.getter.stateUnit,
-        stateFull: main.getter.stateFull,
-        stateUnit: main.getter.stateUnit,
-        classItem: main.getter.classItem,
+        classStatus: main.getter.classStatus,
         classLimit: main.getter.classLimit,
         textCount: main.getter.textCount,
+        listUnit: list.action.getUnit,
+        mainFull: main.action.getFull,
+        mainUnit: main.action.getUnit,
         routerList: app.action.routerList,
         routerSub: app.action.routerSub,
         routerConf: app.action.routerConf,
-        insertItem: main.action.insertItem,
+        entryItem: main.action.entryItem,
         copyItem: main.action.copyItem,
         moveItem: main.action.moveItem,
         deleteItem: main.action.deleteItem,
-        checkItem: main.action.checkItem,
-        switchEdit: main.action.switchEdit,
+        editItem: main.action.editItem,
         dragInit: main.action.dragInit,
         dragStart: main.action.dragStart,
         dragMove: main.action.dragMove,
@@ -37,24 +35,22 @@ const meta: Meta<typeof PageMain> = {
       };
     },
     template: `<PageMain
-        :refer="refer"
         :status="status"
         :listId="listId"
-        :listUnit="listUnit"
-        :stateFull="stateFull"
-        :stateUnit="stateUnit"
-        :classItem="classItem"
+        :classStatus="classStatus"
         :classLimit="classLimit"
         :textCount="textCount"
+        :listUnit="listUnit"
+        :mainFull="mainFull"
+        :mainUnit="mainUnit"
         @routerList="routerList"
         @routerSub="routerSub"
         @routerConf="routerConf"
-        @insertItem="insertItem"
+        @entryItem="entryItem"
         @copyItem="copyItem"
         @moveItem="moveItem"
         @deleteItem="deleteItem"
-        @checkItem="checkItem"
-        @switchEdit="switchEdit"
+        @editItem="editItem"
         @dragInit="dragInit"
         @dragStart="dragStart"
         @dragMove="dragMove"

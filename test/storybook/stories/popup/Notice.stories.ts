@@ -13,10 +13,12 @@ const meta: Meta<typeof PopupNotice> = {
         callback: () => ``,
       });
       return {
+        temp: notice.temp,
         state: notice.state,
       };
     },
     template: `<PopupNotice
+        :temp="temp"
         :state="state"
       />`,
   }),

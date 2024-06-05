@@ -8,27 +8,24 @@ const meta: Meta<typeof PopupClock> = {
     components: { PopupClock },
     setup() {
       clock.action.open({
-        hour: 0,
-        minute: 0,
+        time: `00:00`,
         cancel: `cancel`,
         clear: `clear`,
         ok: `ok`,
         callback: () => ``,
       });
       return {
-        refer: clock.refer,
+        temp: clock.temp,
         state: clock.state,
         close: clock.action.close,
-        inputHour: clock.action.inputHour,
-        inputMinute: clock.action.inputMinute,
+        inputTime: clock.action.inputTime,
       };
     },
     template: `<PopupClock
-        :refer="refer"
+        :temp="temp"
         :state="state"
         @close="close"
-        @inputHour="inputHour"
-        @inputMinute="inputMinute"
+        @inputTime="inputTime"
       />`,
   }),
 };

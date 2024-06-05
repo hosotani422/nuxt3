@@ -13,13 +13,10 @@ export default class Clock extends Base {
     clock.state.ok = `ok`;
     const wrapper = mount(PopupClock, {
       props: {
-        refer: clock.refer,
+        temp: clock.temp,
         state: clock.state,
       },
     });
     return wrapper;
-  }
-  public static setAction(): void {
-    vi.spyOn(clock.state, `callback`).mockReturnValue();
   }
 }

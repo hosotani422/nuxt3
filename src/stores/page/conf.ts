@@ -1,25 +1,20 @@
-import lodash from "lodash";
 import i18next from "i18next";
-import * as datefns from "date-fns";
 import Api from "@/api/api";
 import Util from "@/utils/base/util";
-import Cordova from "@/utils/cordova/cordova";
 import constant from "@/utils/const";
 import app from "@/stores/page/app";
 import list from "@/stores/page/list";
 import main from "@/stores/page/main";
 import sub from "@/stores/page/sub";
-import conf from "@/stores/page/conf";
 import dialog from "@/stores/popup/dialog";
 
-const prop: {
+const temp: {
   swipe: {
     status?: `start` | `move` | `end`;
-    target?: HTMLElement;
+    elem?: HTMLElement;
     x?: number;
     y?: number;
     top?: number;
-    listener?: () => void;
   };
 } = {
   swipe: {},
@@ -30,10 +25,9 @@ const useStore = defineStore(`conf`, () => {
     data: {
       size: 1 | 2 | 3;
       speed: 1 | 2 | 3;
-      volume: 0 | 1 | 2 | 3;
-      vibrate: `on` | `off`;
       theme: `light` | `dark`;
       lang: `ja` | `en`;
+      vibrate: `on` | `off`;
       save: `local` | `rest` | `gql`;
     };
   } = reactive({
@@ -41,140 +35,53 @@ const useStore = defineStore(`conf`, () => {
   });
 
   const action = {
-    initPage: async (): Promise<void> => {
-      await action.loadItem();
-    },
-    actPage: (): void => {
+    init: async (): Promise<void> => {
+      state.data = await Api.readConf();
+      await action.setLang({ lang: state.data.lang });
       watch(
-        () => lodash.cloneDeep(state.data),
-        () => {
-          action.saveItem();
+        () => state.data,
+        (data) => {
+          Api.writeConf(data);
         },
         { deep: true },
       );
       watch(
-        () => lodash.cloneDeep(state.data.volume),
-        () => {
-          action.reactSound();
+        () => state.data.lang,
+        async (lang) => {
+          await action.setLang({ lang });
         },
+        { flush: `sync` },
       );
     },
-    loadItem: async (): Promise<void> => {
-      state.data = await Api.readConf();
+    setLang: async (arg: { lang: string }): Promise<void> => {
+      await i18next.changeLanguage(arg.lang);
+      app.action.forceUpdate();
     },
-    saveItem: (): void => {
-      Api.writeConf(state.data);
-    },
-    reactSound: (): void => {
-      constant.sound.volume(state.data.volume / 3);
-    },
-    reactLang: (payload: { value: string }): void => {
-      i18next.changeLanguage(payload.value);
-    },
-    reactAlarm: (): void => {
-      if (process.client) {
-        Cordova.Notice.removeAll();
-        for (const listId of list.getter.stateFull().sort) {
-          for (const mainId of main.getter.stateFull(listId).sort) {
-            const mainUnit = main.getter.stateUnit(listId, mainId);
-            if (mainUnit.date) {
-              for (const alarmId of mainUnit.alarm as (
-                | `1`
-                | `2`
-                | `3`
-                | `4`
-                | `5`
-                | `6`
-                | `7`
-                | `8`
-                | `9`
-                | `10`
-                | `11`
-                | `12`
-              )[]) {
-                Cordova.Notice.insert({
-                  title: i18next.t(`dialog.title.alarm`),
-                  message: `${list.getter.stateUnit(listId).title} ⇒ ${mainUnit.title}`,
-                  date: datefns.subMinutes(
-                    new Date(`${mainUnit.date} ${mainUnit.time || `00:00`}`),
-                    Number(i18next.t(`dialog.alarm.data${alarmId}.value`)),
-                  ),
-                });
-              }
-            }
-          }
-        }
-      }
-    },
-    downloadBackup: (payload: { event: Event }): void => {
-      const data =
+    downloadBackup: (arg: { elem: HTMLElement }): void => {
+      const fileName = constant.base.app.backup;
+      const fileData =
         `${app.getter.listId()}\n` +
         `${JSON.stringify(list.state.data)}\n` +
         `${JSON.stringify(main.state.data)}\n` +
         `${JSON.stringify(sub.state.data)}\n` +
         `${JSON.stringify(state.data)}`;
-      if (!app.getter.isApp()) {
-        const target = payload.event.currentTarget as HTMLElement;
-        target.setAttribute(`download`, constant.base.backup);
-        target.setAttribute(`href`, `data:text/plain,${encodeURIComponent(data)}`);
-      } else {
-        Cordova.File.write(
-          constant.base.backup,
-          data,
-          (filePath) => {
-            dialog.action.open({
-              mode: `alert`,
-              title: i18next.t(`dialog.title.backup`),
-              message: filePath,
-              cancel: i18next.t(`button.ok`),
-              callback: {
-                cancel: () => {
-                  dialog.action.close();
-                },
-              },
-            });
-          },
-          (errorCode) => {
-            dialog.action.open({
-              mode: `alert`,
-              title: i18next.t(`dialog.title.backupError`),
-              message: String(errorCode),
-              cancel: i18next.t(`button.ok`),
-              callback: {
-                cancel: () => {
-                  dialog.action.close();
-                },
-              },
-            });
-          },
-        );
-      }
+      arg.elem.setAttribute(`download`, fileName);
+      arg.elem.setAttribute(`href`, `data:text/plain,${encodeURIComponent(fileData)}`);
     },
-    uploadBackup: (payload: { event: Event }): void => {
+    uploadBackup: (arg: { files: FileList }): void => {
       const reader = new FileReader();
-      reader.onload = (_event: ProgressEvent<FileReader>) => {
-        const fileList = (() => {
-          if (typeof _event.target?.result === `string`) {
-            return _event.target.result.split(`\n`);
-          }
-          return [];
-        })();
-        if (
-          fileList.length === 5 &&
-          Util.isJson(fileList[1]) &&
-          Util.isJson(fileList[2]) &&
-          Util.isJson(fileList[3]) &&
-          Util.isJson(fileList[4])
-        ) {
-          state.data = JSON.parse(fileList[4]!);
-          list.state.data = JSON.parse(fileList[1]!);
-          main.state.data = JSON.parse(fileList[2]!);
-          sub.state.data = JSON.parse(fileList[3]!);
-          app.action.routerBack({ listId: fileList[0]! });
+      reader.addEventListener(`load`, (event: ProgressEvent<FileReader>) => {
+        const files = typeof event.target?.result === `string` ? event.target.result.split(`\n`) : [];
+        if (files.length === 5 && Util.isJson(files[1], files[2], files[3], files[4])) {
+          state.data = JSON.parse(files[4]!);
+          list.state.data = JSON.parse(files[1]!);
+          main.state.data = JSON.parse(files[2]!);
+          sub.state.data = JSON.parse(files[3]!);
+          app.action.routerBack({ listId: files[0]! });
         } else {
           dialog.action.open({
             mode: `alert`,
-            title: i18next.t(`dialog.title.fileError`),
+            title: i18next.t(`dialog.title.error`),
             message: ``,
             cancel: i18next.t(`button.ok`),
             callback: {
@@ -184,8 +91,8 @@ const useStore = defineStore(`conf`, () => {
             },
           });
         }
-      };
-      reader.readAsText((payload.event.target as HTMLInputElement).files![0]!);
+      });
+      reader.readAsText(arg.files[0]!);
     },
     resetConf: (): void => {
       dialog.action.open({
@@ -214,12 +121,11 @@ const useStore = defineStore(`conf`, () => {
         cancel: i18next.t(`button.cancel`),
         callback: {
           ok: async () => {
-            app.action.routerBack({ listId: constant.init.listId });
-            dialog.action.close();
-            await new Promise((resolve) => setTimeout(resolve, 1000));
             list.state.data = constant.init.list;
             main.state.data = constant.init.main;
             sub.state.data = constant.init.sub;
+            app.action.routerBack({ listId: constant.base.id.inbox });
+            dialog.action.close();
           },
           cancel: () => {
             dialog.action.close();
@@ -227,50 +133,51 @@ const useStore = defineStore(`conf`, () => {
         },
       });
     },
-    swipeInit: (payload: { target: HTMLElement; clientX: number; clientY: number }): void => {
-      if (!prop.swipe.status) {
-        prop.swipe.status = `start`;
-        prop.swipe.target = payload.target;
-        prop.swipe.x = payload.clientX;
-        prop.swipe.y = payload.clientY;
-        const item = prop.swipe.target.getBoundingClientRect();
-        prop.swipe.top = item.top + item.height / 2;
+    swipeInit: (arg: { x: number; y: number }): void => {
+      if (!temp.swipe.status) {
+        temp.swipe.status = `start`;
+        temp.swipe.elem = Util.getById<HTMLElement>(`ConfRoot`);
+        temp.swipe.x = arg.x;
+        temp.swipe.y = arg.y;
+        temp.swipe.top =
+          temp.swipe.elem.getBoundingClientRect().top + temp.swipe.elem.getBoundingClientRect().height / 2;
       }
     },
-    swipeStart: (payload: { clientX: number; clientY: number }): void => {
-      if (prop.swipe.status === `start`) {
-        if (Math.abs(payload.clientX - prop.swipe.x!) + Math.abs(payload.clientY - prop.swipe.y!) > 15) {
-          Math.abs(payload.clientX - prop.swipe.x!) < Math.abs(payload.clientY - prop.swipe.y!)
-            ? (prop.swipe.status = `move`)
-            : (prop.swipe = {});
+    swipeStart: (arg: { x: number; y: number }): void => {
+      if (temp.swipe.status === `start`) {
+        if (Math.abs(arg.x - temp.swipe.x!) + Math.abs(arg.y - temp.swipe.y!) > 15) {
+          if (Math.abs(arg.x - temp.swipe.x!) < Math.abs(arg.y - temp.swipe.y!)) {
+            temp.swipe.status = `move`;
+          } else {
+            temp.swipe = {};
+          }
         }
       }
     },
-    swipeMove: (payload: { clientY: number }): void => {
-      if (prop.swipe.status === `move`) {
-        const y = prop.swipe.top! + payload.clientY - prop.swipe.y!;
-        prop.swipe.target!.style.transform = `translateY(${y > 0 ? y : 0}px)`;
+    swipeMove: (arg: { y: number }): void => {
+      if (temp.swipe.status === `move`) {
+        temp.swipe.elem!.style.transform = `translateY(${Math.max(temp.swipe.top! + arg.y - temp.swipe.y!, 0)}px)`;
       }
     },
-    swipeEnd: (payload: { clientY: number }): void => {
-      if (prop.swipe.status === `move`) {
-        prop.swipe.status = `end`;
-        if (prop.swipe.top! + payload.clientY - prop.swipe.y! > 100) {
+    swipeEnd: (arg: { y: number }): void => {
+      if (temp.swipe.status === `move`) {
+        temp.swipe.status = `end`;
+        if (temp.swipe.top! + arg.y - temp.swipe.y! > 100) {
           app.action.routerBack();
-          prop.swipe = {};
+          temp.swipe = {};
         } else {
-          prop.swipe
-            .target!.animate(
+          temp.swipe
+            .elem!.animate(
               { transform: `translateY(0px)` },
-              { duration: constant.base.duration[conf.state.data.speed], easing: `ease-in-out` },
+              { duration: app.action.getDuration(), easing: `ease-in-out` },
             )
             .addEventListener(`finish`, () => {
-              prop.swipe.target!.style.transform = `translateY(0px)`;
-              prop.swipe = {};
+              temp.swipe.elem!.style.transform = `translateY(0px)`;
+              temp.swipe = {};
             });
         }
       } else {
-        prop.swipe = {};
+        temp.swipe = {};
       }
     },
   };
@@ -280,4 +187,4 @@ const useStore = defineStore(`conf`, () => {
 
 const store = useStore(createPinia());
 
-export default { prop, state: store.state, action: store.action };
+export default { temp, state: store.state, action: store.action };

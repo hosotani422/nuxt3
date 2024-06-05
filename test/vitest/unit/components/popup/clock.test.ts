@@ -5,10 +5,6 @@ import clock from "@/stores/popup/clock";
 
 const it = test.extend<{ wrapper: VueWrapper }>({
   wrapper: async ({}, use) => {
-    fixture.setAction();
-    fixture.setRouter();
-    await fixture.loadLang();
-    await fixture.loadData();
     await use(fixture.getWrapper());
   },
 });
@@ -30,41 +26,36 @@ describe(`dom`, () => {
 
 describe(`event`, () => {
   it(`contents`, ({ wrapper }) => {
-    wrapper.findByTestId(`ClockHour`).trigger(`mousedown`, { touches: [{ pageX: 0, pageY: 0 }] });
-    wrapper.findByTestId(`ClockHour`).trigger(`mousemove`, { touches: [{ pageX: 0, pageY: 0 }] });
-    wrapper.findByTestId(`ClockHour`).trigger(`touchstart`, { touches: [{ pageX: 0, pageY: 0 }] });
-    wrapper.findByTestId(`ClockHour`).trigger(`touchmove`, { touches: [{ pageX: 0, pageY: 0 }] });
-    expect(wrapper.emitted(`inputHour`)).toHaveLength(4);
-    expect((wrapper.emitted(`inputHour`)![0]![0] as { [K in string]: number }).pageX).toBe(0);
-    expect((wrapper.emitted(`inputHour`)![0]![0] as { [K in string]: number }).pageY).toBe(0);
-    expect((wrapper.emitted(`inputHour`)![1]![0] as { [K in string]: number }).pageX).toBe(0);
-    expect((wrapper.emitted(`inputHour`)![1]![0] as { [K in string]: number }).pageY).toBe(0);
-    expect((wrapper.emitted(`inputHour`)![2]![0] as { [K in string]: number }).pageX).toBe(0);
-    expect((wrapper.emitted(`inputHour`)![2]![0] as { [K in string]: number }).pageY).toBe(0);
-    expect((wrapper.emitted(`inputHour`)![3]![0] as { [K in string]: number }).pageX).toBe(0);
-    expect((wrapper.emitted(`inputHour`)![3]![0] as { [K in string]: number }).pageY).toBe(0);
-    wrapper.findByTestId(`ClockMinute`).trigger(`mousedown`, { touches: [{ pageX: 0, pageY: 0 }] });
-    wrapper.findByTestId(`ClockMinute`).trigger(`mousemove`, { touches: [{ pageX: 0, pageY: 0 }] });
-    wrapper.findByTestId(`ClockMinute`).trigger(`touchstart`, { touches: [{ pageX: 0, pageY: 0 }] });
-    wrapper.findByTestId(`ClockMinute`).trigger(`touchmove`, { touches: [{ pageX: 0, pageY: 0 }] });
-    expect(wrapper.emitted(`inputMinute`)).toHaveLength(4);
-    expect((wrapper.emitted(`inputMinute`)![0]![0] as { [K in string]: number }).pageX).toBe(0);
-    expect((wrapper.emitted(`inputMinute`)![0]![0] as { [K in string]: number }).pageY).toBe(0);
-    expect((wrapper.emitted(`inputMinute`)![1]![0] as { [K in string]: number }).pageX).toBe(0);
-    expect((wrapper.emitted(`inputMinute`)![1]![0] as { [K in string]: number }).pageY).toBe(0);
-    expect((wrapper.emitted(`inputMinute`)![2]![0] as { [K in string]: number }).pageX).toBe(0);
-    expect((wrapper.emitted(`inputMinute`)![2]![0] as { [K in string]: number }).pageY).toBe(0);
-    expect((wrapper.emitted(`inputMinute`)![3]![0] as { [K in string]: number }).pageX).toBe(0);
-    expect((wrapper.emitted(`inputMinute`)![3]![0] as { [K in string]: number }).pageY).toBe(0);
+    wrapper.findByTestId(`ClockHour`).trigger(`touchstart`, { touches: [{ pageX: 1, pageY: 1 }] });
+    wrapper.findByTestId(`ClockHour`).trigger(`touchmove`, { touches: [{ pageX: 2, pageY: 2 }] });
+    wrapper.findByTestId(`ClockHour`).trigger(`mousedown`, { pageX: 3, pageY: 3 });
+    wrapper.findByTestId(`ClockHour`).trigger(`mousemove`, { pageX: 4, pageY: 4 });
+    wrapper.findByTestId(`ClockMinute`).trigger(`touchstart`, { touches: [{ pageX: 5, pageY: 5 }] });
+    wrapper.findByTestId(`ClockMinute`).trigger(`touchmove`, { touches: [{ pageX: 6, pageY: 6 }] });
+    wrapper.findByTestId(`ClockMinute`).trigger(`mousedown`, { pageX: 7, pageY: 7 });
+    wrapper.findByTestId(`ClockMinute`).trigger(`mousemove`, { pageX: 8, pageY: 8 });
+    expect(wrapper.emitted(`inputTime`)).toHaveLength(8);
+    expect(wrapper.emitted(`inputTime`)).toEqual([
+      [{ mode: `hour`, x: 1, y: 1 }],
+      [{ mode: `hour`, x: 2, y: 2 }],
+      [{ mode: `hour`, x: 3, y: 3 }],
+      [{ mode: `hour`, x: 4, y: 4 }],
+      [{ mode: `minute`, x: 5, y: 5 }],
+      [{ mode: `minute`, x: 6, y: 6 }],
+      [{ mode: `minute`, x: 7, y: 7 }],
+      [{ mode: `minute`, x: 8, y: 8 }],
+    ]);
   });
   it(`footer`, ({ wrapper }) => {
+    const callbackMock = vi.spyOn(clock.temp, `callback`).mockReturnValue();
     wrapper.findByTestId(`ClockCancel`).trigger(`click`);
     expect(wrapper.emitted(`close`)).toHaveLength(1);
+    expect(wrapper.emitted(`close`)).toEqual([[]]);
     wrapper.findByTestId(`ClockClear`).trigger(`click`);
-    expect(clock.state.callback).toBeCalledTimes(1);
-    expect(clock.state.callback).toBeCalledWith();
+    expect(callbackMock).toBeCalledTimes(1);
+    expect(callbackMock).toBeCalledWith();
     wrapper.findByTestId(`ClockOk`).trigger(`click`);
-    expect(clock.state.callback).toBeCalledTimes(2);
-    expect(clock.state.callback).toBeCalledWith(0, 0);
+    expect(callbackMock).toBeCalledTimes(2);
+    expect(callbackMock).toBeCalledWith({ hour: 0, minute: 0 });
   });
 });

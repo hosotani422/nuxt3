@@ -1,16 +1,7 @@
-import * as base from "@/utils/const/base";
-import lists from "@/stores/page/list";
-import mains from "@/stores/page/main";
-import subs from "@/stores/page/sub";
-import confs from "@/stores/page/conf";
-import calendars from "@/stores/popup/calendar";
-import clocks from "@/stores/popup/clock";
-import dialogs from "@/stores/popup/dialog";
-import notices from "@/stores/popup/notice";
+import base from "@/utils/const/base";
+import store from "@/stores";
 
-export const listId = base.id.inbox;
-
-export const list: (typeof lists)[`state`][`data`] = {
+export const list: typeof store.list.state.data = {
   sort: [base.id.inbox, base.id.trash],
   data: {
     [base.id.inbox]: { title: `Inbox` },
@@ -18,63 +9,50 @@ export const list: (typeof lists)[`state`][`data`] = {
   },
 };
 
-export const main: (typeof mains)[`state`][`data`] = {
+export const main: typeof store.main.state.data = {
   [base.id.inbox]: {
     sort: [base.id.main],
-    data: {
-      [base.id.main]: {
-        check: false,
-        title: `サンプル`,
-        date: ``,
-        time: ``,
-        alarm: [],
-        task: true,
-      },
-    },
+    data: { [base.id.main]: { check: false, title: `サンプル`, date: ``, time: ``, alarm: [], task: true } },
   },
   [base.id.trash]: { sort: [], data: {} },
 };
 
-export const sub: (typeof subs)[`state`][`data`] = {
+export const sub: typeof store.sub.state.data = {
   [base.id.inbox]: {
-    data: {
-      [base.id.main]: { sort: [base.id.sub], data: { [base.id.sub]: { check: false, title: `` } } },
-    },
+    data: { [base.id.main]: { sort: [base.id.sub], data: { [base.id.sub]: { check: false, title: `` } } } },
   },
   [base.id.trash]: { data: {} },
 };
 
-export const conf: (typeof confs)[`state`][`data`] = {
+export const conf: typeof store.conf.state.data = {
   size: 2,
   speed: 2,
-  volume: 1,
-  vibrate: `on`,
   theme: `light`,
   lang: `ja`,
+  vibrate: `on`,
   save: `local`,
 };
 
-export const calendar: (typeof calendars)[`state`] = {
+export const calendar: typeof store.calendar.state = {
   open: false,
   select: ``,
   current: ``,
   cancel: ``,
   clear: ``,
-  callback: () => ``,
 };
 
-export const clock: (typeof clocks)[`state`] = {
+export const clock: typeof store.clock.state = {
   open: false,
   hour: 0,
   minute: 0,
   cancel: ``,
   clear: ``,
   ok: ``,
-  callback: () => ``,
 };
 
-export const dialog: (typeof dialogs)[`state`] = {
+export const dialog: typeof store.dialog.state = {
   open: false,
+  init: true,
   mode: `alert`,
   title: ``,
   message: ``,
@@ -96,22 +74,15 @@ export const dialog: (typeof dialogs)[`state`] = {
   },
   ok: ``,
   cancel: ``,
-  callback: {
-    ok: () => ``,
-    cancel: () => ``,
-  },
 };
 
-export const notice: (typeof notices)[`state`] = {
+export const notice: typeof store.notice.state = {
   open: false,
   message: ``,
   button: ``,
-  callback: () => ``,
-  timeoutId: 0,
 };
 
 export default {
-  listId,
   list,
   main,
   sub,

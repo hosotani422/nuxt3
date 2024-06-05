@@ -19,7 +19,7 @@ describe(`main`, () => {
     fixture.getByTestId(`MainTask`).eq(0).should(`have.text`, `main1`);
     fixture.getByTestId(`MainTask`).eq(1).should(`have.text`, `main2`);
     fixture.getByTestId(`MainCount`).eq(0).should(`have.text`, `1/2`);
-    fixture.getByTestId(`MainCount`).eq(1).should(`have.text`, `1/1`);
+    fixture.getByTestId(`MainCount`).eq(1).should(`have.text`, `0/0`);
   });
   it(`page - list`, () => {
     fixture.getByTestId(`MainList`).click();
@@ -51,10 +51,8 @@ describe(`main`, () => {
   it(`item - check`, () => {
     fixture.getByTestId(`MainCheck`).eq(0).check();
     fixture.getByTestId(`MainCheck`).eq(0).should(`be.checked`);
-    fixture.getByTestId(`MainTask`).eq(0).should(`have.text`, `main2`);
-    fixture.getByTestId(`MainCheck`).eq(1).uncheck();
+    fixture.getByTestId(`MainCheck`).eq(0).uncheck();
     fixture.getByTestId(`MainCheck`).eq(0).should(`not.be.checked`);
-    fixture.getByTestId(`MainTask`).eq(0).should(`have.text`, `main1`);
   });
   it(`item - title`, () => {
     fixture.getByTestId(`MainItem`).eq(0).click();
@@ -77,7 +75,7 @@ describe(`main`, () => {
   });
   it(`item - clone`, () => {
     fixture.longClick(fixture.getByTestId(`MainItem`).eq(0));
-    fixture.getByTestId(`MainClone`).click();
+    fixture.getByTestId(`MainClone`).eq(0).click();
     fixture.getByTestId(`MainItem`).should(`have.length`, 3);
     fixture.getByTestId(`MainCheck`).eq(1).should(`not.be.checked`);
     fixture.getByTestId(`MainTask`).eq(1).should(`have.text`, `main1`);
@@ -85,8 +83,8 @@ describe(`main`, () => {
   });
   it(`item - move`, () => {
     fixture.longClick(fixture.getByTestId(`MainItem`).eq(0));
-    fixture.getByTestId(`MainMove`).click();
-    fixture.getByTestId(`DialogRadio`).eq(1).check();
+    fixture.getByTestId(`MainMove`).eq(0).click();
+    fixture.getByTestId(`DialogRadio`).eq(0).check();
     fixture.getByTestId(`DialogOk`).click();
     fixture.getByTestId(`MainItem`).should(`have.length`, 1);
     fixture.getByTestId(`MainList`).click();
@@ -98,7 +96,7 @@ describe(`main`, () => {
   });
   it(`item - delete`, () => {
     fixture.longClick(fixture.getByTestId(`MainItem`).eq(0));
-    fixture.getByTestId(`MainTrash`).click();
+    fixture.getByTestId(`MainTrash`).eq(0).click();
     fixture.getByTestId(`MainItem`).should(`have.length`, 1);
     fixture.getByTestId(`MainList`).click();
     fixture.getByTestId(`ListItem`).eq(2).click();

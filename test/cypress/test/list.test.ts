@@ -10,7 +10,7 @@ describe(`list`, () => {
   it(`page - init`, () => {
     cy.location(`pathname`).should(`eq`, `/list1111111111111/list`);
     fixture.getByTestId(`ListPlus`).should(`have.length`, 1);
-    fixture.getByTestId(`ListTitle`).should(`have.text`, `Memotea`);
+    fixture.getByTestId(`ListTitle`).should(`have.text`, `Memosuku`);
     fixture.getByTestId(`ListLeft`).should(`have.length`, 1);
     fixture.getByTestId(`ListItem`).should(`have.length`, 3);
     fixture.getByTestId(`ListIcon`).eq(0).find(`title`).invoke(`attr`, `id`).should(`eq`, `list`);
@@ -73,7 +73,7 @@ describe(`list`, () => {
   });
   it(`item - clone`, () => {
     fixture.longClick(fixture.getByTestId(`ListItem`).eq(0));
-    fixture.getByTestId(`ListClone`).click();
+    fixture.getByTestId(`ListClone`).eq(0).click();
     fixture.getByTestId(`ListItem`).should(`have.length`, 4);
     fixture.getByTestId(`ListIcon`).eq(1).find(`title`).invoke(`attr`, `id`).should(`eq`, `list`);
     fixture.getByTestId(`ListTask`).eq(1).should(`have.text`, `list1`);
@@ -103,17 +103,17 @@ describe(`list`, () => {
   });
   it(`item - current`, () => {
     fixture.longClick(fixture.getByTestId(`ListItem`).eq(0));
-    fixture.getByTestId(`ListClone`).should(`have.length`, 1);
-    fixture.getByTestId(`ListTrash`).should(`have.length`, 0);
+    fixture.getByTestId(`ListClone`).should(`have.length`, 2);
+    fixture.getByTestId(`ListTrash`).should(`have.length`, 1);
   });
   it(`item - normal`, () => {
     fixture.longClick(fixture.getByTestId(`ListItem`).eq(1));
-    fixture.getByTestId(`ListClone`).should(`have.length`, 1);
+    fixture.getByTestId(`ListClone`).should(`have.length`, 2);
     fixture.getByTestId(`ListTrash`).should(`have.length`, 1);
   });
   it(`item - trash`, () => {
     fixture.longClick(fixture.getByTestId(`ListItem`).eq(2));
-    fixture.getByTestId(`ListClone`).should(`have.length`, 0);
-    fixture.getByTestId(`ListTrash`).should(`have.length`, 0);
+    fixture.getByTestId(`ListClone`).should(`have.length`, 2);
+    fixture.getByTestId(`ListTrash`).should(`have.length`, 1);
   });
 });

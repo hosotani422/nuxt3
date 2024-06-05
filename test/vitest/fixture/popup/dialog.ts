@@ -6,6 +6,7 @@ import PopupDialog from "@/components/popup/dialog.vue";
 export default class Dialog extends Base {
   public static getWrapper(): VueWrapper {
     dialog.state.open = true;
+    dialog.state.init = true;
     dialog.state.title = `title`;
     dialog.state.message = `message`;
     dialog.state.text = {
@@ -26,14 +27,16 @@ export default class Dialog extends Base {
     };
     dialog.state.ok = `ok`;
     dialog.state.cancel = `cancel`;
-    dialog.state.callback = {
+    dialog.temp.callback = {
       ok: () => ``,
       cancel: () => ``,
     };
     const wrapper = mount(PopupDialog, {
       props: {
+        temp: dialog.temp,
         state: dialog.state,
         stateCheckAll: dialog.getter.stateCheckAll,
+        errorValidation: dialog.getter.errorValidation,
       },
       global: {
         directives: {
@@ -42,9 +45,5 @@ export default class Dialog extends Base {
       },
     });
     return wrapper;
-  }
-  public static setAction(): void {
-    vi.spyOn(dialog.state.callback, `cancel`).mockReturnValue();
-    vi.spyOn(dialog.state.callback, `ok`).mockReturnValue();
   }
 }

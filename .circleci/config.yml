@@ -3,7 +3,7 @@ version: 2.1
 executors:
   node_executor:
     docker:
-      - image: cimg/node:20.12.2
+      - image: cimg/node:20.14.0
     working_directory: ~/project
 
 commands:
@@ -18,7 +18,7 @@ commands:
           paths: .
   install_pnpm:
     steps:
-      - run: sudo npm i -g pnpm@9.0.6
+      - run: sudo npm i -g pnpm@9.1.4
   install_package:
     steps:
       - run: pnpm install

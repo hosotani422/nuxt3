@@ -5,7 +5,7 @@ import InputFile from "@/components/input/file.vue";
 describe(`dom`, () => {
   it(`default`, () => {
     const wrapper = mount(InputFile);
-    expect(wrapper.findByTestId(`InputFileButton`).text()).toBe(`InputFile`);
+    expect(wrapper.findByTestId(`InputFileButton`).text()).toBe(`file`);
   });
   it(`slot`, () => {
     const wrapper = mount(InputFile, { slots: { default: `ファイル選択` } });

@@ -1,15 +1,7 @@
-export const title = `Memotea`;
-
-export const version = `3.0.5`;
-
-export const backup = `memotea.bak`;
-
-export const admobId = `ca-app-pub-4073573623418382/4119067663`;
-
-export const duration = {
-  "1": 300,
-  "2": 150,
-  "3": 75,
+export const app = {
+  name: `Memosuku`,
+  version: `1.0.0`,
+  backup: `memosuku.bak`,
 };
 
 export const id = {
@@ -20,10 +12,6 @@ export const id = {
 };
 
 export default {
-  title,
-  version,
-  backup,
-  admobId,
-  duration,
+  app,
   id,
 };

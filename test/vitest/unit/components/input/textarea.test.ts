@@ -5,24 +5,28 @@ import InputTextArea from "@/components/input/textarea.vue";
 describe(`dom`, () => {
   it(`default`, () => {
     const wrapper = mount(InputTextArea);
-    expect(wrapper.findByTestId<HTMLInputElement>(`InputTextarea`).element.value).toBe(``);
+    const element = wrapper.findByTestId<HTMLInputElement>(`InputTextarea`);
+    expect((element.element.style as unknown as { [K in string]: string })[`field-sizing`]).toBe(`fixed`);
+    expect(element.element.value).toBe(``);
+  });
+  it(`sizing:fixed`, () => {
+    const wrapper = mount(InputTextArea, { props: { sizing: `fixed` } });
+    const element = wrapper.findByTestId<HTMLInputElement>(`InputTextarea`);
+    expect((element.element.style as unknown as { [K in string]: string })[`field-sizing`]).toBe(`fixed`);
+    expect(element.element.value).toBe(``);
+  });
+  it(`sizing:content`, () => {
+    const wrapper = mount(InputTextArea, { props: { sizing: `content` } });
+    const element = wrapper.findByTestId<HTMLInputElement>(`InputTextarea`);
+    expect((element.element.style as unknown as { [K in string]: string })[`field-sizing`]).toBe(`content`);
+    expect(element.element.value).toBe(``);
   });
   it(`value`, () => {
-    const wrapper = mount(InputTextArea, { props: { modelValue: `setProps` } });
-    expect(wrapper.findByTestId<HTMLInputElement>(`InputTextarea`).element.value).toBe(`setProps`);
-  });
-});
-
-describe(`event`, () => {
-  it(`v-model`, async () => {
-    const wrapper = mount(InputTextArea, {
-      props: {
-        "onUpdate:modelValue": (e: string) => {
-          wrapper.setProps({ modelValue: e });
-        },
-      },
-    });
-    await wrapper.findByTestId(`InputTextarea`).setValue(`setValue`);
-    expect(wrapper.props(`modelValue`)).toBe(`setValue`);
+    const wrapper = mount(InputTextArea, { props: { modelValue: `value1` } });
+    const element = wrapper.findByTestId<HTMLInputElement>(`InputTextarea`);
+    expect((element.element.style as unknown as { [K in string]: string })[`field-sizing`]).toBe(`fixed`);
+    expect(element.element.value).toBe(`value1`);
+    element.setValue(`value2`);
+    expect(element.element.value).toBe(`value2`);
   });
 });

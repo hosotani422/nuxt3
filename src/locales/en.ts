@@ -15,51 +15,8 @@ export const en: Locale = {
     time: `time`,
     alarm: `alarm`,
   },
-  dialog: {
-    title: {
-      insert: `Sign up`,
-      move: `Destination selection`,
-      delete: `Do you really want to delete this`,
-      reset: `Do you really want to reset`,
-      backup: `Backup completed`,
-      backupError: `Backup failure`,
-      fileError: `File format is different`,
-      alarm: `Memotea Alarm`,
-    },
-    select: {
-      all: `Select all`,
-      none: `Unselected`,
-    },
-    alarm: {
-      title: `Selection of notification timing`,
-      sort: `12`,
-      data1: { label: `On time`, value: 0 },
-      data2: { label: `5 minutes ago`, value: 5 },
-      data3: { label: `10 minutes ago`, value: 10 },
-      data4: { label: `15 minutes ago`, value: 15 },
-      data5: { label: `30 minutes ago`, value: 30 },
-      data6: { label: `1 hour ago`, value: 60 },
-      data7: { label: `2 hour ago`, value: 120 },
-      data8: { label: `3 hour ago`, value: 180 },
-      data9: { label: `6 hour ago`, value: 360 },
-      data10: { label: `12 hour ago`, value: 720 },
-      data11: { label: `1 day ago`, value: 1440 },
-      data12: { label: `2 day ago`, value: 2880 },
-    },
-  },
-  calendar: {
-    sort: `7`,
-    week1: `Sun`,
-    week2: `Mon`,
-    week3: `Tue`,
-    week4: `Wed`,
-    week5: `Thu`,
-    week6: `Fri`,
-    week7: `Sat`,
-  },
-  notice: {
-    message: `The deletion is complete`,
-    button: `Restore`,
+  validation: {
+    empty: `Please enter one or more non-blank strings.`,
   },
   conf: {
     title: `Configuration`,
@@ -77,15 +34,6 @@ export const en: Locale = {
         "1": `S`,
         "2": `N`,
         "3": `F`,
-      },
-    },
-    volume: {
-      title: `Volume`,
-      value: {
-        "0": `X`,
-        "1": `S`,
-        "2": `M`,
-        "3": `L`,
       },
     },
     vibrate: {
@@ -128,7 +76,51 @@ export const en: Locale = {
       list: `Memo`,
     },
   },
-  validation: {
-    noempty: `Please enter one or more non-blank strings.`,
+  calendar: {
+    sort: [`1`, `2`, `3`, `4`, `5`, `6`, `7`],
+    data: {
+      1: `Sun`,
+      2: `Mon`,
+      3: `Tue`,
+      4: `Wed`,
+      5: `Thu`,
+      6: `Fri`,
+      7: `Sat`,
+    },
+  },
+  dialog: {
+    title: {
+      entry: `Sign up`,
+      move: `Destination selection`,
+      delete: `Do you really want to delete this`,
+      reset: `Do you really want to reset`,
+      alarm: `Selection of notification timing`,
+      error: `File format is different`,
+    },
+    select: {
+      all: `Select all`,
+      none: `Unselected`,
+    },
+    alarm: {
+      sort: [`1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`, `9`, `10`, `11`, `12`],
+      data: {
+        1: { label: `On time`, value: 0 },
+        2: { label: `5 minutes ago`, value: 5 },
+        3: { label: `10 minutes ago`, value: 10 },
+        4: { label: `15 minutes ago`, value: 15 },
+        5: { label: `30 minutes ago`, value: 30 },
+        6: { label: `1 hour ago`, value: 60 },
+        7: { label: `2 hour ago`, value: 120 },
+        8: { label: `3 hour ago`, value: 180 },
+        9: { label: `6 hour ago`, value: 360 },
+        10: { label: `12 hour ago`, value: 720 },
+        11: { label: `1 day ago`, value: 1440 },
+        12: { label: `2 day ago`, value: 2880 },
+      },
+    },
+  },
+  notice: {
+    message: `The deletion is complete`,
+    button: `Restore`,
   },
 } as const;

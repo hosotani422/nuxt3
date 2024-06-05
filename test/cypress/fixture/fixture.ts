@@ -1,7 +1,7 @@
 export default class Fixture {
   public constructor(private readonly cy: Cypress.cy & CyEventEmitter) {}
   private loadData(): void {
-    this.cy.readFile(`./test/memotea.bak`, `utf8`).then((result) => {
+    this.cy.readFile(`./test/memosuku.bak`, `utf8`).then((result) => {
       const backup = result.split(`\n`);
       localStorage.setItem(`route`, backup[0]!);
       localStorage.setItem(`list`, backup[1]!);
@@ -11,8 +11,8 @@ export default class Fixture {
     });
   }
   private openPage(): void {
-    this.cy.visit(`/list0000000000000`);
-    this.cy.wait(100);
+    this.cy.visit(`/list1111111111111`);
+    this.cy.wait(1000);
   }
   public initList(): void {
     this.loadData();

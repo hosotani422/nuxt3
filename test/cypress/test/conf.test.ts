@@ -12,31 +12,28 @@ describe(`conf`, () => {
     fixture.getByTestId(`ConfDown`).should(`have.length`, 1);
     fixture.getByTestId(`ConfTitle`).should(`have.text`, `設定`);
     fixture.getByTestId(`ConfName`).should(`have.length`, 1);
-    fixture.getByTestId(`ConfItem`).should(`have.length`, 9);
+    fixture.getByTestId(`ConfItem`).should(`have.length`, 8);
     fixture.getByTestId(`ConfSizeTitle`).should(`have.text`, `文字サイズ`);
     fixture.getByTestId(`ConfSizeValue`).should(`have.value`, `2`);
     fixture.getByTestId(`ConfSizeName`).should(`have.text`, `中`);
     fixture.getByTestId(`ConfSpeedTitle`).should(`have.text`, `アニメ速度`);
     fixture.getByTestId(`ConfSpeedValue`).should(`have.value`, `2`);
     fixture.getByTestId(`ConfSpeedName`).should(`have.text`, `中`);
-    fixture.getByTestId(`ConfVolumeTitle`).should(`have.text`, `音量`);
-    fixture.getByTestId(`ConfVolumeValue`).should(`have.value`, `1`);
-    fixture.getByTestId(`ConfVolumeName`).should(`have.text`, `小`);
-    fixture.getByTestId(`ConfVibrateTitle`).should(`have.text`, `振動`);
-    fixture.getByTestId(`ConfVibrateOff`).should(`not.be.checked`);
-    fixture.getByTestId(`ConfVibrateOn`).should(`be.checked`);
-    fixture.getByTestId(`InputRadioLabel`).eq(0).should(`have.text`, `無`);
-    fixture.getByTestId(`InputRadioLabel`).eq(1).should(`have.text`, `有`);
     fixture.getByTestId(`ConfThemeTitle`).should(`have.text`, `テーマ`);
     fixture.getByTestId(`ConfThemeLight`).should(`not.be.checked`);
     fixture.getByTestId(`ConfThemeDark`).should(`be.checked`);
-    fixture.getByTestId(`InputRadioLabel`).eq(2).should(`have.text`, `明`);
-    fixture.getByTestId(`InputRadioLabel`).eq(3).should(`have.text`, `暗`);
+    fixture.getByTestId(`InputRadioLabel`).eq(0).should(`have.text`, `明`);
+    fixture.getByTestId(`InputRadioLabel`).eq(1).should(`have.text`, `暗`);
     fixture.getByTestId(`ConfLangTitle`).should(`have.text`, `言語`);
     fixture.getByTestId(`ConfLangEn`).should(`not.be.checked`);
     fixture.getByTestId(`ConfLangJa`).should(`be.checked`);
-    fixture.getByTestId(`InputRadioLabel`).eq(4).should(`have.text`, `英語`);
-    fixture.getByTestId(`InputRadioLabel`).eq(5).should(`have.text`, `日本語`);
+    fixture.getByTestId(`InputRadioLabel`).eq(2).should(`have.text`, `英語`);
+    fixture.getByTestId(`InputRadioLabel`).eq(3).should(`have.text`, `日本語`);
+    fixture.getByTestId(`ConfVibrateTitle`).should(`have.text`, `振動`);
+    fixture.getByTestId(`ConfVibrateOff`).should(`not.be.checked`);
+    fixture.getByTestId(`ConfVibrateOn`).should(`be.checked`);
+    fixture.getByTestId(`InputRadioLabel`).eq(4).should(`have.text`, `無`);
+    fixture.getByTestId(`InputRadioLabel`).eq(5).should(`have.text`, `有`);
     fixture.getByTestId(`ConfSaveTitle`).should(`have.text`, `自動保存`);
     fixture.getByTestId(`ConfSaveLocal`).should(`be.checked`);
     fixture.getByTestId(`ConfSaveRest`).should(`not.be.checked`);
@@ -60,16 +57,12 @@ describe(`conf`, () => {
     cy.location(`pathname`).should(`eq`, `/list1111111111111`);
   });
   it(`item - size`, () => {
-    fixture.getByTestId(`ConfSizeValue`).invoke(`val`, `3`).trigger(`input`);
+    fixture.getByTestId(`ConfSizeValue`).invoke(`val`, `3`).trigger(`change`);
     fixture.getByTestId(`ConfSizeName`).should(`have.text`, `大`);
   });
   it(`item - speed`, () => {
-    fixture.getByTestId(`ConfSpeedValue`).invoke(`val`, `3`).trigger(`input`);
+    fixture.getByTestId(`ConfSpeedValue`).invoke(`val`, `3`).trigger(`change`);
     fixture.getByTestId(`ConfSpeedName`).should(`have.text`, `高`);
-  });
-  it(`item - volume`, () => {
-    fixture.getByTestId(`ConfVolumeValue`).invoke(`val`, `3`).trigger(`input`);
-    fixture.getByTestId(`ConfVolumeName`).should(`have.text`, `大`);
   });
   it(`item - vibrate`, () => {
     fixture.getByTestId(`ConfVibrateOff`).check();
@@ -94,7 +87,7 @@ describe(`conf`, () => {
   });
   it(`item - upload`, () => {
     fixture.getByTestId(`ConfThemeLight`).check();
-    fixture.getByTestId(`ConfBackupUpload`).selectFile(`./test/memotea.bak`);
+    fixture.getByTestId(`ConfBackupUpload`).selectFile(`./test/memosuku.bak`);
     fixture.getByTestId(`ConfThemeLight`).should(`not.be.checked`);
     fixture.getByTestId(`ConfThemeDark`).should(`be.checked`);
   });
